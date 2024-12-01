@@ -1,0 +1,415 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.offcanvas-top {
+    height: 42vh;
+  }
+  
+  .searchdiv {
+    width: 16rem;
+    border-bottom: 2px solid #007bff;
+  }
+  
+  .searchtext {
+    font-size: 17px;
+    color: #bdbdbd;
+  }
+  
+  .fa-search {
+    color: #bdbdbd;
+    font-size: 16px;
+  }
+  .cartnumber {
+    z-index: 10;
+  }
+  
+  .offcanvassearchdiv {
+    width: 100%;
+    border-bottom: 2px solid #cc3535;
+    justify-content: space-between;
+  }
+
+  
+  .purppleElitelogo {
+    width: 60px;
+  }
+  
+  .purpplelogo1{
+    width: 80px;
+  }
+  .PurpleLogoelite{
+    width: 55px;
+  }
+  #searchinput {
+    animation: justshake 0.3s forwards;
+  }
+  .icon-smile{
+    font-size: 25px;
+  }
+  .pxsmile{
+    font-size: 20px;
+  }
+  .icon-smile:hover {
+    color: rgb(104, 128, 236);
+  }
+  .pxsmile:hover {
+    color: rgb(104, 128, 236);
+  }
+  @media (max-width: 612px) {
+    .searchtext {
+    font-size: 12px;
+  }
+  }
+  @media (max-width: 612px) {
+    .searchdiv {
+    width: 12rem;
+  }
+  }
+  
+  .dropbtn {
+    background-color: transparent;
+    color: black;
+    padding: 0;
+    font-size: 24px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    top: 25px;
+    left: -5px;
+    transform: translateX(-50%);
+    background-color: rgb(245, 245, 245);
+    min-width: 170px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    padding: 0;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  
+  .dropdown-content a {
+    font-size: 14px;
+    margin-left: 5px;
+    text-decoration: none;
+    display: block;
+  }
+ 
+
+  
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full height to center the popup vertically */
+    width: 40%;  /* Ensure popup covers the full width */
+  }
+  
+  .popup .popup-content {
+    background: #fff;
+    padding: 1.5rem; /* Padding for content */
+    border-radius: 12px;
+    max-width: 90%; /* Max width of 90% of the screen for smaller devices */
+    width: 100%; /* Ensure content takes up full width */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    height: auto;
+    max-height: 80vh; /* Prevents overflow */
+    overflow-y: auto; /* Allows scroll if content is too tall */
+  }
+
+.bg-gradient-to-r {
+  background: linear-gradient(to right, #fcb4b7, #d1a7f3);
+}
+
+.popup input[type="text"],
+.popup input[type="password"]{
+  padding: 14px; /* Increased padding for bigger inputs */
+  border: 1px solid #ccc;
+  border-radius: 10px; /* Increased border radius */
+  width: 100%;
+  font-size: 16px; /* Larger font size */
+  margin-bottom: 12px; /* Increased margin for better spacing */
+}
+
+@media (max-width: 1024px) {
+  .NavigationBar {
+    font-size: 17px;
+    font-weight: 400;
+   display: flex;
+   justify-content: start;
+   column-gap: 40px;
+  }
+}
+@media (max-width: 770px) {
+  .NavigationBar {
+    font-size: 15px;
+    font-weight: 400;
+    display: flex;
+    justify-content: start;
+    column-gap: 25px;
+
+}
+}
+@media (max-width: 597px) {
+  .NavigationBar {
+    font-size: 13px;
+    font-weight: 400;
+    display: flex;
+   justify-content: start;
+   column-gap: 17px;
+
+}
+}
+@media (max-width: 480px) {
+  .NavigationBar {
+    font-size: 10px;
+    font-weight: 400;
+    display: flex;
+   justify-content: start;
+   column-gap: 10px;
+
+}
+}
+@media (max-width: 850px) {
+  .itemsdiv {
+   width: 600px;
+}
+}
+@media (max-width: 612px) {
+  .itemsdiv {
+   width: 500px;
+}
+}
+@media (max-width: 510px) {
+  .itemsdiv {
+   width: 400px;
+}
+}
+@media (max-width: 413px) {
+  .itemsdiv {
+   width: 330px;
+}
+}
+.carousel-inner {
+  animation: slide 12s infinite;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(-200%);
+  }
+  75% {
+    transform: translateX(-300%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f9fa;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  position: relative;  /* Allow absolute positioning of child elements */
+}
+
+/* Adjust image size and positioning */
+.card-img-top {
+  display: block;
+  margin: 0 auto;  /* Center the image */
+  width: 100%;  /* Ensure the image takes full width */
+}
+
+/* Wishlist Heart */
+.wishlistheart {
+  background: white;
+  font-weight: 500;
+  color: red;
+  font-style: italic;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 4px 8px;
+  position: absolute;
+  top: -12px;
+  left: 10px;  /* Position heart to the left-top corner of the image */
+  z-index: 10;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Wishlist Heart Hover Effect */
+.wishlistheart:hover {
+  transform: translateY(7px);  /* Move the heart icon slightly on hover */
+}
+
+/* Grid Container for Products */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);  /* 5 equal columns */
+  row-gap: 50px;  /* Space between grid items */
+  column-gap: 20px;
+  padding: 20px;
+}
+
+/* Add to Cart Button Styling */
+.addtocartbtn {
+  width: 100%;
+  padding: 7px 14px;
+  border: 2px solid #6f42c1;
+  color: #6f42c1;
+  background-color: transparent;
+  border-radius: 7px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Hover effect for Add to Cart button */
+.addtocartbtn:hover {
+  background-color: #6f42c1;
+  color: #fff;
+}
+@media (max-width: 1200px) {
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);  /* 5 equal columns */
+    row-gap: 40px;  /* Space between grid items */
+    column-gap: 17px;
+    padding: 17px;
+}
+}
+@media (max-width: 950px) {
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);  /* 5 equal columns */
+    row-gap: 40px;  /* Space between grid items */
+    column-gap: 17px;
+    padding: 17px;
+}
+}
+@media (max-width: 757px) {
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);  /* 5 equal columns */
+    row-gap: 40px;  /* Space between grid items */
+    column-gap: 17px;
+    padding: 17px;
+}
+}
+@media (max-width: 500px) {
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);  /* 5 equal columns */
+    row-gap: 40px;  /* Space between grid items */
+    column-gap: 17px;
+    padding: 17px;
+}
+}
+#imagezoom img {
+  width: 100%;
+  height: 400px;        /* Ensure the image takes up the full width */
+  object-fit: contain; /* Ensure image fits within the div without distortion */
+}
+.categoryText {
+  font-size: 14px;          
+  font-weight: 500;         
+  line-height: 1.6;        
+  letter-spacing: 0.5px;     
+  color: #090808;           
+  text-transform: capitalize;
+  padding: 8px 0;          
+  text-align: start;     
+  word-wrap: break-word;  
+  overflow: hidden;
+  white-space: nowrap; 
+  width: 0; 
+  animation: typing 2s steps(50) 1s forwards, blink 0.75s step-end infinite; 
+}
+@keyframes typing {
+  to {
+    width: 100%; 
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+.zoomedImg{
+  width: 550px;
+  height: 380px;
+  box-shadow: #000;
+}
+.datacontainercategorysinglepage{
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);  /* 4 equal columns */
+  row-gap: 50px;  /* Space between grid items */
+  column-gap: 20px;
+  padding: 20px;
+}
+/* From Uiverse.io by Akshdeep74644 */ 
+.container1 {
+  position: relative;
+  width: 100%;
+}
+
+.container1 input {
+  width: 100%;
+  background: transparent;
+  outline: none;
+  border: none;
+  color: #222;
+  padding: 8px;
+}
+
+.container1 i {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: #222;
+}
+
+.container1 i:before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #ff1b69, #ff0, #2196f3, #9c27b0, #ff1b69);
+  animation: animate 3s linear infinite;
+}
+@media (max-width: 1000px) {
+  .contentdiv {
+    width: 100%;
+}
+}
+
+
