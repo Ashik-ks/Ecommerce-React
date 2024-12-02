@@ -18,7 +18,7 @@ function SearchPage() {
 
     const images = [lipbalmbanner, hairspraybanner, bathandboybanner];
     const navigate = useNavigate();
-    const { item, id } = useParams();  // Use both item and id from URL params
+    const { item, id,usertype } = useParams();  // Use both item and id from URL params
 
     const nextSlide = useCallback(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -104,7 +104,7 @@ function SearchPage() {
 
     const singleProduct = (productId, category) => {
         // Handle navigation or action for a single product
-        navigate(`/singleview/${productId}/${id}/${category}`);
+        navigate(`/singleview/${productId}/${id}/${category}/${usertype}`);
     };
 
     return (

@@ -70,7 +70,7 @@ exports.getSingleuser = async function (req, res) {
         return res.status(500).send(error_function({
             success: false,
             statuscode: 500,
-            message: "Internal server error while fetching user.",
+            message: "please login to Continue",
         }));
     }
 };
@@ -723,23 +723,36 @@ exports.getSearch = async function (req, res) {
 
 //to get singleProduct
 exports.getSingleproduct = async function (req, res) {
-
     try {
-        let id = req.params.id;
-        console.log("id : ",id)
+        let pid = req.params.pid; // Product ID
+        let id = req.params.id;  // User ID
+        console.log("pid : ", pid, "id : ", id);
 
-        if (id) {
-            let product = await Product.findOne({ _id: id });
-            console.log("product : ",product) 
-
-            let sellername = await Users.findOne({_id :product.sellerId })
-
+        if (pid) {
+            let product = await Product.findOne({ _id: pid });
+            console.log("product : ", product);
 
             if (product) {
+                // Fetch the seller's name
+                let sellername = await Users.findOne({ _id: product.sellerId });
 
+                // Fetch the category of the product
                 let Category = await category.findOne({ _id: product.category });
 
-                let categoryProduct = await Product.find({ category: Category._id })
+                // Fetch all products in the same category
+                let categoryProduct = await Product.find({ category: Category._id });
+
+                // Fetch the user's wishlist
+                let user = await Users.findOne({ _id: id }, { wishlist: 1 });
+                let userWishlist = user?.wishlist || [];
+
+                // Add isWishlist flag for each product in categoryProduct
+                categoryProduct = categoryProduct.map((item) => {
+                    return {
+                        ...item._doc, // Spread product fields
+                        isWishlist: userWishlist.includes(item._id.toString()), // Check if product is in wishlist
+                    };
+                });
 
                 return res.status(200).send({
                     success: true,
@@ -747,27 +760,33 @@ exports.getSingleproduct = async function (req, res) {
                     product: product,
                     productcategory: Category.name,
                     categoryProduct: categoryProduct,
-                    sellername : sellername.email,
+                    sellername: sellername?.email || "Unknown",
                     message: "Products fetched successfully",
                 });
             } else {
                 return res.status(400).send({
                     success: false,
                     statuscode: 400,
-                    message: "Products fetched successfully",
+                    message: "Product not found",
                 });
             }
         } else {
             return res.status(400).send({
                 success: false,
                 statuscode: 400,
-                message: "Products fetched successfully",
+                message: "Product ID is missing",
             });
         }
     } catch (error) {
-        console.log("error : ", error)
+        console.log("error : ", error);
+        return res.status(500).send({
+            success: false,
+            statuscode: 500,
+            message: "An error occurred",
+        });
     }
-}
+};
+
 
 //to add products in addtocart
 exports.addToCart = async function (req, res) {

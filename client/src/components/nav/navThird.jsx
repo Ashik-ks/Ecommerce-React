@@ -8,12 +8,14 @@ function NavThird() {
   const [hoveredCategory, setHoveredCategory] = useState(null);
 
   const navigate = useNavigate();
-  const { id } = useParams(); 
+  const { id } = useParams();
+  let { usertype } = useParams();
+ 
 
   const handleItemClick = (item) => {
     const itemParam = encodeURIComponent(JSON.stringify(item));
     // Navigate to the category page with the item and user ID as query params
-    navigate(`/category/${itemParam}/${id}`);
+    navigate(`/category/${itemParam}/${id}/${usertype}`);
 };
 
 

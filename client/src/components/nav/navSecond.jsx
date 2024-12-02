@@ -26,9 +26,9 @@ const HeaderComponent = () => {
   const [filteredResults, setFilteredResults] = useState([]);
   const [debouncedQuery, setDebouncedQuery] = useState('');
 
-
   const navigate = useNavigate();
   let { id } = useParams();
+  let { usertype } = useParams();
 
   if (!id) {
     id = undefined || 'undefined'
@@ -102,11 +102,13 @@ const HeaderComponent = () => {
             localStorage.setItem(tokenkey, token);
             localStorage.setItem(tokenkey + "_userType", response.data.data.userType);
 
+            const userTypeValue = response.data.data.userType || "Unknown";
+
             if (response.data.data.userType === "Buyer") {
-              navigate(`/index/${tokenkey}`);
+              navigate(`/index/${tokenkey}/${userTypeValue}`);
               window.location.reload();
             } else if (response.data.data.userType === "Seller") {
-              navigate(`/seller/${tokenkey}`);
+              navigate(`/seller/${tokenkey}/${userTypeValue}`);
             }
 
             closePopup(); // Close the popup
@@ -139,7 +141,7 @@ const HeaderComponent = () => {
             localStorage.setItem(tokenkey + "_userType", response.data.data.userType);
 
             alert("Admin login successful!");
-            window.location.href = `admin.html?id=${tokenkey}`;
+            window.location.href = `admin.html?id=${tokenkey}/${response.data.data.userType}`;
 
             closePopup();
           } else {
@@ -242,7 +244,7 @@ const HeaderComponent = () => {
   };
 
   const handleRedirectsearch = (item) => {
-    navigate(`/searchpage/${item}/${id}`); // Redirect to the search component with a query parameter
+    navigate(`/searchpage/${item}/${id}/${usertype}`);
   };
 
 
@@ -294,7 +296,7 @@ const HeaderComponent = () => {
                   className="dropdowntext ms-2"
                   onClick={(event) => {
                     event.preventDefault(); // Prevents the default button behavior
-                    navigate(`/profile/${id}`);
+                    navigate(`/profile/${id}/${usertype}`);
                   }}
                 >
                   My Account
@@ -320,16 +322,22 @@ const HeaderComponent = () => {
                 />
                 <span className="dropdowntext ms-2">Wishlist</span>
               </a>
-              <a
-                href="#"
-                className="flex gap-3 p-3 text-gray-700 text-sm items-center"
-              >
-                <FontAwesomeIcon
-                  icon={faCog}
-                  className="text-gray-500 text-lg"
-                />
-                <span className="dropdowntext ms-2">Settings</span>
-              </a>
+              {usertype === 'Seller' && (
+                <a
+                  href="#"
+                  className="flex gap-3 p-3 text-gray-700 text-sm items-center"
+                >
+                  <FontAwesomeIcon
+                    icon={faCog}
+                    className="text-gray-500 text-lg"
+                  />
+                  <span className="dropdowntext ms-2" onClick={(event) => {
+                    event.preventDefault();
+                    navigate(`/settings/${id}/${usertype}`);
+                  }}>Settings</span>
+                </a>
+              )}
+
               {isLoggedIn ? (
                 <div
                   className="logout flex gap-3 p-3 text-gray-700 text-sm items-center"
@@ -444,7 +452,7 @@ const HeaderComponent = () => {
                       className="dropdowntext ms-2"
                       onClick={(event) => {
                         event.preventDefault(); // Prevents the default button behavior
-                        navigate(`/profile/${id}`);
+                        navigate(`/profile/${id}/${usertype}`);
                       }}
                     >
                       My Account
@@ -464,13 +472,21 @@ const HeaderComponent = () => {
                     <FontAwesomeIcon icon={faHeart} className="text-gray-500 text-lg" />
                     <span className="dropdowntext ms-2">Wishlist</span>
                   </a>
-                  <a
-                    href="#"
-                    className="flex gap-3 p-3 text-gray-700 text-sm items-center"
-                  >
-                    <FontAwesomeIcon icon={faCog} className="text-gray-500 text-lg" />
-                    <span className="dropdowntext ms-2">Settings</span>
-                  </a>
+                  {usertype === 'Seller' && (
+                    <a
+                      href="#"
+                      className="flex gap-3 p-3 text-gray-700 text-sm items-center"
+                    >
+                      <FontAwesomeIcon
+                        icon={faCog}
+                        className="text-gray-500 text-lg"
+                      />
+                      <span className="dropdowntext ms-2" onClick={(event) => {
+                        event.preventDefault();
+                        navigate(`/settings/${id}/${usertype}`);
+                      }} >Settings</span>
+                    </a>
+                  )}
 
                   {isLoggedIn ? (
                     <div className="logout flex gap-3 p-3 text-gray-700 text-sm items-center" id="logout">

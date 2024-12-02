@@ -5,6 +5,7 @@ import Footer from "../footer/footer";
 
 const AddressComponent = () => {
   const { id } = useParams(); // Extract `id` from URL params
+  let { usertype } = useParams();
   const navigate = useNavigate(); // Use navigate for navigation
   const [addresses, setAddresses] = useState([]);
   const [formVisible, setFormVisible] = useState(false);

@@ -5,7 +5,7 @@ const UserType = require("../db/model/userType");
 const Category = require('../db/model/category');
 const fileUpload = require('../utils/file-upload').fileUpload
 const mongoose = require('mongoose');
-
+const { ObjectId } = require("mongodb");
 
 
 
@@ -85,8 +85,9 @@ exports.addProduct = async function (req, res) {
         }
 
         // Validate category, subcategory, and item
-        const validCategory = await Category.findOne({ name: body.category });
-        console.log("validCategory ", validCategory);
+        const validCategory = await Category.findOne({ _id: new ObjectId(body.category) }); // Validate category by ObjectId
+        console.log("validCategory: ", validCategory);
+        
         if (!validCategory) {
             return res.status(400).send(error_function({
                 success: false,
@@ -94,7 +95,6 @@ exports.addProduct = async function (req, res) {
                 message: "Invalid category provided.",
             }));
         }
-
         // Check if the subcategory exists in the category's subcategories
         const validSubcategory = validCategory.subcategories.some(subcat => subcat.name === body.subcategory);
         if (!validSubcategory) {

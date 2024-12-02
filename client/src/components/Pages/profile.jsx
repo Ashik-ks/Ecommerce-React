@@ -18,6 +18,7 @@ export default function Profile() {
 
   const navigate = useNavigate();
   let { id } = useParams();
+  let { usertype } = useParams();
 
   useEffect(() => {
     if (id) {
@@ -90,10 +91,10 @@ export default function Profile() {
             localStorage.setItem(`${tokenid}_userType`, userType);
 
             if (userType === "Buyer") {
-              navigate(`/index/${tokenid}`);
+              navigate(`/index/${tokenid}/${response.data.data.userType}`);
               window.location.reload();
             } else if (userType === "Seller") {
-              navigate(`/seller/${tokenid}`);
+              navigate(`/seller/${tokenid}/${response.data.data.userType}`);
             }
 
             closePopup();
@@ -255,7 +256,7 @@ export default function Profile() {
           className="ml-3 text-left w-full bg-white border-0 text-gray-700"
           onClick={(event) => {
             event.preventDefault(); // Prevents the default button behavior
-            navigate(`/address/${id}`);
+            navigate(`/address/${id}/${usertype}`);
           }}
         >
           <h6 className="font-semibold text-dark mb-1">My Addresses</h6>

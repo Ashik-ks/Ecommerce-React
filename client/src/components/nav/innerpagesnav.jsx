@@ -28,6 +28,7 @@ function InnerPagesNav() {
 
   const navigate = useNavigate();
   const { id } = useParams();
+  let { usertype } = useParams();
 
 
   const handleLogout = () => {
@@ -103,9 +104,9 @@ function InnerPagesNav() {
             localStorage.setItem(tokenkey + "_userType", response.data.data.userType);
 
             if (response.data.data.userType === "Buyer") {
-              navigate(`/index/${tokenkey}`);
+              navigate(`/index/${tokenkey}/${response.data.data.userType}`);
             } else if (response.data.data.userType === "Seller") {
-              navigate(`/seller/${tokenkey}`);
+              navigate(`/seller/${tokenkey}/${response.data.data.userType}`);
             }
 
             closePopup(); // Close the popup
@@ -181,7 +182,7 @@ function InnerPagesNav() {
   const handleItemClick = (item) => {
     const itemParam = encodeURIComponent(JSON.stringify(item));
     // Navigate to the category page with the item and user ID as query params
-    navigate(`/category/${itemParam}/${id}`);
+    navigate(`/category/${itemParam}/${id}/${usertype}`);
   };
 
 
@@ -252,7 +253,7 @@ function InnerPagesNav() {
                     className="dropdowntext ms-2"
                     onClick={(event) => {
                       event.preventDefault(); // Prevents the default button behavior
-                      navigate(`/profile/${id}`);
+                      navigate(`/profile/${id}/${usertype}`);
                     }}
                   >
                     My Account
@@ -277,16 +278,21 @@ function InnerPagesNav() {
                   />
                   <span className="dropdowntext ms-2">Wishlist</span>
                 </a>
-                <a
-                  href="#"
-                  className="flex gap-3 p-3 text-gray-700 text-sm items-center"
-                >
-                  <FontAwesomeIcon
-                    icon={faCog}
-                    className="text-gray-500 text-lg"
-                  />
-                  <span className="dropdowntext ms-2">Settings</span>
-                </a>
+                {usertype === 'Seller' && (
+                  <a
+                    href="#"
+                    className="flex gap-3 p-3 text-gray-700 text-sm items-center"
+                  >
+                    <FontAwesomeIcon
+                      icon={faCog}
+                      className="text-gray-500 text-lg"
+                    />
+                    <span className="dropdowntext ms-2" onClick={(event) => {
+                      event.preventDefault(); 
+                      navigate(`/settings/${id}/${usertype}`);
+                    }}>Settings</span>
+                  </a>
+                )}
                 {isLoggedIn ? (
                   <div
                     className="logout flex gap-3 p-3 text-gray-700 text-sm items-center"
@@ -461,10 +467,18 @@ function InnerPagesNav() {
                     <FontAwesomeIcon icon={faHeart} className="text-gray-500 text-lg" />
                     <span className="dropdowntext ms-2">Wishlist</span>
                   </a>
-                  <a href="#" className="flex gap-3 p-3 text-gray-700 text-sm items-center">
-                    <FontAwesomeIcon icon={faCog} className="text-gray-500 text-lg" />
-                    <span className="dropdowntext ms-2">Settings</span>
-                  </a>
+                  {usertype === 'Seller' && (
+                    <a
+                      href="#"
+                      className="flex gap-3 p-3 text-gray-700 text-sm items-center"
+                    >
+                      <FontAwesomeIcon
+                        icon={faCog}
+                        className="text-gray-500 text-lg"
+                      />
+                      <span className="dropdowntext ms-2">Settings</span>
+                    </a>
+                  )}
 
                   {isLoggedIn ? (
                     <div className="logout flex gap-3 p-3 text-gray-700 text-sm items-center" id="logout">

@@ -15,6 +15,7 @@ import bathandboybanner from "../../assets/images/bathand body banner.webp";
 function Category() {
     const { count } = useCount();
     const { item, id } = useParams();
+    let { usertype } = useParams();
     const [itemData, setItemData] = useState(null);
     const [data, setData] = useState([]);  
     const [data1, setData1] = useState(null);
@@ -24,6 +25,7 @@ function Category() {
     const [currentIndex, setCurrentIndex] = useState(0);  
     const navigate = useNavigate();
 
+    const images = [lipbalmbanner, hairspraybanner, bathandboybanner];
     // Memoize addToCart function
     const addToCart = useCallback((itemId) => {
         console.log(`Adding item ${itemId} to the cart`);
@@ -75,11 +77,10 @@ function Category() {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error loading data</div>;
 
-    const images = [lipbalmbanner, hairspraybanner, bathandboybanner];
 
     const singleProduct = (productId,category) => {
         // Handle navigation or action for a single product
-        navigate(`/singleview/${productId}/${id}/${category}`);
+        navigate(`/singleview/${productId}/${id}/${category}/${usertype}`);
     };
 
     return (

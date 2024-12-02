@@ -10,6 +10,8 @@ const AllProducts = () => {
     const { updateCount } = useCount();
     const navigate = useNavigate();
     let { id } = useParams();
+    let { usertype } = useParams();
+    
 
     useEffect(() => {
 
@@ -52,7 +54,7 @@ const AllProducts = () => {
 
     const singleProduct = (productId,category) => {
         // Handle navigation or action for a single product
-        navigate(`/singleview/${productId}/${id}/${category}`);
+        navigate(`/singleview/${productId}/${id}/${category}/${usertype}`);
     };
 
     return (
