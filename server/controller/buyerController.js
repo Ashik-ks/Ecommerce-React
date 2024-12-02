@@ -725,7 +725,8 @@ exports.getSearch = async function (req, res) {
 exports.getSingleproduct = async function (req, res) {
     try {
         let pid = req.params.pid; // Product ID
-        let id = req.params.id;  // User ID
+        let id = req.params.id;  // User ID (could be undefined)
+
         console.log("pid : ", pid, "id : ", id);
 
         if (pid) {
@@ -742,7 +743,20 @@ exports.getSingleproduct = async function (req, res) {
                 // Fetch all products in the same category
                 let categoryProduct = await Product.find({ category: Category._id });
 
-                // Fetch the user's wishlist
+                // If `id` is undefined, skip the wishlist logic
+                if (id === 'undefined') {
+                    return res.status(200).send({
+                        success: true,
+                        statuscode: 200,
+                        product: product,
+                        productcategory: Category.name,
+                        categoryProduct: categoryProduct, // No `isWishlist` flag
+                        sellername: sellername?.email || "Unknown",
+                        message: "Products fetched successfully (no user ID provided)",
+                    });
+                }
+
+                // Fetch the user's wishlist if `id` is defined
                 let user = await Users.findOne({ _id: id }, { wishlist: 1 });
                 let userWishlist = user?.wishlist || [];
 

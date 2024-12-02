@@ -11,7 +11,7 @@ const AllProducts = () => {
     const navigate = useNavigate();
     let { id } = useParams();
     let { usertype } = useParams();
-    
+
 
     useEffect(() => {
 
@@ -52,83 +52,105 @@ const AllProducts = () => {
         console.log(`Adding product ${productId} to the cart.`);
     };
 
-    const singleProduct = (productId,category) => {
+    const singleProduct = (productId, category) => {
         // Handle navigation or action for a single product
         navigate(`/singleview/${productId}/${id}/${category}/${usertype}`);
     };
 
     return (
-       <>
-        <div className="container max-w-screen-xl px-4 py-6 mx-auto">
-            <div id="allproducts" className="mt-5">
-                {products.length > 0 ? (
-                    <div className="grid-container">
-                        {products.map((product) => {
-                            const imageUrl = product.images && product.images[0] ? product.images[0] : 'fallback-image-url.jpg'; // Use fallback image if not available
-                            const isInWishlist = product.isInWishlist ? 'block' : 'none';
+        <>
+            <div className="container max-w-screen-xl px-4 py-6 mx-auto">
+                <div id="allproducts" className="mt-5">
+                    {products.length > 0 ? (
+                        <div className="grid-container">
+                            {products.map((product) => {
+                                const imageUrl = product.images && product.images[0] ? product.images[0] : 'fallback-image-url.jpg'; // Use fallback image if not available
+                                const isInWishlist = product.isInWishlist ? 'block' : 'none';
 
-                            return (
-                                <div key={product._id} className="product-card">
-                                    {/* Wishlist heart icon on top of the image */}
-                                    <div className="position-relative">
-                                        <span
-                                            id={`wishlistheart-${product._id}`}
-                                            className="wishlistheart"
-                                            style={{
-                                                display: isInWishlist,  // Show only if the product is in the wishlist
-                                                position: 'absolute',  // Position it absolutely over the image
-                                                top: '-12px',
-                                                left: '10px',  // Align the heart icon to the left-top corner of the image
-                                                zIndex: 10,  // Keep the heart on top of the image
-                                            }}
-                                        >
-                                            <i className="fa fa-heart fs-5 text-danger" aria-hidden="true"></i>
-                                        </span>
+                                return (
+                                    <div
+                                        key={product._id}
+                                        className="product-card transition-transform duration-300 hover:scale-105 hover:shadow-lg bg-white rounded-lg p-3"
+                                        style={{
+                                            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)", // Default shadow
+                                            borderRadius: "8px",
+                                        }}
+                                    >
+                                        {/* Wishlist heart icon on top of the image */}
+                                        <div className="position-relative">
+                                            <span
+                                                id={`wishlistheart-${product._id}`}
+                                                className="wishlistheart"
+                                                style={{
+                                                    display: isInWishlist, // Show only if the product is in the wishlist
+                                                    position: "absolute", // Position it absolutely over the image
+                                                    top: "-12px",
+                                                    left: "10px", // Align the heart icon to the left-top corner of the image
+                                                    zIndex: 10, // Keep the heart on top of the image
+                                                }}
+                                            >
+                                                <i className="fa fa-heart fs-5 text-danger" aria-hidden="true"></i>
+                                            </span>
 
-                                        <img
-                                            src={`http://localhost:3000/${imageUrl}`}
-                                            className="card-img-top w-75 mx-auto"  // Centering the image using mx-auto
-                                            alt="Item Image"
-                                            onClick={() => singleProduct(product._id,product.category)}
-                                        />
-                                    </div>
-                                    <button className="border-0">
-                                        <div className="d-flex justify-content-start">
-                                            {/* Product Name */}
-                                            <div className="mt-4 text-md text-start text-gray-800 ms-1">
-                                                {product.name.slice(0, 20)}{product.name.length > 30 ? '...' : ''}
-                                            </div>
-                                            {/* Price and Discount Price */}
-                                            <div className="flex justify-content-start gap-3 mt-1 ms-1">
-                                                <span className="text-lg font-bold text-black" style={{ fontSize: '1rem', fontWeight: 'bold' }}>
-                                                    Offer: ₹{product.discountPrice}
-                                                </span>
-                                                <span className="text-md price line-through text-black" style={{ fontSize: '1rem' }}>
-                                                    Price: ₹{product.price}
-                                                </span>
-                                            </div>
-
-                                            {/* Stock status */}
-                                            <div className="mt-1 ms-1 text-sm text-gray-500 text-start" style={{ fontSize: '1rem', fontWeight: 'bold' }}>
-                                                {product.stockStatus}
-                                            </div>
+                                            <img
+                                                src={`http://localhost:3000/${imageUrl}`}
+                                                className="w-155 mx-auto h-[160px] object-cover md:h-[250px] lg:h-[300px] rounded-md" // Set fixed height and responsive styles
+                                                alt="Item Image"
+                                                onClick={() => singleProduct(product._id, product.category)}
+                                            />
                                         </div>
-                                    </button>
-                                    <div className="bg-white text-center pb-2">
-                                        <button className="addtocartbtn mt-2" onClick={() => addToCart(product._id)}>
-                                            Add to Cart
+
+                                        <button className="border-0">
+                                            <div className="d-flex justify-content-start">
+                                                {/* Product Name */}
+                                                <div className="mt-4 text-md text-start text-gray-800 ms-1">
+                                                    {product.name.slice(0, 20)}
+                                                    {product.name.length > 30 ? "..." : ""}
+                                                </div>
+                                                {/* Price and Discount Price */}
+                                                <div className="flex justify-content-start gap-3 mt-1 ms-1">
+                                                    <span
+                                                        className="text-lg font-bold text-black"
+                                                        style={{ fontSize: "1rem", fontWeight: "bold" }}
+                                                    >
+                                                        Offer: ₹{product.discountPrice}
+                                                    </span>
+                                                    <span
+                                                        className="text-md price line-through text-black"
+                                                        style={{ fontSize: "1rem" }}
+                                                    >
+                                                        Price: ₹{product.price}
+                                                    </span>
+                                                </div>
+
+                                                {/* Stock status */}
+                                                <div
+                                                    className="mt-1 ms-1 text-sm text-gray-500 text-start"
+                                                    style={{ fontSize: "1rem", fontWeight: "bold" }}
+                                                >
+                                                    {product.stockStatus}
+                                                </div>
+                                            </div>
                                         </button>
+                                        <div className="bg-white text-center pb-2">
+                                            <button
+                                                className="addtocartbtn mt-2"
+                                                onClick={() => addToCart(product._id)}
+                                            >
+                                                Add to Cart
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                ) : (
-                    <div>No products found.</div>
-                )}
+
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div>No products found.</div>
+                    )}
+                </div>
             </div>
-        </div>
-       </>
+        </>
     );
 };
 

@@ -21,10 +21,10 @@ function Singleview() {
     console.log("pid : ", id);
     let { usertype } = useParams();
 
-    const singleProduct = (productId,category) => {
+    const singleProduct = (productId, category) => {
         // Handle navigation or action for a single product
         navigate(`/singleview/${productId}/${id}/${category}/${usertype}`);
-        window.location.reload(); 
+        window.location.reload();
     };
 
     const getSingleProduct = async () => {
@@ -157,82 +157,83 @@ function Singleview() {
 
                     {/* Grid for Related Products */}
                     <div className="datacontainercategorysinglepage mt-5">
-    {relatedProducts?.map((relatedProduct) => {
-        const imageUrl = relatedProduct?.images[0]
-            ? `http://localhost:3000/${relatedProduct.images[0]}`
-            : 'fallback-image-url.jpg';
+                        {relatedProducts?.map((relatedProduct) => {
+                            const imageUrl = relatedProduct?.images[0]
+                                ? `http://localhost:3000/${relatedProduct.images[0]}`
+                                : 'fallback-image-url.jpg';
 
-        const isInWishlist = relatedProduct?.isWishlist ? 'block' : 'none'; // Conditionally show the heart
+                            const isInWishlist = relatedProduct?.isWishlist ? 'block' : 'none'; // Conditionally show the heart
 
-        return (
-            <div
-                key={relatedProduct?._id}
-                className="flex flex-col shadow-md p-4 bg-light rounded cursor-pointer relative"
-                onClick={() => singleProduct(relatedProduct._id, relatedProduct.category)}
-            >
-                {/* Product Image with Wishlist Heart */}
-                <div className="position-relative">
-                    <span
-                        id={`wishlistheart-${relatedProduct._id}`}
-                        className="wishlistheart"
-                        style={{
-                            display: isInWishlist, // Show heart only if the product is in the wishlist
-                            position: 'absolute', // Position it absolutely over the image
-                            top: '-12px',
-                            left: '10px', // Align to the top-left corner of the image
-                            zIndex: 10, // Ensure the heart is above the image
-                        }}
-                    >
-                        <i className="fa fa-heart fs-5 text-danger" aria-hidden="true"></i>
-                    </span>
+                            return (
+                                <div
+                                    key={relatedProduct?._id}
+                                    className="flex flex-col shadow-md p-4 bg-light rounded cursor-pointer relative overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                                    onClick={() => singleProduct(relatedProduct._id, relatedProduct.category)}
+                                >
+                                    {/* Product Image with Wishlist Heart */}
+                                    <div className="position-relative">
+                                        <span
+                                            id={`wishlistheart-${relatedProduct._id}`}
+                                            className="wishlistheart"
+                                            style={{
+                                                display: isInWishlist, // Show heart only if the product is in the wishlist
+                                                position: 'absolute', // Position it absolutely over the image
+                                                top: '-12px',
+                                                left: '10px', // Align to the top-left corner of the image
+                                                zIndex: 10, // Ensure the heart is above the image
+                                            }}
+                                        >
+                                            <i className="fa fa-heart fs-5 text-danger" aria-hidden="true"></i>
+                                        </span>
 
-                    <img
-                        src={imageUrl}
-                        className="card-img-top w-75 mx-auto" // Center the image
-                        alt="Related Product"
-                        onClick={(e) => {
-                            e.stopPropagation(); // Prevent parent click event if the user clicks the image
-                            singleProduct(relatedProduct._id, relatedProduct.category);
-                        }}
-                    />
-                </div>
+                                        <img
+                                            src={imageUrl}
+                                            className=" w-75 mx-auto h-[160px] object-cover md:h-[250px] lg:h-[300px]" // Fixed height and responsive styles
+                                            alt="Related Product"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent parent click event if the user clicks the image
+                                                singleProduct(relatedProduct._id, relatedProduct.category);
+                                            }}
+                                        />
 
-                {/* Product Details */}
-                <div className="mt-4">
-                    <div className="text-sm text-gray-800">
-                        {relatedProduct?.name.slice(0, 23)}
-                        {relatedProduct.name.length > 30 ? '...' : ''}
+                                    </div>
+
+                                    {/* Product Details */}
+                                    <div className="mt-4">
+                                        <div className="text-sm text-gray-800">
+                                            {relatedProduct?.name.slice(0, 23)}
+                                            {relatedProduct.name.length > 30 ? '...' : ''}
+                                        </div>
+                                        <div className="mt-1 text-lg font-bold text-black">
+                                            Offer: ₹{relatedProduct?.discountPrice}
+                                        </div>
+                                        <div className="text-md text-gray-600 line-through">
+                                            Price: ₹{relatedProduct?.price}
+                                        </div>
+                                        <div
+                                            className="mt-1 text-sm text-gray-500"
+                                            style={{ fontSize: '1rem', fontWeight: 'bold' }}
+                                        >
+                                            {relatedProduct?.stockStatus}
+                                        </div>
+                                    </div>
+
+                                    {/* Add to Cart Button */}
+                                    <div className="pb-2">
+                                        <button
+                                            className="addtocartbtn mt-2"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent triggering the parent onClick
+                                                addToCart(relatedProduct._id);
+                                            }}
+                                        >
+                                            Add to Cart
+                                        </button>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
-                    <div className="mt-1 text-lg font-bold text-black">
-                        Offer: ₹{relatedProduct?.discountPrice}
-                    </div>
-                    <div className="text-md text-gray-600 line-through">
-                        Price: ₹{relatedProduct?.price}
-                    </div>
-                    <div
-                        className="mt-1 text-sm text-gray-500"
-                        style={{ fontSize: '1rem', fontWeight: 'bold' }}
-                    >
-                        {relatedProduct?.stockStatus}
-                    </div>
-                </div>
-
-                {/* Add to Cart Button */}
-                <div className="pb-2">
-                    <button
-                        className="addtocartbtn mt-2"
-                        onClick={(e) => {
-                            e.stopPropagation(); // Prevent triggering the parent onClick
-                            addToCart(relatedProduct._id);
-                        }}
-                    >
-                        Add to Cart
-                    </button>
-                </div>
-            </div>
-        );
-    })}
-</div>
 
 
                 </div>

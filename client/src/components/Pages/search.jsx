@@ -18,7 +18,7 @@ function SearchPage() {
 
     const images = [lipbalmbanner, hairspraybanner, bathandboybanner];
     const navigate = useNavigate();
-    const { item, id,usertype } = useParams();  // Use both item and id from URL params
+    const { item, id, usertype } = useParams();  // Use both item and id from URL params
 
     const nextSlide = useCallback(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -57,7 +57,7 @@ function SearchPage() {
                 return true;
             })
             .map((item) => (
-                <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden">
+                <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
                     {/* Product Image and Heart Icon */}
                     <div className="relative" onClick={() => singleProduct(item._id, item.category)}>
                         {/* Conditionally render heart icon if the product is in the wishlist */}
@@ -77,9 +77,10 @@ function SearchPage() {
                         )}
                         <img
                             src={`http://localhost:3000/${item.images && item.images[0] ? item.images[0] : 'fallback-image-url.jpg'}`}
-                            alt={item.name}
-                            className="w-75 mx-auto"
+                            alt={item.name || 'Fallback Image Description'}  // Fallback alt text if item.name is missing
+                            className="w-full h-[200px] md:h-[250px] lg:h-[300px] object-cover mx-auto "
                         />
+
                     </div>
 
                     {/* Product Details */}
@@ -150,11 +151,11 @@ function SearchPage() {
             </div>
 
             {/* Products Section */}
-            <div className="max-w-screen-xl mx-auto p-4">
+            <div className="max-w-screen-xl mx-auto p-4 mt-8">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {/* Render the main product only if it hasn't been displayed yet */}
                     {searchProduct && !displayedIds.has(searchProduct._id) && (
-                        <div key={searchProduct._id} className="bg-white shadow-md rounded-lg overflow-hidden">
+                        <div key={searchProduct._id} className="bg-white shadow-md rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
                             <div className="relative" onClick={() => singleProduct(searchProduct._id, searchProduct.category)}>
                                 {searchProduct.isInWishlist && (
                                     <span
@@ -172,9 +173,10 @@ function SearchPage() {
                                 )}
                                 <img
                                     src={`http://localhost:3000/${searchProduct.images && searchProduct.images[0] ? searchProduct.images[0] : 'fallback-image-url.jpg'}`}
-                                    alt={searchProduct.name}
-                                    className="w-75 mx-auto"
+                                    alt={searchProduct.name || 'Fallback Image Description'}  // Add fallback alt text
+                                    className="w-full h-[200px] md:h-[250px] lg:h-[300px] object-cover mx-auto "
                                 />
+
                             </div>
 
                             <div className="p-4">

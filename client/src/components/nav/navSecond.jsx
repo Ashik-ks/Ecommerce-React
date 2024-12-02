@@ -253,7 +253,7 @@ const HeaderComponent = () => {
       {/* First Grid - Hidden until md */}
       <div className="grid md:hidden grid-cols-2 gap-4 pb-2">
         {/* Second Column */}
-        <div className="flex items-center justify-start ml-6 mt-3 gap-2">
+        <div className="flex items-center justify-start ml-6 mt-3 gap-2" onClick={() => navigate(`/index/${id}/${usertype}`)}>
           <img src={purpleLogo} alt="purplelogo" className="purpplelogo1" />
           <img src={purplejoinElite} alt="Purple Logo" className="PurpleLogoelite" />
         </div>
@@ -411,7 +411,7 @@ const HeaderComponent = () => {
             </div>
 
             {/* Second Column */}
-            <div className="flex gap-3 items-center justify-center ml-10 hidden md:flex">
+            <div className="flex gap-3 items-center justify-center ml-10 hidden md:flex" onClick={() => navigate(`/index/${id}/${usertype}`)}>
               <img src={purpleLogo} alt="purplelogo" className="purpplelogo" />
               <img src={purplejoinElite} alt="Purple Logo" className="PurpleLogoelite" />
 

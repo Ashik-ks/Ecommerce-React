@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import NavOne from "../nav/navOne";
 import HeaderComponent from "../nav/navSecond";
@@ -17,12 +17,12 @@ function Category() {
     const { item, id } = useParams();
     let { usertype } = useParams();
     const [itemData, setItemData] = useState(null);
-    const [data, setData] = useState([]);  
+    const [data, setData] = useState([]);
     const [data1, setData1] = useState(null);
     const [data2, setData2] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [currentIndex, setCurrentIndex] = useState(0);  
+    const [currentIndex, setCurrentIndex] = useState(0);
     const navigate = useNavigate();
 
     const images = [lipbalmbanner, hairspraybanner, bathandboybanner];
@@ -47,14 +47,14 @@ function Category() {
                 setItemData(decodedItem);
                 const itemId = decodedItem._id;
                 const categoryuserid = id || null; // Pass `null` for undefined user
-    
+
                 const categoryResponse = await fetch(
                     `http://localhost:3000/fetchcategory/${itemId}/${categoryuserid}`
                 );
                 const categoryData = await categoryResponse.json();
                 setData(categoryData.data.products);
                 setData2(categoryData.data.itemId);
-    
+
                 const itemResponse = await fetch(
                     `http://localhost:3000/fetchitem/${itemId}/${categoryuserid}`
                 );
@@ -68,7 +68,7 @@ function Category() {
             setLoading(false);
         }
     }, [item, id]);
-    
+
 
     useEffect(() => {
         fetchData();
@@ -78,7 +78,7 @@ function Category() {
     if (error) return <div>Error loading data</div>;
 
 
-    const singleProduct = (productId,category) => {
+    const singleProduct = (productId, category) => {
         // Handle navigation or action for a single product
         navigate(`/singleview/${productId}/${id}/${category}/${usertype}`);
     };
@@ -130,7 +130,7 @@ function Category() {
             {/* Featured Category Section */}
             <div className="container text-center text-2xl font-bold mt-5 underline">Featured</div>
 
-          
+
 
             {/* First Section: Display the first dataset (data1) */}
             <div className="max-w-screen-xl mx-auto p-4 mt-7 mb-8">
@@ -139,8 +139,8 @@ function Category() {
                         data1.map((item) => {
                             const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'fallback-image-url.jpg';
                             return (
-                                <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden">
-                                    <div className="relative" onClick={() => singleProduct(item._id,item.category)}>
+                                <div key={item._id} className="product-card bg-white shadow-md rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
+                                    <div className="relative" onClick={() => singleProduct(item._id, item.category)}>
                                         {item.isInWishlist && (
                                             <span
                                                 id={`wishlistheart-${item._id}`}
@@ -158,8 +158,9 @@ function Category() {
                                         <img
                                             src={`http://localhost:3000/${imageUrl}`}
                                             alt={item.name}
-                                            className="w-75 mx-auto"
+                                            className="w-75 mx-auto h-[200px] md:h-[250px] lg:h-[300px] object-cover rounded" // Added fixed height, responsive breakpoints, object-cover, and rounded corners
                                         />
+
                                     </div>
 
                                     <div className="p-4">
@@ -186,25 +187,25 @@ function Category() {
             </div>
 
             <div className="container max-w-screen-xl mx-auto">
-  <div className="flex flex-wrap">
-    <div className="w-full sm:w-1/2 p-2">
-      <img
-        src={categorybanner1}
-        alt="Category Banner 1"
-        className="w-full h-auto rounded-lg"
-      />
-    </div>
-    <div className="w-full sm:w-1/2 p-2">
-      <img
-        src={categorybanner2}
-        alt="Category Banner 2"
-        className="w-full h-auto rounded-lg"
-      />
-    </div>
-  </div>
-</div>
+                <div className="flex flex-wrap">
+                    <div className="w-full sm:w-1/2 p-2">
+                        <img
+                            src={categorybanner1}
+                            alt="Category Banner 1"
+                            className="w-full h-auto rounded-lg"
+                        />
+                    </div>
+                    <div className="w-full sm:w-1/2 p-2">
+                        <img
+                            src={categorybanner2}
+                            alt="Category Banner 2"
+                            className="w-full h-auto rounded-lg"
+                        />
+                    </div>
+                </div>
+            </div>
 
-  <div className="container max-w-screen-xl mx-auto mb-7">
+            <div className="container max-w-screen-xl mx-auto mb-7">
                 <div className="text-center text-2xl font-bold mb-5">
                     {data && data.length > 0 && (
                         <>
@@ -220,53 +221,80 @@ function Category() {
 
             {/* Second Section: Display the second dataset (data) */}
             <div className="max-w-screen-xl mx-auto p-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" >
-                    {data && data.length > 0 ? (
-                        data.map((item) => (
-                            <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden">
-                                <div className="relative" onClick={() => singleProduct(item._id,item.category)}>
-                                    {item.isInWishlist && (
-                                        <span
-                                            id={`wishlistheart-${item._id}`}
-                                            className="wishlistheart"
-                                            style={{
-                                                position: 'absolute',
-                                                top: '-6px',
-                                                left: '10px',
-                                                zIndex: 10,
-                                            }}
-                                        >
-                                            <i className="fa fa-heart fs-5 text-danger" aria-hidden="true"></i>
-                                        </span>
-                                    )}
-                                    <img
-                                        src={`http://localhost:3000/${item.images && item.images[0] ? item.images[0] : 'fallback-image-url.jpg'}`}
-                                        alt={item.name}
-                                        className="w-75 mx-auto" 
-                                    />
-                                </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {data && data.length > 0 ? (
+            data.map((item) => (
+                <div
+                    key={item._id}
+                    className="product-card bg-white shadow-md rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                >
+                    <div
+                        className="relative cursor-pointer"
+                        onClick={() => singleProduct(item._id, item.category)}
+                    >
+                        {item.isInWishlist && (
+                            <span
+                                id={`wishlistheart-${item._id}`}
+                                className="wishlistheart"
+                                style={{
+                                    position: "absolute",
+                                    top: "10px",
+                                    left: "10px",
+                                    zIndex: 10,
+                                }}
+                            >
+                                <i
+                                    className="fa fa-heart fs-5 text-danger"
+                                    aria-hidden="true"
+                                ></i>
+                            </span>
+                        )}
+                        <img
+                            src={`http://localhost:3000/${
+                                item.images && item.images[0]
+                                    ? item.images[0]
+                                    : "fallback-image-url.jpg"
+                            }`}
+                            alt={item.name || "Fallback Image Description"}
+                            className="w-full h-[200px] md:h-[250px] lg:h-[300px] object-cover mx-auto "
+                        />
+                    </div>
 
-                                <div className="p-4">
-                                    <h3 className="font-semibold text-lg text-gray-800 truncate">{item.name}</h3>
-                                    <div className="flex justify-start items-center gap-3 mt-2">
-                                        <span className="text-lg font-bold text-black">Offer: ₹{item.discountPrice}</span>
-                                        <span className="text-md text-gray-600 line-through">₹{item.price}</span>
-                                    </div>
-                                    <div className="mt-2 text-sm text-gray-500">{item.stockStatus}</div>
-                                </div>
+                    <div className="p-4">
+                        <h3 className="font-semibold text-lg text-gray-800 truncate">
+                            {item.name}
+                        </h3>
+                        <div className="flex justify-start items-center gap-3 mt-2">
+                            <span className="text-lg font-bold text-black">
+                                Offer: ₹{item.discountPrice}
+                            </span>
+                            <span className="text-md text-gray-600 line-through">
+                                ₹{item.price}
+                            </span>
+                        </div>
+                        <div className="mt-2 text-sm text-gray-500">
+                            {item.stockStatus}
+                        </div>
+                    </div>
 
-                                <div className="bg-white text-center pb-2">
-                                    <button className="addtocartbtn mt-2" onClick={() => addToCart(item._id)}>
-                                        Add to Cart
-                                    </button>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <div className="col-span-full text-center text-gray-500">No products available</div>
-                    )}
+                    <div className="bg-white text-center pb-2">
+                        <button
+                            className="addtocartbtn mt-2 hover:bg-gray-100 transition-colors duration-200"
+                            onClick={() => addToCart(item._id)}
+                        >
+                            Add to Cart
+                        </button>
+                    </div>
                 </div>
+            ))
+        ) : (
+            <div className="col-span-full text-center text-gray-500">
+                No products available
             </div>
+        )}
+    </div>
+</div>
+
 
             <Footer />
         </>

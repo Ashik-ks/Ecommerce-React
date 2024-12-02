@@ -212,7 +212,7 @@ function InnerPagesNav() {
 
         <div className="grid lg:hidden grid-cols-2 gap-4 pb-2 border-b border-gray-300 pt-2 pb-2">
           {/* Second Column */}
-          <div className="flex items-center justify-start ml-6 mt-3 gap-2">
+          <div className="flex items-center justify-start ml-6 mt-3 gap-2" onClick={() => navigate(`/index/${id}/${usertype}`)}>
             <img src={purpleLogo} alt="purplelogo" className="purpplelogo1" />
             <img src={purplejoinElite} alt="Purple Logo" className="PurpleLogoelite" />
           </div>
@@ -340,7 +340,7 @@ function InnerPagesNav() {
         <div className="container mt-3">
           <div className="grid grid-cols-12 items-center">
             {/* First Div: Logo Section */}
-            <div className="col-span-3  flex items-center justify-center hidden lg:flex">
+            <div className="col-span-3  flex items-center justify-center hidden lg:flex" onClick={() => navigate(`/index/${id}/${usertype}`)}>
               <button className="flex items-center gap-2 border-0">
                 <img
                   src={purpleLogo}
