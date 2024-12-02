@@ -128,6 +128,8 @@ exports.updateaddress = async function (req, res) {
     try {
         const { id, index } = req.params; // Get user ID and address index
         const updatedAddress = req.body;  // Get updated address data from the request body
+        console.log("id : ",id);
+        console.log(" index : ",index)
 
         // Find the user by ID
         let user = await Users.findOne({ _id: id });

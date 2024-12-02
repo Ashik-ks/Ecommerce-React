@@ -4,7 +4,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InnerPagesNav from "../nav/innerpagesnav";
 import Footer from "../footer/footer";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 
 export default function Profile() {
   const [userData, setUserData] = useState(null);
@@ -254,7 +253,10 @@ export default function Profile() {
         </span>
         <button
           className="ml-3 text-left w-full bg-white border-0 text-gray-700"
-         
+          onClick={(event) => {
+            event.preventDefault(); // Prevents the default button behavior
+            navigate(`/address/${id}`);
+          }}
         >
           <h6 className="font-semibold text-dark mb-1">My Addresses</h6>
           <p className="text-gray-500 text-sm mb-0">

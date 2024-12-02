@@ -7,6 +7,7 @@ import Category from './components/Pages/category';
 import Singleview from './components/Pages/singleview';
 import SearchPage from './components/Pages/search';
 import Profile from './components/Pages/profile';
+import AddressPage from './components/Pages/address';
 
 function App() {
 
@@ -22,6 +23,8 @@ function App() {
           <Route path="/singleview/:pid/:id/:categoryid" element={<Singleview />} />
           <Route path="/searchpage/:item/:id" element={<SearchPage />} />
           <Route path="/profile/:id" element={<Profile />} />
+          <Route path="/address/:id" element={<AddressPage />} />
+
         </Routes>
       </CountProvider>
     </Router>

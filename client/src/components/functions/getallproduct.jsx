@@ -9,7 +9,7 @@ const AllProducts = () => {
     const [localCount, setLocalCount] = useState(0); // Local state for fetched count
     const { updateCount } = useCount();
     const navigate = useNavigate();
-    const { id } = useParams();
+    let { id } = useParams();
 
     useEffect(() => {
 
