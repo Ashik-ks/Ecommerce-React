@@ -189,14 +189,15 @@ function Singleview() {
                     </div>
 
                     {/* Grid for Related Products */}
-                    <div className="datacontainercategorysinglepage mt-5">
+{/* Grid for Related Products */}
+<div className="datacontainercategorysinglepage mt-5">
     {relatedProducts?.map((relatedProduct) => {
         const imageUrl = relatedProduct?.images[0]
             ? `http://localhost:3000/${relatedProduct.images[0]}`
             : 'fallback-image-url.jpg'; // Use fallback image if not available
 
-        // Check if the product is in the wishlist and apply the appropriate class
-        const isInWishlist = relatedProduct?.isWishlist ? 'text-danger' : 'text-black'; // Conditional class for heart color
+        // Determine if the heart should be highlighted based on the wishlist status
+        const isInWishlist = relatedProduct?.isWishlist ? 'text-red-500' : 'text-slate-300'; // Apply color class dynamically
 
         return (
             <div
@@ -204,41 +205,43 @@ function Singleview() {
                 className="flex flex-col shadow-md p-4 bg-light rounded cursor-pointer relative overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
                 onClick={() => singleProduct(relatedProduct._id, relatedProduct.category)}
             >
-                {/* Product Image with Wishlist Heart */}
-                <div
-                    className="position-relative"
-                    onClick={(e) => {
-                        e.stopPropagation(); // Prevent event from bubbling up to the image click handler
-                        addToWishlist(relatedProduct._id); // Add/remove from wishlist based on current state
-                    }}
-                >
-                    {/* Conditional rendering of the heart icon */}
-                    <span
-                        id={`wishlistheart-${relatedProduct._id}`}
-                        className="wishlistheart"
-                        style={{
-                            position: 'absolute', // Position it absolutely over the image
-                            top: '-9px',
-                            left: '10px', // Align to the top-left corner of the image
-                            zIndex: 10, // Ensure the heart is above the image
+                {/* Conditionally Render Wishlist Heart */}
+                {id && id !== "undefined" && ( // Render heart only if `id` exists and is valid
+                    <div
+                        className="position-relative"
+                        onClick={(e) => {
+                            e.stopPropagation(); // Prevent navigation click event
+                            addToWishlist(relatedProduct._id); // Handle add/remove from wishlist
                         }}
                     >
-                        <i
-                            className={`fa fa-heart fs-5 ${isInWishlist}`} // Apply the dynamic color class based on wishlist status
-                            aria-hidden="true"
-                        ></i>
-                    </span>
+                        <span
+                            id={`wishlistheart-${relatedProduct._id}`}
+                            className="wishlistheart"
+                            style={{
+                                position: 'absolute',
+                                top: '-2px',
+                                left: '10px',
+                                zIndex: 10, // Ensure the heart is above the image
+                            }}
+                        >
+                            <i
+                                className={`fa fa-heart fs-5 ${isInWishlist}`} // Dynamically style the heart icon
+                                aria-hidden="true"
+                            ></i>
+                        </span>
+                    </div>
+                )}
 
-                    <img
-                        src={imageUrl}
-                        className="w-75 mx-auto h-[160px] object-cover md:h-[250px] lg:h-[300px]" // Fixed height and responsive styles
-                        alt="Related Product"
-                        onClick={(e) => {
-                            e.stopPropagation(); // Prevent parent click event if the user clicks the image
-                            singleProduct(relatedProduct._id, relatedProduct.category);
-                        }}
-                    />
-                </div>
+                {/* Product Image */}
+                <img
+                    src={imageUrl}
+                    className="w-full mx-auto h-[100px] object-cover md:h-[250px] lg:h-[300px]" // Fixed height and responsive styles
+                    alt="Related Product"
+                    onClick={(e) => {
+                        e.stopPropagation(); // Prevent parent click event if the user clicks the image
+                        singleProduct(relatedProduct._id, relatedProduct.category);
+                    }}
+                />
 
                 {/* Product Details */}
                 <div className="mt-4">
@@ -263,13 +266,6 @@ function Singleview() {
         );
     })}
 </div>
-
-
-
-
-
-
-
 
                 </div>
             </div>

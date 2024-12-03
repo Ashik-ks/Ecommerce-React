@@ -61,32 +61,34 @@ function SearchPage() {
                 <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
                     {/* Product Image and Heart Icon */}
                     <div className="relative cursor-pointer" onClick={() => singleProduct(item._id, item.category)}>
-                        {/* Conditionally render heart icon */}
-                        <span
-                            onClick={(e) => {
-                                e.stopPropagation(); // Prevent event from bubbling up to the image click handler
-                                addToWishlist(item._id); // Add/remove from wishlist based on current state
-                            }}
-                            id={`wishlistheart-${item._id}`}
-                            className="wishlistheart"
-                            style={{
-                                position: 'absolute',
-                                top: '10px',  // Adjusted for visibility
-                                zIndex: 10,
-                            }}
-                        >
-                            {/* Red heart if in wishlist, black heart if not */}
-                            <i
-                                className={`fa fa-heart fs-5 ${item.isInWishlist ? 'text-danger' : 'text-black'}`} // Red if in wishlist, black if not
-                                aria-hidden="true"
-                            ></i>
-                        </span>
+                        {/* Conditionally render heart icon only if `id` exists in params */}
+                        {id && id !== "undefined" && (
+                            <span
+                                onClick={(e) => {
+                                    e.stopPropagation(); // Prevent event from bubbling up to the image click handler
+                                    addToWishlist(item._id); // Add/remove from wishlist based on current state
+                                }}
+                                id={`wishlistheart-${item._id}`}
+                                className="wishlistheart"
+                                style={{
+                                    position: 'absolute',
+                                    top: '12px',  // Adjusted for visibility
+                                    zIndex: 10,
+                                }}
+                            >
+                                {/* Red heart if in wishlist, black heart if not */}
+                                <i
+                                    className={`fa fa-heart fs-5 ${item.isInWishlist ? 'text-danger' : 'text-slate-300'}`} // Red if in wishlist, black if not
+                                    aria-hidden="true"
+                                ></i>
+                            </span>
+                        )}
     
                         {/* Product Image */}
                         <img
                             src={`http://localhost:3000/${item.images && item.images[0] ? item.images[0] : 'fallback-image-url.jpg'}`}
                             alt={item.name || 'Fallback Image Description'}  // Fallback alt text if item.name is missing
-                            className="w-full h-[200px] md:h-[250px] lg:h-[300px] object-cover mx-auto"
+                            className="w-full h-[100px] md:h-[250px] lg:h-[300px] object-cover mx-auto"
                         />
                     </div>
     
@@ -100,7 +102,7 @@ function SearchPage() {
                         <div className="mt-2 text-sm text-gray-500">{item.stockStatus}</div>
                     </div>
     
-                    {/* Add to Cart Button */}
+                    {/* Uncomment if you want to add the Add to Cart button */}
                     {/* <div className="bg-white text-center pb-2">
                         <button className="addtocartbtn mt-2" onClick={() => addToCart(item._id)}>
                             Add to Cart
@@ -109,6 +111,7 @@ function SearchPage() {
                 </div>
             ));
     };
+    
     
 
     const singleProduct = (productId, category) => {
@@ -174,34 +177,45 @@ function SearchPage() {
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {/* Render the main product only if it hasn't been displayed yet */}
         {searchProduct && !displayedIds.has(searchProduct._id) && (
-            <div key={searchProduct._id} className="bg-white shadow-md rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
+            <div
+                key={searchProduct._id}
+                className="bg-white shadow-md rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+            >
                 <div className="relative" onClick={() => singleProduct(searchProduct._id, searchProduct.category)}>
-                    {/* Wishlist heart icon */}
-                    <span
-                        onClick={(e) => {
-                            e.stopPropagation(); // Prevent event from bubbling up to the image click handler
-                            addToWishlist(searchProduct._id); // Add/remove from wishlist based on current state
-                        }}
-                        id={`wishlistheart-${searchProduct._id}`}
-                        className="wishlistheart"
-                        style={{
-                            position: 'absolute',
-                            top: '-6px',
-                            left: '10px',
-                            zIndex: 10,
-                        }}
-                    >
-                        <i
-                            className={`fa fa-heart fs-5 ${searchProduct.isInWishlist ? 'text-danger' : 'text-black'}`} // Red if in wishlist, black if not
-                            aria-hidden="true"
-                        ></i>
-                    </span>
-                    
+                    {/* Conditionally render Wishlist heart icon only if `id` exists */}
+                    {id && id !== "undefined" && (
+                        <span
+                            onClick={(e) => {
+                                e.stopPropagation(); // Prevent event from bubbling up to the image click handler
+                                addToWishlist(searchProduct._id); // Add/remove from wishlist based on current state
+                            }}
+                            id={`wishlistheart-${searchProduct._id}`}
+                            className="wishlistheart"
+                            style={{
+                                position: "absolute",
+                                top: "3px",
+                                left: "10px",
+                                zIndex: 10,
+                            }}
+                        >
+                            <i
+                                className={`fa fa-heart fs-5 ${
+                                    searchProduct.isInWishlist ? "text-danger" : "text-slate-300"
+                                }`} // Red if in wishlist, black if not
+                                aria-hidden="true"
+                            ></i>
+                        </span>
+                    )}
+
                     {/* Product Image */}
                     <img
-                        src={`http://localhost:3000/${searchProduct.images && searchProduct.images[0] ? searchProduct.images[0] : 'fallback-image-url.jpg'}`}
-                        alt={searchProduct.name || 'Fallback Image Description'}  // Add fallback alt text
-                        className="w-full h-[200px] md:h-[250px] lg:h-[300px] object-cover mx-auto"
+                        src={`http://localhost:3000/${
+                            searchProduct.images && searchProduct.images[0]
+                                ? searchProduct.images[0]
+                                : "fallback-image-url.jpg"
+                        }`}
+                        alt={searchProduct.name || "Fallback Image Description"} // Add fallback alt text
+                        className="w-full h-[100px] md:h-[250px] lg:h-[300px] object-cover mx-auto"
                     />
                 </div>
 
@@ -215,6 +229,7 @@ function SearchPage() {
                     <div className="mt-2 text-sm text-gray-500">{searchProduct.stockStatus}</div>
                 </div>
 
+                {/* Uncomment this block if you want to enable Add to Cart */}
                 {/* <div className="bg-white text-center pb-2">
                     <button className="addtocartbtn mt-2" onClick={() => addToCart(searchProduct._id)}>
                         Add to Cart
@@ -227,6 +242,7 @@ function SearchPage() {
         {renderUniqueItems(searchProductItems)}
     </div>
 </div>
+
 
             {/* Category Banners */}
             <div className="container max-w-screen-xl mx-auto">

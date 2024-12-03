@@ -407,7 +407,6 @@ const SettingsPage = () => {
         </div>
     </div>
 )}
-
             </div>
             <Footer />
         </>

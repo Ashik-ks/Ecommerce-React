@@ -3,19 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import InnerPagesNav from "../nav/innerpagesnav";
 import Footer from "../footer/footer";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faTag,
-  faAlignLeft,
-  faList,
-  faListAlt,
-  faCube,
-  faDollarSign,
-  faTags,
-  faBoxes,
-  faImages,
-  faWeight,
-  faPaperPlane,
-} from '@fortawesome/free-solid-svg-icons';
+import {faTag,faAlignLeft,faList,faListAlt,faCube,faDollarSign,faTags,faBoxes,faImages,faWeight,faPaperPlane,}
+from '@fortawesome/free-solid-svg-icons';
 
 function Addproduct() {
   const { id, usertype } = useParams();
@@ -189,159 +178,184 @@ function Addproduct() {
     {errorMessage && <div className="text-red-500 mt-3">{errorMessage}</div>}
 
     <div className="form-container" id="formcontainer">
-        {/* Title or Introductory Text */}
-        <h2 className="form-title">Add Product Here</h2>
-        <p className="form-description">Please fill in the details below to add a new product to the store.</p>
+  {/* Title or Introductory Text */}
+  <h2 className="form-title">Add Product Here</h2>
+  <p className="form-description">Please fill in the details below to add a new product to the store.</p>
 
-        <form id="productForm" onSubmit={handleFormSubmit}>
-            <div className="productForm-field">
-                <label htmlFor="name">
-                    <FontAwesomeIcon icon={faTag} /> Product Name:
-                </label>
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    className="productForm-input"
-                    value={productData.name}
-                    onChange={(e) => setProductData({ ...productData, name: e.target.value })}
-                    required
-                />
-            </div>
+  <form id="productForm" onSubmit={handleFormSubmit}>
+    {/* Product Name */}
+    <div className="productForm-field">
+      <label htmlFor="name">
+        <FontAwesomeIcon icon={faTag} /> Product Name:
+      </label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        className="productForm-input"
+        value={productData.name}
+        onChange={(e) => setProductData({ ...productData, name: e.target.value })}
+        required
+      />
+    </div>
 
-            <div className="productForm-field">
-                <label htmlFor="description">
-                    <FontAwesomeIcon icon={faAlignLeft} /> Description:
-                </label>
-                <textarea
-                    id="description"
-                    name="description"
-                    className="productForm-input"
-                    value={productData.description}
-                    onChange={(e) => setProductData({ ...productData, description: e.target.value })}
-                    required
-                />
-            </div>
+    {/* Description */}
+    <div className="productForm-field">
+      <label htmlFor="description">
+        <FontAwesomeIcon icon={faAlignLeft} /> Description:
+      </label>
+      <textarea
+        id="description"
+        name="description"
+        className="productForm-input description-input"
+        value={productData.description}
+        onChange={(e) => setProductData({ ...productData, description: e.target.value })}
+        required
+      />
+    </div>
 
-            <div className="productForm-field">
-                <label htmlFor="category">
-                    <FontAwesomeIcon icon={faList} /> Category:
-                </label>
-                <select
-                    id="category"
-                    name="category"
-                    className="productForm-input"
-                    value={productData.category}
-                    onChange={handleCategoryChange}
-                    required
-                >
-                    <option value="">Select a category</option>
-                    {categoriesData.map((category) => (
-                        <option key={category._id} value={category._id}>
-                            {category.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
+    {/* Category and Subcategory */}
+    <div className="productForm-field">
+      <label htmlFor="category">
+        <FontAwesomeIcon icon={faList} /> Category:
+      </label>
+      <select
+        id="category"
+        name="category"
+        className="productForm-input"
+        value={productData.category}
+        onChange={handleCategoryChange}
+        required
+      >
+        <option value="">Select a category</option>
+        {categoriesData.map((category) => (
+          <option key={category._id} value={category._id}>
+            {category.name}
+          </option>
+        ))}
+      </select>
+    </div>
 
-            <div className="productForm-field">
-                <label htmlFor="subcategory">
-                    <FontAwesomeIcon icon={faListAlt} /> Subcategory:
-                </label>
-                <select
-                    id="subcategory"
-                    name="subcategory"
-                    className="productForm-input"
-                    value={productData.subcategory}
-                    onChange={handleSubcategoryChange}
-                    required
-                >
-                    <option value="">Select a subcategory</option>
-                    {categoriesData
-                        .find((category) => category._id === productData.category)?.subcategories.map((subcategory) => (
-                            <option key={subcategory.name} value={subcategory.name}>
-                                {subcategory.name}
-                            </option>
-                        ))}
-                </select>
-            </div>
+    <div className="productForm-field">
+      <label htmlFor="subcategory">
+        <FontAwesomeIcon icon={faListAlt} /> Subcategory:
+      </label>
+      <select
+        id="subcategory"
+        name="subcategory"
+        className="productForm-input"
+        value={productData.subcategory}
+        onChange={handleSubcategoryChange}
+        required
+      >
+        <option value="">Select a subcategory</option>
+        {categoriesData
+          .find((category) => category._id === productData.category)
+          ?.subcategories.map((subcategory) => (
+            <option key={subcategory.name} value={subcategory.name}>
+              {subcategory.name}
+            </option>
+          ))}
+      </select>
+    </div>
 
-            <div className="productForm-field">
-                <label htmlFor="item">
-                    <FontAwesomeIcon icon={faCube} /> Item:
-                </label>
-                <select
-                    id="item"
-                    name="item"
-                    className="productForm-input"
-                    value={productData.item}
-                    onChange={handleItemChange}
-                    required
-                >
-                    <option value="">Select an item</option>
-                    {categoriesData
-                        .find((category) => category._id === productData.category)
-                        ?.subcategories.find((subcategory) => subcategory.name === productData.subcategory)?.items.map(
-                            (item) => (
-                                <option key={item.name} value={item.name}>
-                                    {item.name}
-                                </option>
-                            )
-                        )}
-                </select>
-            </div>
+    {/* Item */}
+    <div className="productForm-field">
+      <label htmlFor="item">
+        <FontAwesomeIcon icon={faCube} /> Item:
+      </label>
+      <select
+        id="item"
+        name="item"
+        className="productForm-input"
+        value={productData.item}
+        onChange={handleItemChange}
+        required
+      >
+        <option value="">Select an item</option>
+        {categoriesData
+          .find((category) => category._id === productData.category)
+          ?.subcategories.find((subcategory) => subcategory.name === productData.subcategory)?.items.map(
+            (item) => (
+              <option key={item.name} value={item.name}>
+                {item.name}
+              </option>
+            )
+          )}
+      </select>
+    </div>
 
-            <div className="productForm-field">
-                <label htmlFor="price">
-                    <FontAwesomeIcon icon={faDollarSign} /> Price:
-                </label>
-                <input
-                    type="number"
-                    id="price"
-                    name="price"
-                    className="productForm-input"
-                    value={productData.price}
-                    onChange={(e) => setProductData({ ...productData, price: e.target.value })}
-                    required
-                />
-            </div>
+    {/* Price and Discount Price */}
+    <div className="productForm-field flex-row">
+      <div className="price-section">
+        <label htmlFor="price">
+          <FontAwesomeIcon icon={faDollarSign} /> Price:
+        </label>
+        <input
+          type="number"
+          id="price"
+          name="price"
+          className="productForm-input"
+          value={productData.price}
+          onChange={(e) => setProductData({ ...productData, price: e.target.value })}
+          required
+        />
+      </div>
 
-            <div className="productForm-field">
-                <label htmlFor="discountPrice">
-                    <FontAwesomeIcon icon={faTags} /> Discount Price (Optional):
-                </label>
-                <input
-                    type="number"
-                    id="discountPrice"
-                    name="discountPrice"
-                    className="productForm-input"
-                    value={productData.discountPrice}
-                    onChange={(e) => setProductData({ ...productData, discountPrice: e.target.value })}
-                />
-            </div>
+      <div className="price-section">
+        <label htmlFor="discountPrice">
+          <FontAwesomeIcon icon={faTags} /> Discount Price (Optional):
+        </label>
+        <input
+          type="number"
+          id="discountPrice"
+          name="discountPrice"
+          className="productForm-input"
+          value={productData.discountPrice}
+          onChange={(e) => setProductData({ ...productData, discountPrice: e.target.value })}
+        />
+      </div>
+    </div>
 
-            <div className="productForm-field">
-                <label htmlFor="stockQuantity">
-                    <FontAwesomeIcon icon={faBoxes} /> Stock Quantity:
-                </label>
-                <input
-                    type="number"
-                    id="stockQuantity"
-                    name="stockQuantity"
-                    className="productForm-input"
-                    value={productData.stockQuantity}
-                    onChange={(e) => setProductData({ ...productData, stockQuantity: e.target.value })}
-                    required
-                    min="0"
-                />
-            </div>
+    {/* Stock Quantity and Weight */}
+    <div className="productForm-field flex-row">
+      <div className="stock-section">
+        <label htmlFor="stockQuantity">
+          <FontAwesomeIcon icon={faBoxes} /> Stock Quantity:
+        </label>
+        <input
+          type="number"
+          id="stockQuantity"
+          name="stockQuantity"
+          className="productForm-input"
+          value={productData.stockQuantity}
+          onChange={(e) => setProductData({ ...productData, stockQuantity: e.target.value })}
+          required
+          min="0"
+        />
+      </div>
 
-            <div className="productForm-field">
+      <div className="stock-section">
+        <label htmlFor="weight">
+          <FontAwesomeIcon icon={faWeight} /> Weight (Optional):
+        </label>
+        <input
+          type="number"
+          id="weight"
+          name="weight"
+          className="productForm-input"
+          value={productData.weight}
+          onChange={(e) => setProductData({ ...productData, weight: e.target.value })}
+        />
+      </div>
+    </div>
+
+    {/* Images */}
+ <div className="productForm-field">
   <label htmlFor="images">
     <FontAwesomeIcon icon={faImages} /> Images:
   </label>
 
-  {/* Custom file upload div */}
   <label htmlFor="file" className="custum-file-upload">
     <div className="icon">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -354,47 +368,40 @@ function Addproduct() {
     <input
       id="file"
       type="file"
-      multiple // Allow selecting multiple images
-      accept="image/*" // Restrict to image files only
+      multiple
+      accept="image/*"
       onChange={handleImageChange}
-      style={{ display: 'none' }} // Hide the default file input
+      style={{ display: 'none' }}
     />
   </label>
 
-  {/* Display the selected files */}
   {selectedFiles.length > 0 && (
     <div className="selected-files">
-      <p>Selected files:</p>
-      <ul>
+      <p>Selected images:</p>
+      <div className="image-thumbnails">
         {selectedFiles.map((file, index) => (
-          <li key={index}>{file.name}</li>
+          <div key={index} className="image-thumbnail">
+            <img
+              src={URL.createObjectURL(file)}
+              alt={`Selected file ${index + 1}`}
+              className="thumbnail-img"
+            />
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   )}
 </div>
 
 
 
-            <div className="productForm-field">
-                <label htmlFor="weight">
-                    <FontAwesomeIcon icon={faWeight} /> Weight (Optional):
-                </label>
-                <input
-                    type="number"
-                    id="weight"
-                    name="weight"
-                    className="productForm-input"
-                    value={productData.weight}
-                    onChange={(e) => setProductData({ ...productData, weight: e.target.value })}
-                />
-            </div>
+    {/* Submit Button */}
+    <button type="submit" id="submit-button" disabled={loading}>
+      <FontAwesomeIcon icon={faPaperPlane} /> Submit Product
+    </button>
+  </form>
+</div>
 
-            <button type="submit" id="submit-button" disabled={loading}>
-                <FontAwesomeIcon icon={faPaperPlane} /> Submit Product
-            </button>
-        </form>
-    </div>
 </div>
 
             <Footer />

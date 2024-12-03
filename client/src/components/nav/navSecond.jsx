@@ -709,7 +709,7 @@ const HeaderComponent = () => {
                   {/* Continue Button */}
                   <button
                     id="continueButton"
-                    className="w-full p-3 bg-gray-200 text-gray-500 font-medium rounded-lg"
+                    className="w-full p-3 bg-gray-200 text-gray-400 font-medium rounded-lg hover:text-gray-600"
                     onClick={sendEmailToServer}
                   >
                     CONTINUE
@@ -728,7 +728,7 @@ const HeaderComponent = () => {
                     className="w-full p-3 border border-gray-300 rounded-lg mb-4"
                   />
                   <button
-                    className="w-full p-3 bg-gray-200 text-gray-500 font-medium rounded-lg"
+                    className="w-full p-3 bg-gray-200 text-gray-500 font-medium rounded-lg hover:text-gray-600"
                     onClick={verifyOtp}
                   >
                     VERIFY OTP

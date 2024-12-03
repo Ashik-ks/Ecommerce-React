@@ -219,10 +219,16 @@ function InnerPagesNav() {
 
           {/* Third Column */}
           <div className="flex items-center justify-end gap-3 mr-10 mt-3">
-            <span>
+            <span onClick={(e) => {
+    e.preventDefault();
+    navigate(`/wishlist/${id}/${usertype}`);
+  }}>
               <i className="fa-regular fa-heart pxsmile"></i>
             </span>
-            <span className="relative">
+            <span className="relative" onClick={(e) => {
+    e.preventDefault();
+    navigate(`/cart/${id}/${usertype}`);
+  }}>
               <FontAwesomeIcon
                 icon={faCartShopping}
                 className=" mt-1 pxsmile"
@@ -436,10 +442,16 @@ function InnerPagesNav() {
 
             {/* Third Div: User Section */}
             <div className="col-span-1 lg:col-span-2  flex items-center justify-center gap-5 hidden lg:flex">
-              <span>
+              <span onClick={(e) => {
+    e.preventDefault();
+    navigate(`/wishlist/${id}/${usertype}`);
+  }}>
                 <i className="fa-regular fa-heart text-2xl"></i>
               </span>
-              <span className="relative">
+              <span className="relative" onClick={(e) => {
+    e.preventDefault();
+    navigate(`/cart/${id}/${usertype}`);
+  }}>
                 <FontAwesomeIcon
                   icon={faCartShopping}
                   className="icon-smile mt-1"

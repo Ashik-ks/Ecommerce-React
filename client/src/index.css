@@ -413,28 +413,41 @@
 }
 }
 #productForm {
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  gap: 20px; /* Adds spacing between form fields */
-  max-width: 600px;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .productForm-field {
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 20px;
 }
-
+.productForm-field label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
 .productForm-input {
-  padding: 8px;
-  margin-top: 5px;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: 1px solid #ddd;
   width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  font-size: 1rem;
 }
-
+.description-input {
+  height: 150px;
+}
+.price-section,
+.stock-section {
+  flex: 1;
+}
+.flex-row {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
 #productForm button {
   padding: 10px 15px;
   font-size: 1rem;
@@ -459,18 +472,15 @@
 }
 
 .form-title {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #333;
   text-align: center;
-  margin-bottom: 10px;
+  font-size: 2rem;
+  color: #333;
 }
 
 .form-description {
-  font-size: 1rem;
-  color: #666;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  color: #777;
 }
 .backgroundimage {
   background-image: url('C:\Users\ASHIK\OneDrive\Desktop\Ecommerce-React\client\src\assets\images\bgimage.jpg');
@@ -522,10 +532,32 @@
 .custum-file-upload input {
   display: none;
 }
-.selected-file {
+.selected-files {
   margin-top: 10px;
-  color: #4CAF50;
-  font-weight: 500;
+}
+
+.image-thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.image-thumbnail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100px;
+  text-align: center;
+}
+
+.thumbnail-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.thumbnail-img:hover {
+  opacity: 0.8;
 }
 /* Add to your CSS file */
 .overlay {
