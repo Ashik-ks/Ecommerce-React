@@ -906,82 +906,94 @@ exports.addToWishlist = async function (req, res) {
             return res.status(400).json({ success: false, message: 'Product ID is required.' });
         }
 
-        // Use $addToSet to add product ID to the wishlist if it doesn't already exist
-        const updateResult = await Users.updateOne(
-            { _id: id },
-            { $addToSet: { wishlist: productid } } // Add productid directly as a string
-        );
+        // Fetch the user's current wishlist
+        const user = await Users.findOne({ _id: id });
 
-        console.log("updateResult:", updateResult);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found.' });
+        }
 
-        // Check update result
-        if (updateResult.matchedCount > 0) {
-            if (updateResult.modifiedCount > 0) {
-                // Return success and updated wishlist count
-                const updatedUser = await Users.findOne({ _id: id });
-                return res.json({
-                    success: true,
-                    message: 'Product added to wishlist successfully!',
-                    wishlistCount: updatedUser.wishlist.length,
-                });
-            } else {
-                res.status(400).json({
-                    success: false,
-                    message: 'Product is already in the wishlist.',
-                    wishlistCount: updateResult.matchedCount, // No new product added
-                });
-            }
+        // Check if the product is already in the wishlist
+        const isInWishlist = user.wishlist.includes(productid);
+
+        // If the product is already in the wishlist, remove it
+        if (isInWishlist) {
+            const updateResult = await Users.updateOne(
+                { _id: id },
+                { $pull: { wishlist: productid } } // Remove product from wishlist
+            );
+
+            console.log("Product removed from wishlist:", updateResult);
+
+            return res.json({
+                success: true,
+                message: 'Product removed from wishlist.',
+                wishlistCount: user.wishlist.length - 1, // Return updated wishlist count
+            });
         } else {
-            res.status(404).json({ success: false, message: 'User not found.' });
+            // If the product is not in the wishlist, add it
+            const updateResult = await Users.updateOne(
+                { _id: id },
+                { $addToSet: { wishlist: productid } } // Add product to wishlist
+            );
+
+            console.log("Product added to wishlist:", updateResult);
+
+            return res.json({
+                success: true,
+                message: 'Product added to wishlist successfully!',
+                wishlistCount: user.wishlist.length + 1, // Return updated wishlist count
+            });
         }
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).json({ success: false, message: 'An error occurred while adding to the wishlist.', error });
+        res.status(500).json({ success: false, message: 'An error occurred while modifying the wishlist.', error });
     }
 };
 
-//to update from Whishlist
-exports.updateAddToWishlist = async function (req, res) {
-    try {
-        const { id, productid } = req.params; // Extract user ID and product ID
 
-        // Validate inputs
-        if (!id) {
-            return res.status(401).json({ success: false, message: 'Please log in to manage the wishlist.' });
-        }
-        if (!productid) {
-            return res.status(400).json({ success: false, message: 'Product ID is required.' });
-        }
+// //to update from Whishlist
+// exports.updateAddToWishlist = async function (req, res) {
+//     try {
+//         const { id, productid } = req.params; // Extract user ID and product ID
 
-        // Use $pull to remove the product ID from the wishlist
-        const updateResult = await Users.updateOne(
-            { _id: id },
-            { $pull: { wishlist: productid } } // Remove the specific product ID from the wishlist
-        );
+//         // Validate inputs
+//         if (!id) {
+//             return res.status(401).json({ success: false, message: 'Please log in to manage the wishlist.' });
+//         }
+//         if (!productid) {
+//             return res.status(400).json({ success: false, message: 'Product ID is required.' });
+//         }
 
-        console.log("updateResult:", updateResult);
+//         // Use $pull to remove the product ID from the wishlist
+//         const updateResult = await Users.updateOne(
+//             { _id: id },
+//             { $pull: { wishlist: productid } } // Remove the specific product ID from the wishlist
+//         );
 
-        // Check update result
-        if (updateResult.matchedCount > 0) {
-            if (updateResult.modifiedCount > 0) {
-                // If the product was successfully removed, send updated wishlist count
-                const updatedUser = await Users.findOne({ _id: id });
-                res.json({
-                    success: true,
-                    message: 'Product removed from wishlist successfully!',
-                    wishlistCount: updatedUser ? updatedUser.wishlist.length : 0, // Updated wishlist count
-                });
-            } else {
-                res.status(400).json({ success: false, message: 'Product not found in the wishlist.' });
-            }
-        } else {
-            res.status(404).json({ success: false, message: 'User not found.' });
-        }
-    } catch (error) {
-        console.error("Error:", error);
-        res.status(500).json({ success: false, message: 'An error occurred while updating the wishlist.', error });
-    }
-};
+//         console.log("updateResult:", updateResult);
+
+//         // Check update result
+//         if (updateResult.matchedCount > 0) {
+//             if (updateResult.modifiedCount > 0) {
+//                 // If the product was successfully removed, send updated wishlist count
+//                 const updatedUser = await Users.findOne({ _id: id });
+//                 res.json({
+//                     success: true,
+//                     message: 'Product removed from wishlist successfully!',
+//                     wishlistCount: updatedUser ? updatedUser.wishlist.length : 0, // Updated wishlist count
+//                 });
+//             } else {
+//                 res.status(400).json({ success: false, message: 'Product not found in the wishlist.' });
+//             }
+//         } else {
+//             res.status(404).json({ success: false, message: 'User not found.' });
+//         }
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).json({ success: false, message: 'An error occurred while updating the wishlist.', error });
+//     }
+// };
 
 //to fetch all products in addtocart
 exports.getAllAddToCart = async function (req, res) {
@@ -1047,7 +1059,6 @@ exports.getAllAddToCart = async function (req, res) {
         const totalCount = addtocart.length;
         const totalPrice = products.reduce((sum, product) => sum + (product.discountPrice || 0), 0);
         console.log(" totalPrice: ",totalPrice)
-        const pincode = user.address?.[0]?.pincode || "N/A";
 
         res.status(200).json({
             success: true,
@@ -1055,7 +1066,7 @@ exports.getAllAddToCart = async function (req, res) {
             products,
             count: totalCount,
             totalprice: totalPrice,
-            address: pincode,
+            address: user.address,
         });
     } catch (error) {
         console.error("Error fetching cart products:", error.message);
@@ -1092,7 +1103,6 @@ exports.getAllWishlist = async function (req, res) {
         }
 
         const { wishlist } = user;
-        const pincode = user.address?.[0]?.pincode || "Add an Address";
         
         if (!wishlist || wishlist.length === 0) {
             return res.status(200).json({
@@ -1128,8 +1138,7 @@ exports.getAllWishlist = async function (req, res) {
             message: "Products fetched successfully",
             products,
             count: totalCount,
-            pincode:pincode,
-
+            address: user.address
         });
     } catch (error) {
         console.error("Error fetching wishlist products:", error.message);

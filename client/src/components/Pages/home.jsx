@@ -16,7 +16,6 @@ import smallbanner3 from "../../assets/images/smallbanner3.webp";
 function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentIndex1, setCurrentIndex1] = useState(0); 
-  const [count, setCount] = useState(0);
   
   const images = [purplebanner1, purplebanner2, purplebanner3, purplebanner4];
   const images1 = [smallbanner1, smallbanner2, smallbanner3];
@@ -44,7 +43,7 @@ function Home() {
   return (
     <>
       <NavOne />
-      <HeaderComponent count={count}/>
+      <HeaderComponent />
       <NavThird />
 
       <div class="max-w-screen-xl mx-auto mt-5 mb-5">

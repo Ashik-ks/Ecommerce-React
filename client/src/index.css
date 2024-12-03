@@ -262,6 +262,7 @@
   transition: transform 0.2s ease-in-out;
 }
 
+
 /* Wishlist Heart Hover Effect */
 .wishlistheart:hover {
   transform: translateY(7px);  /* Move the heart icon slightly on hover */

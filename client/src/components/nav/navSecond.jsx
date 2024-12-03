@@ -260,10 +260,16 @@ const HeaderComponent = () => {
 
         {/* Third Column */}
         <div className="flex items-center justify-end gap-3 mr-10 mt-3">
-          <span>
+          <span onClick={(e) => {
+    e.preventDefault();
+    navigate(`/wishlist/${id}/${usertype}`);
+  }}>
             <i className="fa-regular fa-heart pxsmile"></i>
           </span>
-          <span className="relative">
+          <span className="relative" onClick={(e) => {
+    e.preventDefault(); 
+    navigate(`/cart/${id}/${usertype}`);
+  }}>
             <FontAwesomeIcon
               icon={faCartShopping}
               className=" mt-1 pxsmile"
@@ -320,7 +326,7 @@ const HeaderComponent = () => {
                   icon={faHeart}
                   className="text-gray-500 text-lg"
                 />
-                <span className="dropdowntext ms-2">Wishlist</span>
+                <span className="dropdowntext ms-2" >Wishlist</span>
               </a>
               {usertype === 'Seller' && (
                 <a
@@ -382,8 +388,6 @@ const HeaderComponent = () => {
         </div>
       </div>
 
-
-
       <div className="container mx-auto px-4 ">
         {/* Grid Section */}
         <div className=" pt-2 pb-2">
@@ -419,10 +423,16 @@ const HeaderComponent = () => {
 
             {/* Third Column */}
             <div className="flex items-center justify-end gap-5 mr-10 hidden md:flex">
-              <span>
+              <span onClick={(e) => {
+    e.preventDefault(); 
+    navigate(`/wishlist/${id}/${usertype}`); 
+  }}>
                 <i class="fa-regular fa-heart text-2xl"></i>
               </span>
-              <span className="relative">
+              <span className="relative" onClick={(e) => {
+    e.preventDefault();
+    navigate(`/cart/${id}/${usertype}`); 
+  }}>
                 <FontAwesomeIcon
                   icon={faCartShopping}
                   className="icon-smile mt-1"
@@ -465,13 +475,15 @@ const HeaderComponent = () => {
                     <FontAwesomeIcon icon={faGift} className="text-gray-500 text-lg" />
                     <span className="dropdowntext ms-2">Orders</span>
                   </a>
-                  <a
-                    href="#"
+                  <div
                     className="flex gap-3 p-3 text-gray-700 text-sm items-center"
                   >
                     <FontAwesomeIcon icon={faHeart} className="text-gray-500 text-lg" />
-                    <span className="dropdowntext ms-2">Wishlist</span>
-                  </a>
+                    <button className="dropdowntext ms-2" onClick={(e) => {
+    e.preventDefault(); 
+    navigate(`/wishlist/${id}/${usertype}`); 
+  }} >Wishlist</button>
+                  </div>
                   {usertype === 'Seller' && (
                     <a
                       href="#"

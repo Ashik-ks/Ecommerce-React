@@ -25,7 +25,7 @@ router.put('/addtoCart/:id/:productid',setAccessControl("2,3"),buyerController.a
 router.put('/updateaddtoCart/:id/:productid',setAccessControl("2,3"),buyerController.updateAddToCart);
 router.get('/getalladdtoCart/:id',setAccessControl("2,3"),buyerController.getAllAddToCart);
 router.put('/addtoWishlist/:id/:productid',setAccessControl("2,3"),buyerController.addToWishlist);
-router.put('/updateWishlist/:id/:productid',setAccessControl("2,3"),buyerController.updateAddToWishlist);
+// router.put('/updateWishlist/:id/:productid',setAccessControl("2,3"),buyerController.updateAddToWishlist);
 router.get('/getallWishlist/:id',setAccessControl("2,3"),buyerController.getAllWishlist);
 router.post('/order/:id',setAccessControl("2,3"),buyerController.placeOrder);
 // router.post('/reorder/:id',setAccessControl("2,3"),buyerController.reorder);

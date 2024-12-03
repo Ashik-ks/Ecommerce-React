@@ -4,8 +4,11 @@ import InnerPagesNav from "../nav/innerpagesnav";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCount } from '../CountContext';
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';  // <-- Add this import
-import { faHeart, faShoppingCart } from "@fortawesome/free-solid-svg-icons";  // <-- Import required icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import AddToCart from "../functions/addtocart";
+import AddToWishlist from "../functions/addtowishlist";
+
 
 function Singleview() {
     const [productData, setProductData] = useState(null);
@@ -64,6 +67,27 @@ function Singleview() {
     const handleImageError = () => {
         console.error("Failed to load image, setting fallback image");
         setZoomedImage('path/to/placeholder-image.jpg');
+    };
+
+    let token = localStorage.getItem(id)
+
+
+    const addToCart = async (productId) => {
+        try {
+            await AddToCart(productId, id, token);
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            alert("Something went wrong while adding to the cart.");
+        }
+    };
+
+    const addToWishlist = async (productId) => {
+        try {
+            await AddToWishlist(productId, id, token);
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            alert("Something went wrong while adding to the cart.");
+        }
     };
 
     return (
@@ -127,23 +151,32 @@ function Singleview() {
                                     <span className="text-sm font-semibold mt-1">Seller: {sellerData}</span>
 
                                     {/* Wishlist and Buy Now Buttons */}
-                                    <div className="flex gap-4 mt-3">
-                                        <button
-                                            className="btn bg-black flex items-center border-gray-300 px-2 py-1 gap-2 rounded-[4px]"
-                                            onClick={() => handleWishlist(productData?._id)}
-                                        >
-                                            <FontAwesomeIcon icon={faHeart} className="text-white" />
-                                            <span className="text-white">Wishlist</span>
-                                        </button>
-                                        <button
-                                            className="btn bg-black flex items-center border-gray-300 px-2 py-1 gap-2 rounded-[4px]"
-                                            onClick={() => handleBuyNow(productData?._id)}
-                                        >
-                                            <FontAwesomeIcon icon={faShoppingCart} className="text-white" />
-                                            <span className="text-white">Buy Now</span>
-                                        </button>
-
-
+                                    <div className="flex gap-4 mt-25">
+                                        <div className="bg-white text-center pb-2">
+                                            <button
+                                                className="addtocartbtn mt-2"
+                                                onClick={() => addToCart(productData._id)}
+                                            >
+                                                Add to Cart
+                                            </button>
+                                        </div>
+                                        <div className="bg-white text-center pb-2 bg-white text-center pb-2">
+                                            <button
+                                                className="addtocartbtn mt-2 flex gap-3 items-center"
+                                                onClick={() => handleWishlist(productData?._id)}
+                                            >
+                                                <FontAwesomeIcon icon={faHeart} className="text-purple-400" />
+                                                <span className="">Wishlist</span>
+                                            </button></div>
+                                        <div className="bg-white text-center pb-2 ">
+                                            <button
+                                                className="addtocartbtn mt-2 flex gap-3 items-center"
+                                                onClick={() => handleBuyNow(productData?._id)}
+                                            >
+                                                <FontAwesomeIcon icon={faShoppingCart} className="text-purple-400" />
+                                                <span className="">Buy Now</span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -157,83 +190,85 @@ function Singleview() {
 
                     {/* Grid for Related Products */}
                     <div className="datacontainercategorysinglepage mt-5">
-                        {relatedProducts?.map((relatedProduct) => {
-                            const imageUrl = relatedProduct?.images[0]
-                                ? `http://localhost:3000/${relatedProduct.images[0]}`
-                                : 'fallback-image-url.jpg';
+    {relatedProducts?.map((relatedProduct) => {
+        const imageUrl = relatedProduct?.images[0]
+            ? `http://localhost:3000/${relatedProduct.images[0]}`
+            : 'fallback-image-url.jpg'; // Use fallback image if not available
 
-                            const isInWishlist = relatedProduct?.isWishlist ? 'block' : 'none'; // Conditionally show the heart
+        // Check if the product is in the wishlist and apply the appropriate class
+        const isInWishlist = relatedProduct?.isWishlist ? 'text-danger' : 'text-black'; // Conditional class for heart color
 
-                            return (
-                                <div
-                                    key={relatedProduct?._id}
-                                    className="flex flex-col shadow-md p-4 bg-light rounded cursor-pointer relative overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
-                                    onClick={() => singleProduct(relatedProduct._id, relatedProduct.category)}
-                                >
-                                    {/* Product Image with Wishlist Heart */}
-                                    <div className="position-relative">
-                                        <span
-                                            id={`wishlistheart-${relatedProduct._id}`}
-                                            className="wishlistheart"
-                                            style={{
-                                                display: isInWishlist, // Show heart only if the product is in the wishlist
-                                                position: 'absolute', // Position it absolutely over the image
-                                                top: '-12px',
-                                                left: '10px', // Align to the top-left corner of the image
-                                                zIndex: 10, // Ensure the heart is above the image
-                                            }}
-                                        >
-                                            <i className="fa fa-heart fs-5 text-danger" aria-hidden="true"></i>
-                                        </span>
+        return (
+            <div
+                key={relatedProduct?._id}
+                className="flex flex-col shadow-md p-4 bg-light rounded cursor-pointer relative overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                onClick={() => singleProduct(relatedProduct._id, relatedProduct.category)}
+            >
+                {/* Product Image with Wishlist Heart */}
+                <div
+                    className="position-relative"
+                    onClick={(e) => {
+                        e.stopPropagation(); // Prevent event from bubbling up to the image click handler
+                        addToWishlist(relatedProduct._id); // Add/remove from wishlist based on current state
+                    }}
+                >
+                    {/* Conditional rendering of the heart icon */}
+                    <span
+                        id={`wishlistheart-${relatedProduct._id}`}
+                        className="wishlistheart"
+                        style={{
+                            position: 'absolute', // Position it absolutely over the image
+                            top: '-9px',
+                            left: '10px', // Align to the top-left corner of the image
+                            zIndex: 10, // Ensure the heart is above the image
+                        }}
+                    >
+                        <i
+                            className={`fa fa-heart fs-5 ${isInWishlist}`} // Apply the dynamic color class based on wishlist status
+                            aria-hidden="true"
+                        ></i>
+                    </span>
 
-                                        <img
-                                            src={imageUrl}
-                                            className=" w-75 mx-auto h-[160px] object-cover md:h-[250px] lg:h-[300px]" // Fixed height and responsive styles
-                                            alt="Related Product"
-                                            onClick={(e) => {
-                                                e.stopPropagation(); // Prevent parent click event if the user clicks the image
-                                                singleProduct(relatedProduct._id, relatedProduct.category);
-                                            }}
-                                        />
+                    <img
+                        src={imageUrl}
+                        className="w-75 mx-auto h-[160px] object-cover md:h-[250px] lg:h-[300px]" // Fixed height and responsive styles
+                        alt="Related Product"
+                        onClick={(e) => {
+                            e.stopPropagation(); // Prevent parent click event if the user clicks the image
+                            singleProduct(relatedProduct._id, relatedProduct.category);
+                        }}
+                    />
+                </div>
 
-                                    </div>
-
-                                    {/* Product Details */}
-                                    <div className="mt-4">
-                                        <div className="text-sm text-gray-800">
-                                            {relatedProduct?.name.slice(0, 23)}
-                                            {relatedProduct.name.length > 30 ? '...' : ''}
-                                        </div>
-                                        <div className="mt-1 text-lg font-bold text-black">
-                                            Offer: ₹{relatedProduct?.discountPrice}
-                                        </div>
-                                        <div className="text-md text-gray-600 line-through">
-                                            Price: ₹{relatedProduct?.price}
-                                        </div>
-                                        <div
-                                            className="mt-1 text-sm text-gray-500"
-                                            style={{ fontSize: '1rem', fontWeight: 'bold' }}
-                                        >
-                                            {relatedProduct?.stockStatus}
-                                        </div>
-                                    </div>
-
-                                    {/* Add to Cart Button */}
-                                    <div className="pb-2">
-                                        <button
-                                            className="addtocartbtn mt-2"
-                                            onClick={(e) => {
-                                                e.stopPropagation(); // Prevent triggering the parent onClick
-                                                addToCart(relatedProduct._id);
-                                            }}
-                                        >
-                                            Add to Cart
-                                        </button>
-                                    </div>
-                                </div>
-                            );
-                        })}
+                {/* Product Details */}
+                <div className="mt-4">
+                    <div className="text-sm text-gray-800">
+                        {relatedProduct?.name.slice(0, 23)}
+                        {relatedProduct.name.length > 30 ? '...' : ''}
                     </div>
+                    <div className="mt-1 text-lg font-bold text-black">
+                        Offer: ₹{relatedProduct?.discountPrice}
+                    </div>
+                    <div className="text-md text-gray-600 line-through">
+                        Price: ₹{relatedProduct?.price}
+                    </div>
+                    <div
+                        className="mt-1 text-sm text-gray-500"
+                        style={{ fontSize: '1rem', fontWeight: 'bold' }}
+                    >
+                        {relatedProduct?.stockStatus}
+                    </div>
+                </div>
+            </div>
+        );
+    })}
+</div>
+
+
+
+
+
+
 
 
                 </div>

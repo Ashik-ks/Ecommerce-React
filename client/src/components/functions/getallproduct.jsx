@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { useCount } from '../CountContext';
-import HeaderComponent from '../nav/navSecond';
+import axios from 'axios';
+import AddToWishlist from './addtowishlist';
+
 
 const AllProducts = () => {
     const [products, setProducts] = useState([]);
@@ -47,9 +49,16 @@ const AllProducts = () => {
         fetchProducts();
     }, []);  // Empty dependency array to run once when the component is mounted
 
-    const addToCart = (productId) => {
-        // Add to cart logic
-        console.log(`Adding product ${productId} to the cart.`);
+    let token = localStorage.getItem(id)
+
+
+    const addToWishlist = async (productId) => {
+        try {
+            await AddToWishlist(productId, id, token);
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            alert("Something went wrong while adding to the cart.");
+        }
     };
 
     const singleProduct = (productId, category) => {
@@ -65,7 +74,7 @@ const AllProducts = () => {
                         <div className="grid-container">
                             {products.map((product) => {
                                 const imageUrl = product.images && product.images[0] ? product.images[0] : 'fallback-image-url.jpg'; // Use fallback image if not available
-                                const isInWishlist = product.isInWishlist ? 'block' : 'none';
+                                const isInWishlist = product.isInWishlist ? 'text-danger' : 'text-white'; // Conditional class for heart color
 
                                 return (
                                     <div
@@ -77,29 +86,42 @@ const AllProducts = () => {
                                         }}
                                     >
                                         {/* Wishlist heart icon on top of the image */}
-                                        <div className="position-relative">
+                                        <div
+                                            className="position-relative"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent event from bubbling up to the image click handler
+                                                addToWishlist(product._id);
+                                            }}
+                                        >
                                             <span
-                                                id={`wishlistheart-${product._id}`}
                                                 className="wishlistheart"
                                                 style={{
-                                                    display: isInWishlist, // Show only if the product is in the wishlist
                                                     position: "absolute", // Position it absolutely over the image
                                                     top: "-12px",
                                                     left: "10px", // Align the heart icon to the left-top corner of the image
                                                     zIndex: 10, // Keep the heart on top of the image
                                                 }}
                                             >
-                                                <i className="fa fa-heart fs-5 text-danger" aria-hidden="true"></i>
+                                                <i
+                                                    className={`fa fa-heart fs-5 ${product.isInWishlist ? 'text-danger' : 'text-black'}`}
+                                                    aria-hidden="true"
+                                                ></i>
                                             </span>
+                                        </div>
 
+                                        {/* Product Image */}
+                                        <div onClick={(e) => {
+                                            e.stopPropagation(); // Prevent the click on the image from triggering wishlist action
+                                            singleProduct(product._id, product.category);
+                                        }}>
                                             <img
                                                 src={`http://localhost:3000/${imageUrl}`}
-                                                className="w-155 mx-auto h-[160px] object-cover md:h-[250px] lg:h-[300px] rounded-md" // Set fixed height and responsive styles
+                                                className="w-155 mx-auto h-[160px] object-cover md:h-[250px] lg:h-[300px] rounded-md"
                                                 alt="Item Image"
-                                                onClick={() => singleProduct(product._id, product.category)}
                                             />
                                         </div>
 
+                                        {/* Product Details Button */}
                                         <button className="border-0">
                                             <div className="d-flex justify-content-start">
                                                 {/* Product Name */}
@@ -132,14 +154,6 @@ const AllProducts = () => {
                                                 </div>
                                             </div>
                                         </button>
-                                        <div className="bg-white text-center pb-2">
-                                            <button
-                                                className="addtocartbtn mt-2"
-                                                onClick={() => addToCart(product._id)}
-                                            >
-                                                Add to Cart
-                                            </button>
-                                        </div>
                                     </div>
 
                                 );
@@ -150,6 +164,7 @@ const AllProducts = () => {
                     )}
                 </div>
             </div>
+
         </>
     );
 };

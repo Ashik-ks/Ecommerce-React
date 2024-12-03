@@ -276,7 +276,10 @@ function InnerPagesNav() {
                     icon={faHeart}
                     className="text-gray-500 text-lg"
                   />
-                  <span className="dropdowntext ms-2">Wishlist</span>
+                  <span className="dropdowntext ms-2"  onClick={(event) => {
+                      event.preventDefault(); 
+                      navigate(`/wishlist/${id}/${usertype}`);
+                    }}>Wishlist</span>
                 </a>
                 {usertype === 'Seller' && (
                   <a
@@ -465,7 +468,10 @@ function InnerPagesNav() {
                   </a>
                   <a href="#" className="flex gap-3 p-3 text-gray-700 text-sm items-center">
                     <FontAwesomeIcon icon={faHeart} className="text-gray-500 text-lg" />
-                    <span className="dropdowntext ms-2">Wishlist</span>
+                    <span className="dropdowntext ms-2" onClick={(event) => {
+                      event.preventDefault();
+                      navigate(`/wishlist/${id}/${usertype}`);
+                    }}>Wishlist</span>
                   </a>
                   {usertype === 'Seller' && (
                     <a

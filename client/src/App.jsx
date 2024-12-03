@@ -10,6 +10,8 @@ import Profile from './components/Pages/profile';
 import AddressPage from './components/Pages/address';
 import SettingsPage from './components/Pages/settings';
 import Addproduct from './components/Pages/addProduct';
+import Addtocartpage from './components/Pages/cart';
+import AddtoWhishlistPage from './components/Pages/Wishlist';
 
 function App() {
 
@@ -28,7 +30,8 @@ function App() {
           <Route path="/address/:id/:usertype" element={<AddressPage />} />
           <Route path="/settings/:id/:usertype" element={<SettingsPage />} />
           <Route path="/addproduct/:id/:usertype" element={<Addproduct />} />
-
+          <Route path="/cart/:id/:usertype" element={<Addtocartpage />} />
+          <Route path="/wishlist/:id/:usertype" element={<AddtoWhishlistPage />} />
         </Routes>
       </CountProvider>
     </Router>

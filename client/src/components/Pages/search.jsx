@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import InnerPagesNav from "../nav/innerpagesnav";
 import Footer from "../footer/footer";
+import AddToWishlist from "../functions/addtowishlist";
 import categorybanner1 from "../../assets/images/categorybanner1.webp";
 import categorybanner2 from "../../assets/images/categorybanner2.webp";
 import lipbalmbanner from "../../assets/images/lipbalmbanner.webp";
@@ -59,30 +60,36 @@ function SearchPage() {
             .map((item) => (
                 <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
                     {/* Product Image and Heart Icon */}
-                    <div className="relative" onClick={() => singleProduct(item._id, item.category)}>
-                        {/* Conditionally render heart icon if the product is in the wishlist */}
-                        {item.isInWishlist && (
-                            <span
-                                id={`wishlistheart-${item._id}`}
-                                className="wishlistheart"
-                                style={{
-                                    position: 'absolute',
-                                    top: '10px',  // Adjusted for visibility
-                                    right: '10px', // Adjusted for visibility
-                                    zIndex: 10,
-                                }}
-                            >
-                                <i className="fa fa-heart fs-5 text-danger" aria-hidden="true"></i>
-                            </span>
-                        )}
+                    <div className="relative cursor-pointer" onClick={() => singleProduct(item._id, item.category)}>
+                        {/* Conditionally render heart icon */}
+                        <span
+                            onClick={(e) => {
+                                e.stopPropagation(); // Prevent event from bubbling up to the image click handler
+                                addToWishlist(item._id); // Add/remove from wishlist based on current state
+                            }}
+                            id={`wishlistheart-${item._id}`}
+                            className="wishlistheart"
+                            style={{
+                                position: 'absolute',
+                                top: '10px',  // Adjusted for visibility
+                                zIndex: 10,
+                            }}
+                        >
+                            {/* Red heart if in wishlist, black heart if not */}
+                            <i
+                                className={`fa fa-heart fs-5 ${item.isInWishlist ? 'text-danger' : 'text-black'}`} // Red if in wishlist, black if not
+                                aria-hidden="true"
+                            ></i>
+                        </span>
+    
+                        {/* Product Image */}
                         <img
                             src={`http://localhost:3000/${item.images && item.images[0] ? item.images[0] : 'fallback-image-url.jpg'}`}
                             alt={item.name || 'Fallback Image Description'}  // Fallback alt text if item.name is missing
-                            className="w-full h-[200px] md:h-[250px] lg:h-[300px] object-cover mx-auto "
+                            className="w-full h-[200px] md:h-[250px] lg:h-[300px] object-cover mx-auto"
                         />
-
                     </div>
-
+    
                     {/* Product Details */}
                     <div className="p-4">
                         <h3 className="font-semibold text-lg text-gray-800 truncate">{item.name}</h3>
@@ -92,20 +99,32 @@ function SearchPage() {
                         </div>
                         <div className="mt-2 text-sm text-gray-500">{item.stockStatus}</div>
                     </div>
-
+    
                     {/* Add to Cart Button */}
-                    <div className="bg-white text-center pb-2">
+                    {/* <div className="bg-white text-center pb-2">
                         <button className="addtocartbtn mt-2" onClick={() => addToCart(item._id)}>
                             Add to Cart
                         </button>
-                    </div>
+                    </div> */}
                 </div>
             ));
     };
+    
 
     const singleProduct = (productId, category) => {
         // Handle navigation or action for a single product
         navigate(`/singleview/${productId}/${id}/${category}/${usertype}`);
+    };
+
+    let token = localStorage.getItem(id)
+
+    const addToWishlist = async (productId) => {
+        try {
+            await AddToWishlist(productId, id, token);
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            alert("Something went wrong while adding to the cart.");
+        }
     };
 
     return (
@@ -152,55 +171,63 @@ function SearchPage() {
 
             {/* Products Section */}
             <div className="max-w-screen-xl mx-auto p-4 mt-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {/* Render the main product only if it hasn't been displayed yet */}
-                    {searchProduct && !displayedIds.has(searchProduct._id) && (
-                        <div key={searchProduct._id} className="bg-white shadow-md rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
-                            <div className="relative" onClick={() => singleProduct(searchProduct._id, searchProduct.category)}>
-                                {searchProduct.isInWishlist && (
-                                    <span
-                                        id={`wishlistheart-${searchProduct._id}`}
-                                        className="wishlistheart"
-                                        style={{
-                                            position: 'absolute',
-                                            top: '-6px',
-                                            left: '10px',
-                                            zIndex: 10,
-                                        }}
-                                    >
-                                        <i className="fa fa-heart fs-5 text-danger" aria-hidden="true"></i>
-                                    </span>
-                                )}
-                                <img
-                                    src={`http://localhost:3000/${searchProduct.images && searchProduct.images[0] ? searchProduct.images[0] : 'fallback-image-url.jpg'}`}
-                                    alt={searchProduct.name || 'Fallback Image Description'}  // Add fallback alt text
-                                    className="w-full h-[200px] md:h-[250px] lg:h-[300px] object-cover mx-auto "
-                                />
-
-                            </div>
-
-                            <div className="p-4">
-                                <h3 className="font-semibold text-lg text-gray-800 truncate">{searchProduct.name}</h3>
-                                <div className="flex justify-start items-center gap-3 mt-2">
-                                    <span className="text-lg font-bold text-black">Offer: ₹{searchProduct.discountPrice}</span>
-                                    <span className="text-md text-gray-600 line-through">₹{searchProduct.price}</span>
-                                </div>
-                                <div className="mt-2 text-sm text-gray-500">{searchProduct.stockStatus}</div>
-                            </div>
-
-                            <div className="bg-white text-center pb-2">
-                                <button className="addtocartbtn mt-2" onClick={() => addToCart(searchProduct._id)}>
-                                    Add to Cart
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Render Unique Product Items */}
-                    {renderUniqueItems(searchProductItems)}
-
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {/* Render the main product only if it hasn't been displayed yet */}
+        {searchProduct && !displayedIds.has(searchProduct._id) && (
+            <div key={searchProduct._id} className="bg-white shadow-md rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
+                <div className="relative" onClick={() => singleProduct(searchProduct._id, searchProduct.category)}>
+                    {/* Wishlist heart icon */}
+                    <span
+                        onClick={(e) => {
+                            e.stopPropagation(); // Prevent event from bubbling up to the image click handler
+                            addToWishlist(searchProduct._id); // Add/remove from wishlist based on current state
+                        }}
+                        id={`wishlistheart-${searchProduct._id}`}
+                        className="wishlistheart"
+                        style={{
+                            position: 'absolute',
+                            top: '-6px',
+                            left: '10px',
+                            zIndex: 10,
+                        }}
+                    >
+                        <i
+                            className={`fa fa-heart fs-5 ${searchProduct.isInWishlist ? 'text-danger' : 'text-black'}`} // Red if in wishlist, black if not
+                            aria-hidden="true"
+                        ></i>
+                    </span>
+                    
+                    {/* Product Image */}
+                    <img
+                        src={`http://localhost:3000/${searchProduct.images && searchProduct.images[0] ? searchProduct.images[0] : 'fallback-image-url.jpg'}`}
+                        alt={searchProduct.name || 'Fallback Image Description'}  // Add fallback alt text
+                        className="w-full h-[200px] md:h-[250px] lg:h-[300px] object-cover mx-auto"
+                    />
                 </div>
+
+                {/* Product Details */}
+                <div className="p-4">
+                    <h3 className="font-semibold text-lg text-gray-800 truncate">{searchProduct.name}</h3>
+                    <div className="flex justify-start items-center gap-3 mt-2">
+                        <span className="text-lg font-bold text-black">Offer: ₹{searchProduct.discountPrice}</span>
+                        <span className="text-md text-gray-600 line-through">₹{searchProduct.price}</span>
+                    </div>
+                    <div className="mt-2 text-sm text-gray-500">{searchProduct.stockStatus}</div>
+                </div>
+
+                {/* <div className="bg-white text-center pb-2">
+                    <button className="addtocartbtn mt-2" onClick={() => addToCart(searchProduct._id)}>
+                        Add to Cart
+                    </button>
+                </div> */}
             </div>
+        )}
+
+        {/* Render Unique Product Items */}
+        {renderUniqueItems(searchProductItems)}
+    </div>
+</div>
+
             {/* Category Banners */}
             <div className="container max-w-screen-xl mx-auto">
                 <div className="flex flex-wrap">
