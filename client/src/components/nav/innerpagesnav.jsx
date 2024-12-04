@@ -220,15 +220,23 @@ function InnerPagesNav() {
           {/* Third Column */}
           <div className="flex items-center justify-end gap-3 mr-10 mt-3">
             <span onClick={(e) => {
-    e.preventDefault();
-    navigate(`/wishlist/${id}/${usertype}`);
-  }}>
+              e.preventDefault();
+              if (id !== 'undefined' && id !== null) {
+                navigate(`/wishlist/${id}/${usertype}`);
+              } else {
+                console.error("ID is undefined or null, navigation aborted.");
+              }
+            }}>
               <i className="fa-regular fa-heart pxsmile"></i>
             </span>
             <span className="relative" onClick={(e) => {
-    e.preventDefault();
-    navigate(`/cart/${id}/${usertype}`);
-  }}>
+              e.preventDefault();
+              if (id !== 'undefined' && id !== null) {
+                navigate(`/cart/${id}/${usertype}`);
+              } else {
+                console.error("ID is undefined or null, navigation aborted.");
+              }
+            }}>
               <FontAwesomeIcon
                 icon={faCartShopping}
                 className=" mt-1 pxsmile"
@@ -282,10 +290,14 @@ function InnerPagesNav() {
                     icon={faHeart}
                     className="text-gray-500 text-lg"
                   />
-                  <span className="dropdowntext ms-2"  onClick={(event) => {
-                      event.preventDefault(); 
+                  <span className="dropdowntext ms-2" onClick={(e) => {
+                    e.preventDefault();
+                    if (id !== 'undefined' && id !== null) {
                       navigate(`/wishlist/${id}/${usertype}`);
-                    }}>Wishlist</span>
+                    } else {
+                      console.error("ID is undefined or null, navigation aborted.");
+                    }
+                  }}>Wishlist</span>
                 </a>
                 {usertype === 'Seller' && (
                   <a
@@ -297,7 +309,7 @@ function InnerPagesNav() {
                       className="text-gray-500 text-lg"
                     />
                     <span className="dropdowntext ms-2" onClick={(event) => {
-                      event.preventDefault(); 
+                      event.preventDefault();
                       navigate(`/settings/${id}/${usertype}`);
                     }}>Settings</span>
                   </a>
@@ -443,15 +455,23 @@ function InnerPagesNav() {
             {/* Third Div: User Section */}
             <div className="col-span-1 lg:col-span-2  flex items-center justify-center gap-5 hidden lg:flex">
               <span onClick={(e) => {
-    e.preventDefault();
-    navigate(`/wishlist/${id}/${usertype}`);
-  }}>
+                e.preventDefault();
+                if (id !== 'undefined' && id !== null) {
+                  navigate(`/wishlist/${id}/${usertype}`);
+                } else {
+                  console.error("ID is undefined or null, navigation aborted.");
+                }
+              }}>
                 <i className="fa-regular fa-heart text-2xl"></i>
               </span>
               <span className="relative" onClick={(e) => {
-    e.preventDefault();
-    navigate(`/cart/${id}/${usertype}`);
-  }}>
+                e.preventDefault();
+                if (id !== 'undefined' && id !== null) {
+                  navigate(`/cart/${id}/${usertype}`);
+                } else {
+                  console.error("ID is undefined or null, navigation aborted.");
+                }
+              }}>
                 <FontAwesomeIcon
                   icon={faCartShopping}
                   className="icon-smile mt-1"
@@ -480,9 +500,13 @@ function InnerPagesNav() {
                   </a>
                   <a href="#" className="flex gap-3 p-3 text-gray-700 text-sm items-center">
                     <FontAwesomeIcon icon={faHeart} className="text-gray-500 text-lg" />
-                    <span className="dropdowntext ms-2" onClick={(event) => {
-                      event.preventDefault();
-                      navigate(`/wishlist/${id}/${usertype}`);
+                    <span className="dropdowntext ms-2" onClick={(e) => {
+                      e.preventDefault();
+                      if (id !== 'undefined' && id !== null) {
+                        navigate(`/wishlist/${id}/${usertype}`);
+                      } else {
+                        console.error("ID is undefined or null, navigation aborted.");
+                      }
                     }}>Wishlist</span>
                   </a>
                   {usertype === 'Seller' && (

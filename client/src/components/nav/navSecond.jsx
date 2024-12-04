@@ -261,15 +261,23 @@ const HeaderComponent = () => {
         {/* Third Column */}
         <div className="flex items-center justify-end gap-3 mr-10 mt-3">
           <span onClick={(e) => {
-    e.preventDefault();
+  e.preventDefault();
+  if (id !== 'undefined' && id !== null) {
     navigate(`/wishlist/${id}/${usertype}`);
-  }}>
+  } else {
+    console.error("ID is undefined or null, navigation aborted.");
+  }
+}}>
             <i className="fa-regular fa-heart pxsmile"></i>
           </span>
           <span className="relative" onClick={(e) => {
-    e.preventDefault(); 
+  e.preventDefault();
+  if (id !== 'undefined' && id !== null) {
     navigate(`/cart/${id}/${usertype}`);
-  }}>
+  } else {
+    console.error("ID is undefined or null, navigation aborted.");
+  }
+}}>
             <FontAwesomeIcon
               icon={faCartShopping}
               className=" mt-1 pxsmile"
@@ -424,15 +432,24 @@ const HeaderComponent = () => {
             {/* Third Column */}
             <div className="flex items-center justify-end gap-5 mr-10 hidden md:flex">
               <span onClick={(e) => {
-    e.preventDefault(); 
-    navigate(`/wishlist/${id}/${usertype}`); 
-  }}>
+  e.preventDefault();
+  if (id !== 'undefined' && id !== null) {
+    navigate(`/wishlist/${id}/${usertype}`);
+  } else {
+    console.error("ID is undefined or null, navigation aborted.");
+  }
+}}
+>
                 <i class="fa-regular fa-heart text-2xl"></i>
               </span>
               <span className="relative" onClick={(e) => {
-    e.preventDefault();
-    navigate(`/cart/${id}/${usertype}`); 
-  }}>
+  e.preventDefault();
+  if (id !== 'undefined' && id !== null) {
+    navigate(`/cart/${id}/${usertype}`);
+  } else {
+    console.error("ID is undefined or null, navigation aborted.");
+  }
+}}>
                 <FontAwesomeIcon
                   icon={faCartShopping}
                   className="icon-smile mt-1"
@@ -459,7 +476,7 @@ const HeaderComponent = () => {
                   >
                     <FontAwesomeIcon icon={faUser} className="text-gray-500 text-lg" />
                     <button
-                      className="dropdowntext ms-2"
+                      className="logintext ms-2"
                       onClick={(event) => {
                         event.preventDefault(); // Prevents the default button behavior
                         navigate(`/profile/${id}/${usertype}`);
@@ -473,13 +490,13 @@ const HeaderComponent = () => {
                     className="flex gap-3 p-3 text-gray-700 text-sm items-center"
                   >
                     <FontAwesomeIcon icon={faGift} className="text-gray-500 text-lg" />
-                    <span className="dropdowntext ms-2">Orders</span>
+                    <span className="logintext ms-2">Orders</span>
                   </a>
                   <div
-                    className="flex gap-3 p-3 text-gray-700 text-sm items-center"
+                    className="flex p-3 text-gray-700 text-sm items-center ms-2"
                   >
                     <FontAwesomeIcon icon={faHeart} className="text-gray-500 text-lg" />
-                    <button className="dropdowntext ms-2" onClick={(e) => {
+                    <button className="logintext ms-2" onClick={(e) => {
     e.preventDefault(); 
     navigate(`/wishlist/${id}/${usertype}`); 
   }} >Wishlist</button>
@@ -493,7 +510,7 @@ const HeaderComponent = () => {
                         icon={faCog}
                         className="text-gray-500 text-lg"
                       />
-                      <span className="dropdowntext ms-2" onClick={(event) => {
+                      <span className="logintext ms-2" onClick={(event) => {
                         event.preventDefault();
                         navigate(`/settings/${id}/${usertype}`);
                       }} >Settings</span>
@@ -501,27 +518,27 @@ const HeaderComponent = () => {
                   )}
 
                   {isLoggedIn ? (
-                    <div className="logout flex gap-3 p-3 text-gray-700 text-sm items-center" id="logout">
+                    <div className="logout flex ms-2 p-3 gap-2 text-gray-700 text-sm items-center " id="logout">
                       <span>
-                        <FontAwesomeIcon icon={faRightToBracket} className="text-gray-500 text-lg ms-1" />
+                        <FontAwesomeIcon icon={faRightToBracket} className="text-gray-500 text-lg" />
                       </span>
                       <button
-                        className="loginbtn border-0 w-full text-left text-gray-500"
+                        className="loginbtn border-0 w-full text-left text-gray-700"
                         onClick={handleLogout} // Logout action
                       >
-                        <span className="text-xs text-gray-700">Log Out</span>
+                        <span className="logintext text-gray-700">Log Out</span>
                       </button>
                     </div>
                   ) : (
-                    <div className="login flex gap-3 p-3 text-gray-700 text-sm items-center" id="login">
+                    <div className="login flex gap-2 ms-2 p-3 text-gray-700 text-sm items-center" id="login">
                       <span>
-                        <FontAwesomeIcon icon={faRightToBracket} className="text-gray-500 text-lg ms-1" />
+                        <FontAwesomeIcon icon={faRightToBracket} className="text-gray-500 text-lg " />
                       </span>
                       <button
-                        className="loginbtn border-0 text-gray-500"
+                        className="loginbtn border-0 text-gray-700"
                         onClick={openPopup} // Open login/register popup
                       >
-                        <span className="logintext text-gray-700">Login or Register</span>
+                        <span className="logintext ">Login or Register</span>
                       </button>
                     </div>
                   )}

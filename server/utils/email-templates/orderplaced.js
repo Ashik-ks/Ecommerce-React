@@ -1,4 +1,4 @@
-exports.orderPlace = function (email, products, totalPrice) {
+exports.orderPlace = function (email, products, totalPrice,address) {
   return new Promise((resolve, reject) => {
       try {
           // Check if there's more than one product in the order
@@ -57,7 +57,7 @@ exports.orderPlace = function (email, products, totalPrice) {
                           <p>Your Order has been placed successfully:</p>
                           ${productDetails}
                           <h3>Total Amount: $${totalPrice}</h3>
-                          <p>Pay your amount during shipping.</p>
+                          <p>Pay your amount during shipping at ${address}</p>
                           <p>Shop more with us!</p>
                           <div class="regards">With regards,<br>Purple</div>
                       </div>

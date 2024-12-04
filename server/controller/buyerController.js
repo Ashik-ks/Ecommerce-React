@@ -128,8 +128,8 @@ exports.updateaddress = async function (req, res) {
     try {
         const { id, index } = req.params; // Get user ID and address index
         const updatedAddress = req.body;  // Get updated address data from the request body
-        console.log("id : ",id);
-        console.log(" index : ",index)
+        console.log("id : ", id);
+        console.log(" index : ", index)
 
         // Find the user by ID
         let user = await Users.findOne({ _id: id });
@@ -495,7 +495,7 @@ exports.getcategory = async function (req, res) {
 exports.getallproduct = async function (req, res) {
     try {
         const id = req.params.id;
-        console.log("id : ",id)
+        console.log("id : ", id)
         let products;
         let user;
 
@@ -555,7 +555,7 @@ exports.getallproduct = async function (req, res) {
 
                 // Check if the product ID exists in the user's wishlist
                 const isInWishlist = wishlist.includes(productId);  // Check if the product is in the wishlist
-                console.log(" isInWishlist: ",isInWishlist)
+                console.log(" isInWishlist: ", isInWishlist)
 
                 // Return product data with the `isInWishlist` flag
                 return {
@@ -1022,9 +1022,9 @@ exports.getAllAddToCart = async function (req, res) {
         }
 
         // Check if the user has items in their cart
-        const { addtocart } = user;
+        const { addtocart, wishlist } = user; // Assume user has a `wishlist` field
         if (!addtocart || addtocart.length === 0) {
-            const pincode = user.address?.[0]?.pincode || "Add an Adress";
+            const pincode = user.address?.[0]?.pincode || "Add an Address";
             return res.status(200).json({
                 success: true,
                 message: "No products in the user's cart",
@@ -1036,6 +1036,7 @@ exports.getAllAddToCart = async function (req, res) {
         }
 
         console.log("Product IDs in cart:", addtocart);
+        console.log("Product IDs in wishlist:", wishlist);
 
         // Pagination (optional)
         const limit = parseInt(req.query.limit, 10) || addtocart.length;
@@ -1055,15 +1056,27 @@ exports.getAllAddToCart = async function (req, res) {
 
         console.log("Products:", products);
 
-        // Calculate total items and optional metadata
+        // Set a `wishlist` flag for each product
+        const wishlistSet = new Set(wishlist); // Use a Set for quick lookup
+        const updatedProducts = products.map((product) => {
+            return {
+                ...product._doc, // Spread the product data
+                wishlist: wishlistSet.has(product._id.toString()), // Add `wishlist` flag
+            };
+        });
+
+        // Calculate total items and total price
         const totalCount = addtocart.length;
-        const totalPrice = products.reduce((sum, product) => sum + (product.discountPrice || 0), 0);
-        console.log(" totalPrice: ",totalPrice)
+        const totalPrice = updatedProducts.reduce(
+            (sum, product) => sum + (product.discountPrice || 0),
+            0
+        );
+        console.log("Total Price:", totalPrice);
 
         res.status(200).json({
             success: true,
             message: "Products fetched successfully",
-            products,
+            products: updatedProducts,
             count: totalCount,
             totalprice: totalPrice,
             address: user.address,
@@ -1077,6 +1090,7 @@ exports.getAllAddToCart = async function (req, res) {
         });
     }
 };
+
 
 //to fetch all products in Whishlist
 exports.getAllWishlist = async function (req, res) {
@@ -1103,13 +1117,14 @@ exports.getAllWishlist = async function (req, res) {
         }
 
         const { wishlist } = user;
-        
+
         if (!wishlist || wishlist.length === 0) {
             return res.status(200).json({
                 success: true,
                 message: "No products in the user's wishlist",
                 products: [],
                 count: 0,
+                address: user.address
             });
         }
 
@@ -1150,13 +1165,65 @@ exports.getAllWishlist = async function (req, res) {
     }
 };
 
+exports.getallproducttoorder = async function (req, res) {
+    try {
+        // Get the 'items' from the route parameters or query string
+        const items = req.params.items ? req.params.items.split(',') : []; // Split by comma if items are passed as a string in the URL
+        console.log("Items:", items);
+
+        if (items.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid or empty items array.",
+            });
+        }
+
+        // Fetch user details from the database
+        let user = await Users.findOne({ _id: req.params.id });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found.",
+            });
+        }
+
+        // Fetch products whose IDs are in the `items` array
+        const products = await Product.find({
+            _id: { $in: items }, // Use the $in operator to find products with IDs in the 'items' array
+        });
+
+        if (!products || products.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No products found for the given IDs.",
+            });
+        }
+
+        // Return the products found in the response along with user address
+        return res.status(200).json({
+            success: true,
+            message: "Products fetched successfully",
+            products,
+            address: user.address, // Assuming user.address is an array
+        });
+
+    } catch (error) {
+        console.error("Error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong while fetching products.",
+        });
+    }
+};
+
 //to place order
 exports.placeOrder = async function (req, res) {
     try {
         const userId = req.params.id;
         console.log("userId:", userId);
 
-        const { items } = req.body;
+        const { items, addressId } = req.body;  // Get addressId from the request body
         console.log("items:", items);  // Log the entire items array
 
         // Ensure missing quantities default to 1
@@ -1180,6 +1247,15 @@ exports.placeOrder = async function (req, res) {
             return res.status(404).json({
                 success: false,
                 message: "User not found",
+            });
+        }
+
+        // Retrieve the address using addressId
+        const userAddress = user.address.find(address => address._id.toString() === addressId);
+        if (!userAddress) {
+            return res.status(404).json({
+                success: false,
+                message: "Address not found",
             });
         }
 
@@ -1209,8 +1285,8 @@ exports.placeOrder = async function (req, res) {
                 continue;  // Skip this product and move to the next one
             }
 
-            // Calculate the total price for the product
-            const productTotalPrice = product.price * quantity;
+            // Calculate the total price for the product based on the discount price
+            const productTotalPrice = product.discountPrice * quantity;
             totalOrderPrice += productTotalPrice;
 
             // Add order to user's order history
@@ -1223,7 +1299,7 @@ exports.placeOrder = async function (req, res) {
             orderedProducts.push({
                 productName: product.name,
                 quantity,
-                price: product.price,
+                price: product.discountPrice,  // Use discount price here
                 totalPrice: productTotalPrice,
             });
 
@@ -1248,15 +1324,16 @@ exports.placeOrder = async function (req, res) {
         if (outOfStockProducts.length > 0) {
             const userEmail = user.email;
             for (let product of outOfStockProducts) {
-                const emailTemplate = await set_stock_template(userEmail, product.stockQuantity, product.name);
-                await sendEmail(userEmail, "Out of Stock Notification", emailTemplate);  // Send email to user
+                // const emailTemplate = await set_stock_template(userEmail, product.stockQuantity, product.name);
+                // await sendEmail(userEmail, "Out of Stock Notification", emailTemplate);  // Send email to user
             }
         }
 
         // Send order placed email to the buyer
         const userEmail = user.email;
-        const emailTemplate = await set_orderplace_template(userEmail, orderedProducts, totalOrderPrice);
-        await sendEmail(userEmail, "Order Confirmation", emailTemplate);  // Sending confirmation email to the user
+        // Pass the userAddress along with the other details to the email template
+        // const emailTemplate = await set_orderplace_template(userEmail, orderedProducts, totalOrderPrice, userAddress);
+        // await sendEmail(userEmail, "Order Confirmation", emailTemplate);  // Sending confirmation email to the user
 
         // If the order was successfully placed, return the response
         return res.status(200).json({
@@ -1264,6 +1341,7 @@ exports.placeOrder = async function (req, res) {
             message: "Order placed successfully",
             totalAmount: totalOrderPrice,
             orders: user.orders,
+            address: userAddress,  // Send the address back in the response as well
         });
 
     } catch (error) {
@@ -1274,8 +1352,6 @@ exports.placeOrder = async function (req, res) {
         });
     }
 };
-
-
 
 
 // exports.reorder = async function (req, res) {
@@ -1496,7 +1572,7 @@ exports.getOrderedProducts = async function (req, res) {
                     orderedProducts.push({
                         orderId: order._id,
                         orderDate: order.orderDate,
-                        orderPrice:order.totalPrice,
+                        orderPrice: order.totalPrice,
                         productId: product._id,
                         productName: product.name,
                         quantity: order.quantity,
@@ -1539,57 +1615,7 @@ exports.getOrderedProducts = async function (req, res) {
     }
 };
 
-exports.getallproducttoorder = async function (req, res) {
-    try {
-        // Get the 'items' from the route parameters or query string
-        const items = req.params.items ? req.params.items.split(',') : []; // Split by comma if items are passed as a string in the URL
-        console.log("Items:", items);
 
-        if (items.length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid or empty items array.",
-            });
-        }
-
-        // Fetch user details from the database
-        let user = await Users.findOne({ _id: req.params.id });
-
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found.",
-            });
-        }
-
-        // Fetch products whose IDs are in the `items` array
-        const products = await Product.find({
-            _id: { $in: items }, // Use the $in operator to find products with IDs in the 'items' array
-        });
-
-        if (!products || products.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "No products found for the given IDs.",
-            });
-        }
-
-        // Return the products found in the response along with user address
-        return res.status(200).json({
-            success: true,
-            message: "Products fetched successfully",
-            products,
-            address: user.address[0], // Assuming user.address is an array
-        });
-
-    } catch (error) {
-        console.error("Error:", error);
-        return res.status(500).json({
-            success: false,
-            message: "Something went wrong while fetching products.",
-        });
-    }
-};
 
 
 

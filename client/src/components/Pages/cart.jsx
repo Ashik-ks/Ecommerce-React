@@ -7,7 +7,8 @@ import AddToWishlist from "../functions/addtowishlist";
 
 function Addtocartpage() {
   const navigate = useNavigate();
-  const { id } = useParams(); // Assuming `id` comes from URL params
+  const { id } = useParams(); // User ID
+  const { usertype } = useParams(); // User Type
   const [cart, setCart] = useState([]);
   const [count, setCount] = useState(0);
   const [address, setAddress] = useState("");
@@ -90,6 +91,13 @@ function Addtocartpage() {
     fetchCartData();
   }, [id]);
 
+  const handleOrderNow = () => {
+    const allAddToCartProductIds = cart.map((product) => product._id).join(","); // Convert product IDs to a comma-separated string
+
+    // Navigate to the order page with dynamic parameters
+    navigate(`/billing/${id}/${allAddToCartProductIds}/${usertype}`);
+  };
+
   return (
     <>
       <InnerPagesNav />
@@ -137,33 +145,38 @@ function Addtocartpage() {
                       </button>
                       <button
                         className="w-full sm:w-[130px] px-2 py-2 border-2 border-purple-600 text-purple-600 bg-transparent rounded-lg text-sm cursor-pointer transition-all duration-300 hover:bg-purple-600 hover:text-white"
-                        onClick={() => addToWishlist(product._id)}
+                        onClick={() => {
+                          if (product.wishlist) {
+                            addToWishlist(product._id);
+                          } else {
+                            addToWishlist(product._id);
+                          }
+                        }}
                       >
-                        Add to Wishlist
+                        {product.wishlist ? (
+                          <span className="text-red-600 text-sm">&#10084; Wishlisted</span>
+                        ) : (
+                          "Add to Wishlist"
+                        )}
                       </button>
                     </div>
                   </div>
                 </div>
               ))}
-<div className="bg-white px-5 mt-6">
-  <div className="flex justify-between items-center">
-    <div className="flex justify-between gap-5 w-full sm:w-auto">
-      <span className="text-2xl font-bold">Total Price</span>
-      <span className="text-2xl font-bold text-green-600">₹{totalPrice}</span>
-    </div>
-    <button
-      className="w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg text-lg cursor-pointer transition-all duration-300 hover:bg-purple-700"
-      onClick={() => {
-        // Handle order functionality
-        alert("Proceeding to order...");
-      }}
-    >
-      Order Now
-    </button>
-  </div>
-</div>
-
-
+              <div className="bg-white px-5 mt-6">
+                <div className="flex justify-between items-center">
+                  <div className="flex justify-between gap-5 w-full sm:w-auto">
+                    <span className="text-2xl font-bold">Total Price</span>
+                    <span className="text-2xl font-bold text-green-600">₹{totalPrice}</span>
+                  </div>
+                  <button
+                    className="w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg text-lg cursor-pointer transition-all duration-300 hover:bg-purple-700"
+                    onClick={handleOrderNow}
+                  >
+                    Order Now
+                  </button>
+                </div>
+              </div>
             </div>
             <div className="mt-3">
               <div className="py-3 border-t border-gray-300">

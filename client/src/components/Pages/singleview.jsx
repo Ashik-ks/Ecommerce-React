@@ -174,7 +174,10 @@ function Singleview() {
                                                 onClick={() => handleBuyNow(productData?._id)}
                                             >
                                                 <FontAwesomeIcon icon={faShoppingCart} className="text-purple-400" />
-                                                <span className="">Buy Now</span>
+                                                <span className=""  onClick={() => {
+
+                navigate(`/billing/${id}/${productData._id}/${usertype}`);
+            }}>Buy Now</span>
                                             </button>
                                         </div>
                                     </div>

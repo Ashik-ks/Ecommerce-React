@@ -12,9 +12,11 @@ import SettingsPage from './components/Pages/settings';
 import Addproduct from './components/Pages/addProduct';
 import Addtocartpage from './components/Pages/cart';
 import AddtoWhishlistPage from './components/Pages/Wishlist';
+import Billing from './components/Pages/billing';
+import Order from './components/Pages/order';
+
 
 function App() {
-
   return (
     <>
     <Router>
@@ -32,6 +34,8 @@ function App() {
           <Route path="/addproduct/:id/:usertype" element={<Addproduct />} />
           <Route path="/cart/:id/:usertype" element={<Addtocartpage />} />
           <Route path="/wishlist/:id/:usertype" element={<AddtoWhishlistPage />} />
+          <Route path="/billing/:id/:pid/:usertype" element={<Billing />} />
+          <Route path="/order/:id/:usertype" element={<Order />} />
         </Routes>
       </CountProvider>
     </Router>
