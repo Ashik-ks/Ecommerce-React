@@ -109,19 +109,19 @@ function NavThird() {
           </div>
 
           {/* Other Nav Items */}
-          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors">
+          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors" onClick={()=> navigate(`/section/${id}/${usertype}`)}>
             OFFERS
           </span>
-          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors">
+          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors" onClick={()=> navigate(`/section/${id}/${usertype}`)}>
             NEW
           </span>
-          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors">
+          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors" onClick={()=> navigate(`/section/${id}/${usertype}`)}>
             SPLURGE
           </span>
-          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors">
+          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors" onClick={()=> navigate(`/section/${id}/${usertype}`)}>
             MAGAZINE
           </span>
-          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors">
+          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors" onClick={()=> navigate(`/section/${id}/${usertype}`)}>
             ELITE OFFERS
           </span>
         </div>

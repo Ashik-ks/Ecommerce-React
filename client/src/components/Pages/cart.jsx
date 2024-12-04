@@ -4,6 +4,8 @@ import axios from "axios";
 import InnerPagesNav from "../nav/innerpagesnav";
 import Footer from "../footer/footer";
 import AddToWishlist from "../functions/addtowishlist";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Addtocartpage() {
   const navigate = useNavigate();
@@ -37,24 +39,35 @@ function Addtocartpage() {
           },
         }
       );
-
+  
       const data = response.data;
       console.log("Server Response:", data);
-
+  
       if (response.status === 200) {
-        alert(data.message);
-
-        // Update cart state to reflect removal
+        toast.success(data.message || "Item removed from cart successfully!");
+  
+        // Find the product that was removed
+        const removedProduct = cart.find((item) => item._id === productId);
+        
+        // Calculate the new total price by subtracting the removed product's price
+        const newTotalPrice = totalPrice - (removedProduct.discountPrice || removedProduct.price);
+  
+        // Update cart state and totalPrice state
         setCart((prevCart) => prevCart.filter((item) => item._id !== productId));
         setCount((prevCount) => prevCount - 1);
+        setTotalPrice(newTotalPrice); // Adjust totalPrice
+  
+        // Optionally reload to update UI (but usually better to update state instead)
+        // location.reload(); // Avoid this, it's unnecessary if you update the state
       } else {
-        alert(data.message);
+        toast.error(data.message || "An error occurred while removing the item.");
       }
     } catch (error) {
       console.error("Error removing item from cart:", error);
-      alert("An error occurred while removing the item. Please try again later.");
+      toast.error("An error occurred while removing the item. Please try again later.");
     }
   };
+  
 
   useEffect(() => {
     const fetchCartData = async () => {
@@ -101,6 +114,7 @@ function Addtocartpage() {
   return (
     <>
       <InnerPagesNav />
+      <ToastContainer position="top-center" autoClose={2000} />
       <div className="container mx-auto px-4">
         <div className="flex justify-center">
           <div className="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 border border-gray-300">

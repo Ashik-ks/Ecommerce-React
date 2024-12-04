@@ -93,7 +93,7 @@ const AllProducts = () => {
                                         }}
                                     >
                                         <i
-                                            className={`fa fa-heart fs-5 ${product.isInWishlist ? 'text-danger' : 'text-slate-300'}`}
+                                            className={`fa fa-heart fs-3 ${product.isInWishlist ? 'text-danger' : 'text-slate-300'}`}
                                             aria-hidden="true"
                                         ></i>
                                     </span>

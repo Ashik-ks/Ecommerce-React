@@ -1561,6 +1561,14 @@ exports.getOrderedProducts = async function (req, res) {
             });
         }
 
+        // Check if the user's orders array is empty
+        if (!user.orders || user.orders.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Your order list is empty!",
+            });
+        }
+
         const orderedProducts = [];
 
         for (let order of user.orders) {
@@ -1593,6 +1601,7 @@ exports.getOrderedProducts = async function (req, res) {
             }
         }
 
+        // Check if no ordered products were found after processing the orders
         if (orderedProducts.length === 0) {
             return res.status(404).json({
                 success: false,
@@ -1614,6 +1623,77 @@ exports.getOrderedProducts = async function (req, res) {
         });
     }
 };
+
+exports.ProductSections = async function (req, res) {
+    try {
+        const userId = req.params.id; // The user ID from the URL
+        let productOnOffer, productOnEliteOffer, productNew;
+        let user;
+
+        // 1. Find products under discountPrice 500
+        productOnOffer = await Product.find({ discountPrice: { $lt: 500 } });
+
+        // 2. Find the last 5 least discountPrice products (elite offer products)
+        productOnEliteOffer = await Product.find()
+            .sort({ discountPrice: 1 }) // Sort by discountPrice in ascending order
+            .limit(5); // Limit to 5 products
+
+        // 3. Find the last added products (e.g., num = totalLength - 7)
+        const totalLength = await Product.countDocuments(); // Get total number of products
+        const num = totalLength - 7; // Calculate the number of products to skip
+
+        productNew = await Product.find()
+            .sort({ createdAt: -1 }) // Sort by createdAt to get the most recently added products
+            .skip(num) // Skip 'num' products
+            .limit(7); // Limit to 7 products after skipping 'num'
+
+        // If userId is provided, check if the product is in the user's wishlist
+        if (userId && userId !== 'undefined') {
+            // Find the user by ID
+            user = await Users.findById(userId).select('wishlist');
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            // Get user's wishlist and ensure it's in string format for comparison
+            let userWishlist = user.wishlist ? user.wishlist.map(id => id.toString()) : [];
+            console.log('User wishlist:', userWishlist); // Debugging wishlist data
+
+            // Helper function to add 'isInWishlist' flag to products
+            const addWishlistFlag = (products) => {
+                return products.map(product => {
+                    const isInWishlist = userWishlist.includes(product._id.toString());
+                    console.log(`Product ${product._id.toString()} is in wishlist: ${isInWishlist}`);
+                    return {
+                        ...product.toObject(),  // Convert product to plain object if it's a Mongoose document
+                        isInWishlist: isInWishlist
+                    };
+                });
+            };
+
+            // Add 'isInWishlist' flag for products in different sections
+            productOnOffer = addWishlistFlag(productOnOffer);
+            productOnEliteOffer = addWishlistFlag(productOnEliteOffer);
+            productNew = addWishlistFlag(productNew);
+        }
+
+        // Sending the results back in the response with the wishlist flag included
+        res.status(200).json({
+            productOnOffer,
+            productOnEliteOffer,
+            productNew,
+        });
+
+    } catch (error) {
+        console.error("Error fetching products:", error);
+        res.status(500).json({ message: "Error fetching product sections." });
+    }
+};
+
+
+  
+  
+
 
 
 

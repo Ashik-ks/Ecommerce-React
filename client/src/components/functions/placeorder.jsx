@@ -1,19 +1,20 @@
 import axios from 'axios';
+import {toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const PlaceOrder = async (id, items, addressId, setLoading, navigate, usertype) => {
   try {
     const token = localStorage.getItem(id);
     if (!token) {
-      alert("User authentication failed. Please log in again.");
+      toast.error("User authentication failed. Please log in again.");
       return;
     }
 
-    setLoading(true); // Start loading
+    setLoading(true); // Start loading state
 
-    // Make the POST request using axios
     const response = await axios.post(
       `http://localhost:3000/order/${id}`,
-      { items, addressId }, // Pass addressId along with items
+      { items, addressId },
       {
         headers: {
           "Content-Type": "application/json",
@@ -22,20 +23,24 @@ const PlaceOrder = async (id, items, addressId, setLoading, navigate, usertype) 
       }
     );
 
-    setLoading(false); // Stop loading
+    setLoading(false); // End loading state
 
-    // Handle successful response
     if (response.status === 200) {
-      alert("Order placed successfully!");
-      navigate(`/order/${id}/${usertype}`);
+      // Show success toast and navigate after toast is dismissed
+      toast.success("Order placed successfully!", {
+        onClose: () => navigate(`/order/${id}/${usertype}`), // Navigate after toast closes
+      });
     } else {
-      alert(response.data.message || "An error occurred while placing your order.");
+      toast.error(response.data.message || "An error occurred while placing your order.");
     }
   } catch (error) {
-    setLoading(false); // Stop loading on error
+    setLoading(false); // Stop loading state
     console.error("Error placing order:", error);
-    alert("An error occurred while placing your order. Please try again later.");
+    toast.error("An error occurred while placing your order. Please try again later.");
   }
 };
+
+
+
 
 export default PlaceOrder;

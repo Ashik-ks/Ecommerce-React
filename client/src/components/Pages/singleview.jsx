@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import AddToCart from "../functions/addtocart";
 import AddToWishlist from "../functions/addtowishlist";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 function Singleview() {
@@ -93,6 +95,7 @@ function Singleview() {
     return (
         <>
             <InnerPagesNav />
+            <ToastContainer position="top-center" autoClose={2000} />
             <div className="border-b border-gray-300 pt-2 pb-2 bg-gray-100">
                 <div className="dataContainer max-w-screen-xl mx-auto">
                     <div className="container">
@@ -222,8 +225,8 @@ function Singleview() {
                             className="wishlistheart"
                             style={{
                                 position: 'absolute',
-                                top: '-2px',
-                                left: '10px',
+                                top: "-7px",
+                                left: "10px",
                                 zIndex: 10, // Ensure the heart is above the image
                             }}
                         >

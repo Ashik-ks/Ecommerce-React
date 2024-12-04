@@ -185,7 +185,6 @@ function InnerPagesNav() {
     navigate(`/category/${itemParam}/${id}/${usertype}`);
   };
 
-
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -203,7 +202,6 @@ function InnerPagesNav() {
 
     fetchCategories();
   }, []);
-
 
 
   return (
@@ -280,7 +278,7 @@ function InnerPagesNav() {
                     icon={faGift}
                     className="text-gray-500 text-lg"
                   />
-                  <span className="dropdowntext ms-2">Orders</span>
+                  <span className="dropdowntext ms-2" onClick={(event) =>  {event.preventDefault();navigate(`/order/${id}/${usertype}`)} }>Orders</span>
                 </a>
                 <a
                   href="#"
@@ -496,7 +494,7 @@ function InnerPagesNav() {
                   </a>
                   <a href="#" className="flex gap-3 p-3 text-gray-700 text-sm items-center">
                     <FontAwesomeIcon icon={faGift} className="text-gray-500 text-lg" />
-                    <span className="dropdowntext ms-2">Orders</span>
+                    <span className="dropdowntext ms-2" onClick={(event) =>  {event.preventDefault();navigate(`/order/${id}/${usertype}`)} }>Orders</span>
                   </a>
                   <a href="#" className="flex gap-3 p-3 text-gray-700 text-sm items-center">
                     <FontAwesomeIcon icon={faHeart} className="text-gray-500 text-lg" />

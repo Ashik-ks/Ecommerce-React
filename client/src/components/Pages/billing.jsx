@@ -3,7 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import InnerPagesNav from "../nav/innerpagesnav";
 import Footer from "../footer/footer";
-import PlaceOrder from "../functions/placeorder"; // Ensure this is an imported function, not a component
+import PlaceOrder from "../functions/placeorder"; 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Billing() {
   const navigate = useNavigate();
@@ -57,7 +59,7 @@ function Billing() {
 
     } catch (error) {
       console.error("Error:", error.message);
-      alert("Something went wrong while fetching the products.");
+      toast.error("Something went wrong while fetching the products.");
     }
   };
 
@@ -84,7 +86,7 @@ function Billing() {
         ...prevQuantities,
         [productId]: newQuantity,
       };
-      calculateTotalPrice(cart, updatedQuantities); // Recalculate total price when quantity changes
+      calculateTotalPrice(cart, updatedQuantities);
       return updatedQuantities;
     });
   };
@@ -95,34 +97,35 @@ function Billing() {
   };
 
   // Place order function
-const placeOrder = async () => {
-  try {
-    if (!selectedAddressId) {
-      alert("Please select an address.");
-      return;
+  const placeOrder = async () => {
+    try {
+      if (!selectedAddressId) {
+        toast.error("Please select an address.");
+        return;
+      }
+
+      const items = cart.map((product) => ({
+        product_id: product._id,
+        quantity: quantities[product._id] || 1,
+      }));
+
+      if (items.length === 0) {
+        toast.error("No items to order. Please go back and try again.");
+        return;
+      }
+
+      await PlaceOrder(id, items, selectedAddressId, setLoading, navigate, usertype); // Pass address ID here
+
+    } catch (error) {
+      console.error("Error placing order:", error);
+      toast.error("Something went wrong while placing your order.");
     }
-
-    const items = cart.map((product) => ({
-      product_id: product._id,
-      quantity: quantities[product._id] || 1, // Use selected quantity
-    }));
-
-    if (items.length === 0) {
-      alert("No items to order. Please go back and try again.");
-      return;
-    }
-
-    await PlaceOrder(id, items, selectedAddressId, setLoading, navigate, usertype); // Pass address ID here
-  } catch (error) {
-    console.error("Error placing order:", error);
-    alert("Something went wrong while placing your order.");
-  }
-};
-
+  };
 
   return (
     <>
       <InnerPagesNav />
+      <ToastContainer position="top-center" autoClose={2000} />
       <div className="container mx-auto px-4">
         <div className="flex justify-center">
           <div className="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 border border-gray-300">
@@ -142,10 +145,10 @@ const placeOrder = async () => {
               </div>
               <div className="mt-2 px-3 sm:px-5">
                 <select
-                  className="w-full border-2 p-2"
+                  className="block appearance-none w-full bg-white text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   name="address"
                   id="address"
-                  onChange={handleAddressChange} // Handle address change
+                  onChange={handleAddressChange}
                 >
                   <option value="">Select an address</option>
                   {addresses.map((address, index) => (
@@ -169,7 +172,6 @@ const placeOrder = async () => {
                       <span className="text-lg font-bold text-green-600">{product.discountPrice} off</span>
                       <span className="text-black line-through">₹{product.price}</span>
                     </div>
-                    {/* Quantity Selector */}
                     <div className="mt-2">
                       <span>Quantity</span>
                       <select
@@ -195,8 +197,8 @@ const placeOrder = async () => {
                   </div>
                   <button
                     className="w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg text-lg cursor-pointer transition-all duration-300 hover:bg-purple-700"
-                    onClick={placeOrder} // Trigger placeOrder without passing the pid
-                    disabled={loading} // Disable button while loading
+                    onClick={placeOrder}
+                    disabled={loading}
                   >
                     {loading ? "Placing Order..." : "Proceed to Pay"}
                   </button>

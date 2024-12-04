@@ -1,38 +1,51 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
+import InnerPagesNav from "../nav/innerpagesnav";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Footer from "../footer/footer";
 
 const OrderDetails = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-    const { id,usertype } = useParams();
- 
-let token = localStorage.getItem(id)
+    const { id, usertype } = useParams();
+    let token = localStorage.getItem(id);
+
     // Fetch orders on component mount
     useEffect(() => {
         if (!id || !token) {
-            alert("User ID and token are required.");
+            toast.error("User ID and token are required.");
             return;
         }
 
         const getOrders = async () => {
+            setLoading(true); // Set loading state
             try {
                 const response = await axios.get(`http://localhost:3000/gatAllorders/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
-                    }
+                    },
                 });
 
-                if (response.data && response.data.orderedProducts) {
-                    setOrders(response.data.orderedProducts);
+                if (response.data.success) {
+                    if (Array.isArray(response.data.orderedProducts) && response.data.orderedProducts.length > 0) {
+                        setOrders(response.data.orderedProducts);
+                    } else {
+                        setError(response.data.message || "Your order list is empty.");
+                    }
                 } else {
                     setError(response.data.message || "Failed to fetch ordered products.");
                 }
             } catch (err) {
-                setError("An error occurred while fetching ordered products.");
+                if (err.response && err.response.data && err.response.data.message) {
+                    setError(err.response.data.message);
+                } else {
+                    setError("An error occurred while fetching ordered products.");
+                }
             } finally {
                 setLoading(false);
             }
@@ -41,12 +54,11 @@ let token = localStorage.getItem(id)
         getOrders();
     }, [id, token]);
 
-    // Handle cancel order
     const cancelOrder = async (orderId, productId, quantity) => {
         const requestBody = {
             order_id: orderId,
             product_id: productId,
-            quantity: parseInt(quantity)
+            quantity: parseInt(quantity),
         };
 
         try {
@@ -58,78 +70,128 @@ let token = localStorage.getItem(id)
             });
 
             if (response.data.success) {
-                alert("Order canceled successfully!");
-                // Reload orders after cancellation
-                setOrders(orders.filter(order => order.orderId !== orderId));
+                toast.success("Order canceled successfully!", {
+                    onClose: () => window.location.reload(), 
+                    autoClose: 1000,
+                    className: "bg-purple-600 text-white font-semibold rounded-lg shadow-lg",
+                    bodyClassName: "text-center text-black", 
+                    progressClassName: "bg-purple-300",
+                });                
+                setOrders(orders.filter((order) => order.orderId !== orderId));
             } else {
-                alert(response.data.message || "Failed to cancel order.");
+                toast.error(response.data.message || "Failed to cancel order.");
             }
         } catch (error) {
             console.error("Error:", error);
-            alert("An error occurred while canceling the order.");
+            toast.error("An error occurred while canceling the order.");
         }
     };
 
     return (
-        <div className="container">
-            <div className="row">
-                <div className="col-3"></div>
-                <div className="col-6 border addtocartdetailsdiv">
-                    <div className="row" id="fetchallorderproducts">
-                        {loading ? (
-                            <p>Loading orders...</p>
-                        ) : error ? (
-                            <p>{error}</p>
-                        ) : (
-                            orders.map(product => {
-                                const productIdsString = `${product.productId},${product.quantity},${product.orderId}`; // Format the string with productId, quantity, and orderId
-                                return (
-                                    <div key={product.orderId} className="bg-white p-4 border-bottom border-1 mt-2 mb-4">
-                                        <div className="d-flex align-items-center">
-                                            <img src={product.productImage[0]} alt={product.productName} className="rounded me-3" width="60" height="60" />
-                                            <div>
-                                                <h5 className="mb-1">{product.productName}</h5>
-                                                <p className="text-muted">{product.productDescription}</p>
-                                                <div className="d-flex align-items-center">
-                                                    <span className="fw-bold text-primary">₹{product.price}</span>
-                                                    {product.discountPrice && (
-                                                        <span className="text-success ms-2">{product.discountPrice}% off</span>
-                                                    )}
-                                                </div>
-                                                <div className="mt-2 d-flex flex-column">
-                                                    <span className="text-muted">Quantity: {product.quantity}</span>
-                                                    <span className="mb-2 mt-3 fw-bold text-primary">Price To Pay: ₹{product.totalPrice}</span>
-                                                </div>
-                                                <div className="mt-2">
-                                                    <button
-                                                        className="btn btn-sm btn-outline-danger me-2"
-                                                        onClick={() => cancelOrder(product.orderId, product.productId, product.quantity)}
-                                                    >
-                                                        Cancel Order
-                                                    </button>
+        <>
+            <InnerPagesNav />
+            <ToastContainer position="top-center" autoClose={2000} />
+            <div className="container mx-auto">
+                <div className="grid grid-cols-12">
+                    <div className="col-span-3"></div>
+                    <div className="col-span-6 border">
+                        <div id="fetchallorderproducts">
+                            {loading ? (
+                                <p>Loading orders...</p>
+                            ) : error ? (
+                                <div className="text-center py-10">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-16 w-16 text-gray-400 mx-auto mb-4"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M3 3h18l-2 13H5L3 3zm3 14a3 3 0 106 0H6zm12 0a3 3 0 106 0h-6z"
+                                        />
+                                    </svg>
+                                    <p className="text-gray-500 text-lg">{error}</p>
+                                </div>
+                            ) : (
+                                orders.map((product) => {
+                                    return (
+                                        <div
+                                            key={product.orderId}
+                                            className="bg-white p-4 border-b border-gray-300 mt-4"
+                                        >
+                                            <div className="flex items-center">
+                                                <img
+                                                    src={`http://localhost:3000/${product.productImage[0]}`}
+                                                    alt={product.productName}
+                                                    className="rounded mr-4 w-22 h-16 object-cover"
+                                                />
+                                                <div>
+                                                    <h5 className="text-lg font-semibold">{product.productName}</h5>
+                                                    <p className="text-gray-600">{product.productDescription}</p>
+                                                    <div className="flex items-center mt-2">
+                                                        <span className="line-through text-green-600">
+                                                            ₹{product.price}
+                                                        </span>
+                                                        {product.discountPrice && (
+                                                            <span className="text-blue-600 font-bold ml-2">
+                                                                ₹{product.discountPrice}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <div className="mt-4">
+                                                        <span className="text-gray-500">
+                                                            Quantity: {product.quantity}
+                                                        </span>
+                                                        <span className="block mt-2 font-bold text-blue-600">
+                                                            Price To Pay: ₹{product.totalPrice}
+                                                        </span>
+                                                    </div>
+                                                    <div className="mt-4">
+                                                        <button
+                                                            className="bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200"
+                                                            onClick={() =>
+                                                                cancelOrder(
+                                                                    product.orderId,
+                                                                    product.productId,
+                                                                    product.quantity
+                                                                )
+                                                            }
+                                                        >
+                                                            Cancel Order
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                );
-                            })
-                        )}
+                                    );
+                                })
+                            )}
+                        </div>
+                        <div className="border-t">
+                            <div className="py-3 border-gray-300">
+                                <span className="text-md text-gray-600 px-3 sm:px-5">
+                                    About Our Return Policy <i className="fa fa-long-arrow-right"></i>
+                                </span>
+                            </div>
+                            <div className="border-t border-gray-300 py-4">
+                                <span className="text-md text-gray-600 px-3 sm:px-5">
+                                    Terms And Conditions <i className="fa fa-long-arrow-right"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div id="totalprice" className="mt-4">
+                            {/* Display total price logic here if needed */}
+                        </div>
                     </div>
-
-                    <div className="row border-bottom border-1 pt-3 pb-3 ms-">
-                        <span className="fs-6">About Our Return Policy <i className="fa fa-long-arrow-right" aria-hidden="true"></i></span>
-                    </div>
-                    <div className="row border-bottom border-1 pt-3 pb-3">
-                        <span className="fs-6">Terms And Conditions <i className="fa fa-long-arrow-right" aria-hidden="true"></i></span>
-                    </div>
-
-                    <div className="row" id="totalprice">
-                        {/* Display total price logic here if needed */}
-                    </div>
+                    <div className="col-span-3"></div>
                 </div>
-                <div className="col-3"></div>
             </div>
-        </div>
+            <Footer />
+        </>
     );
 };
 

@@ -248,10 +248,7 @@
 
 /* Wishlist Heart */
 .wishlistheart {
-  background: white;
-  font-weight: 500;
   color: red;
-  font-style: italic;
   border-radius: 50%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 4px 8px;

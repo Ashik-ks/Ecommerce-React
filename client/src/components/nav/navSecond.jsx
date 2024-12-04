@@ -8,6 +8,8 @@ import { faMagnifyingGlass, faHeart, faCartShopping, faUser, faGift, faCog, faRi
   from "@fortawesome/free-solid-svg-icons";
 import purpleLogo from "../../assets/images/purpplelogo.png"; // Adjust the import based on your actual path
 import purplejoinElite from "../../assets/images/purplejoinElite.png.gif";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const HeaderComponent = () => {
   const { count } = useCount();
@@ -64,28 +66,28 @@ const HeaderComponent = () => {
         .post("http://localhost:3000/sendotp", { email, userType })
         .then((response) => {
           if (response.data.statusCode === 200) {
-            alert("An OTP has been sent to your email");
-
+            toast.success("An OTP has been sent to your email"); // Success toast
+  
             // Hide email and user type input sections
             setIsEmailSectionVisible(false);
             setIsUserTypeSectionVisible(false);
-
+  
             // Show OTP input field
             setIsOtpSectionVisible(true); // Show OTP section
           } else {
-            alert(response.data.message || "Error sending OTP");
+            toast.error(response.data.message || "Error sending OTP"); // Error toast
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          alert("Error sending OTP");
+          toast.error("Error sending OTP"); // Error toast
         });
     } else {
-      alert("Please enter a valid email address and user type");
+      toast.error("Please enter a valid email address and user type"); // Error toast
     }
   };
-
-  // Verify OTP function
+  
+  // Verify OTP logic
   const verifyOtp = () => {
     const otp = document.getElementById("otpInput").value;
     if (otp) {
@@ -93,38 +95,38 @@ const HeaderComponent = () => {
         .post("http://localhost:3000/verifyotp", { email, otp })
         .then((response) => {
           if (response.data.statusCode === 200) {
-            alert("Login or Registration successful!");
-
+            toast.success("Login or Registration successful!"); // Success toast
+  
             let tokenkey = response.data.data.tokenid;
             let token = response.data.data.token;
-
+  
             // Store token in localStorage
             localStorage.setItem(tokenkey, token);
             localStorage.setItem(tokenkey + "_userType", response.data.data.userType);
-
+  
             const userTypeValue = response.data.data.userType || "Unknown";
-
+  
             if (response.data.data.userType === "Buyer") {
               navigate(`/index/${tokenkey}/${userTypeValue}`);
               window.location.reload();
             } else if (response.data.data.userType === "Seller") {
               navigate(`/seller/${tokenkey}/${userTypeValue}`);
             }
-
+  
             closePopup(); // Close the popup
           } else {
-            alert("Invalid OTP. Please try again.");
+            toast.error("Invalid OTP. Please try again."); // Error toast
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          alert("Error verifying OTP");
+          toast.error("Error verifying OTP"); // Error toast
         });
     } else {
-      alert("Please enter the OTP");
+      toast.error("Please enter the OTP"); // Error toast
     }
   };
-
+  
   // Admin login logic
   const adminLogin = () => {
     const password = document.getElementById("passwordInput").value;
@@ -135,36 +137,42 @@ const HeaderComponent = () => {
           if (response.data.statusCode === 200) {
             let token = response.data.data.token;
             let tokenkey = response.data.data.id;
-
+  
             // Store token in localStorage
             localStorage.setItem(tokenkey, token);
             localStorage.setItem(tokenkey + "_userType", response.data.data.userType);
-
-            alert("Admin login successful!");
+  
+            toast.success("Admin login successful!"); // Success toast
             window.location.href = `admin.html?id=${tokenkey}/${response.data.data.userType}`;
-
+  
             closePopup();
           } else {
-            alert("Invalid password. Please try again.");
+            toast.error("Invalid password. Please try again."); // Error toast
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          alert("Error during admin login");
+          toast.error("Error during admin login"); // Error toast
         });
     } else {
-      alert("Please enter a valid password");
+      toast.error("Please enter a valid password"); // Error toast
     }
   };
-
+  
+  // Handle Logout
   const handleLogout = () => {
-    // Clear user data, session, or perform any necessary logout logic
     setIsLoggedIn(false);
     setUserType(null);
-    alert("You have been logged out.");
-    navigate(`/`);
-    window.location.reload();
+    
+    toast.success("You have been logged out.", {
+      onClose: () => {
+        navigate(`/`);  // Navigate after the toast has closed
+        window.location.reload();  // Optionally reload the page if needed
+      }
+    });
   };
+  
+  
 
   useEffect(() => {
     checkUserStatus();
@@ -261,23 +269,23 @@ const HeaderComponent = () => {
         {/* Third Column */}
         <div className="flex items-center justify-end gap-3 mr-10 mt-3">
           <span onClick={(e) => {
-  e.preventDefault();
-  if (id !== 'undefined' && id !== null) {
-    navigate(`/wishlist/${id}/${usertype}`);
-  } else {
-    console.error("ID is undefined or null, navigation aborted.");
-  }
-}}>
+            e.preventDefault();
+            if (id !== 'undefined' && id !== null) {
+              navigate(`/wishlist/${id}/${usertype}`);
+            } else {
+              console.error("ID is undefined or null, navigation aborted.");
+            }
+          }}>
             <i className="fa-regular fa-heart pxsmile"></i>
           </span>
           <span className="relative" onClick={(e) => {
-  e.preventDefault();
-  if (id !== 'undefined' && id !== null) {
-    navigate(`/cart/${id}/${usertype}`);
-  } else {
-    console.error("ID is undefined or null, navigation aborted.");
-  }
-}}>
+            e.preventDefault();
+            if (id !== 'undefined' && id !== null) {
+              navigate(`/cart/${id}/${usertype}`);
+            } else {
+              console.error("ID is undefined or null, navigation aborted.");
+            }
+          }}>
             <FontAwesomeIcon
               icon={faCartShopping}
               className=" mt-1 pxsmile"
@@ -324,7 +332,7 @@ const HeaderComponent = () => {
                   icon={faGift}
                   className="text-gray-500 text-lg"
                 />
-                <span className="dropdowntext ms-2">Orders</span>
+                <span className="dropdowntext ms-2" onClick={(event) => { event.preventDefault(); navigate(`/order/${id}/${usertype}`) }}>Orders</span>
               </a>
               <a
                 href="#"
@@ -432,24 +440,24 @@ const HeaderComponent = () => {
             {/* Third Column */}
             <div className="flex items-center justify-end gap-5 mr-10 hidden md:flex">
               <span onClick={(e) => {
-  e.preventDefault();
-  if (id !== 'undefined' && id !== null) {
-    navigate(`/wishlist/${id}/${usertype}`);
-  } else {
-    console.error("ID is undefined or null, navigation aborted.");
-  }
-}}
->
+                e.preventDefault();
+                if (id !== 'undefined' && id !== null) {
+                  navigate(`/wishlist/${id}/${usertype}`);
+                } else {
+                  console.error("ID is undefined or null, navigation aborted.");
+                }
+              }}
+              >
                 <i class="fa-regular fa-heart text-2xl"></i>
               </span>
               <span className="relative" onClick={(e) => {
-  e.preventDefault();
-  if (id !== 'undefined' && id !== null) {
-    navigate(`/cart/${id}/${usertype}`);
-  } else {
-    console.error("ID is undefined or null, navigation aborted.");
-  }
-}}>
+                e.preventDefault();
+                if (id !== 'undefined' && id !== null) {
+                  navigate(`/cart/${id}/${usertype}`);
+                } else {
+                  console.error("ID is undefined or null, navigation aborted.");
+                }
+              }}>
                 <FontAwesomeIcon
                   icon={faCartShopping}
                   className="icon-smile mt-1"
@@ -490,16 +498,16 @@ const HeaderComponent = () => {
                     className="flex gap-3 p-3 text-gray-700 text-sm items-center"
                   >
                     <FontAwesomeIcon icon={faGift} className="text-gray-500 text-lg" />
-                    <span className="logintext ms-2">Orders</span>
+                    <span className="logintext ms-2" onClick={(event) => { event.preventDefault(); navigate(`/order/${id}/${usertype}`) }}>Orders</span>
                   </a>
                   <div
                     className="flex p-3 text-gray-700 text-sm items-center ms-2"
                   >
                     <FontAwesomeIcon icon={faHeart} className="text-gray-500 text-lg" />
                     <button className="logintext ms-2" onClick={(e) => {
-    e.preventDefault(); 
-    navigate(`/wishlist/${id}/${usertype}`); 
-  }} >Wishlist</button>
+                      e.preventDefault();
+                      navigate(`/wishlist/${id}/${usertype}`);
+                    }} >Wishlist</button>
                   </div>
                   {usertype === 'Seller' && (
                     <a

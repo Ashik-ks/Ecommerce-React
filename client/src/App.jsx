@@ -13,8 +13,8 @@ import Addproduct from './components/Pages/addProduct';
 import Addtocartpage from './components/Pages/cart';
 import AddtoWhishlistPage from './components/Pages/Wishlist';
 import Billing from './components/Pages/billing';
-import Order from './components/Pages/order';
-
+import OrderDetails from './components/Pages/order';
+import Sections from './components/Pages/sections';
 
 function App() {
   return (
@@ -35,7 +35,8 @@ function App() {
           <Route path="/cart/:id/:usertype" element={<Addtocartpage />} />
           <Route path="/wishlist/:id/:usertype" element={<AddtoWhishlistPage />} />
           <Route path="/billing/:id/:pid/:usertype" element={<Billing />} />
-          <Route path="/order/:id/:usertype" element={<Order />} />
+          <Route path="/order/:id/:usertype" element={<OrderDetails />} />
+          <Route path="/section/:id/:usertype" element={<Sections />} />
         </Routes>
       </CountProvider>
     </Router>

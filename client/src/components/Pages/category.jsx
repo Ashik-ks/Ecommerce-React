@@ -142,8 +142,6 @@ function Category() {
             {/* Featured Category Section */}
             <div className="container text-center text-2xl font-bold mt-5 underline">Featured</div>
 
-
-
 {/* First Section: Display the first dataset (data1) */}
 <div className="max-w-screen-xl mx-auto mt-7 mb-8">
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -206,8 +204,6 @@ function Category() {
         )}
     </div>
 </div>
-
-
 
             <div className="container max-w-screen-xl mx-auto">
                 <div className="flex flex-wrap">
@@ -322,9 +318,6 @@ function Category() {
         )}
     </div>
 </div>
-
-
-
 
             <Footer />
         </>

@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddToCart = async (pid, id, token) => {
     try {
@@ -11,14 +13,14 @@ const AddToCart = async (pid, id, token) => {
 
         // Check if the response status is 200 (OK)
         if (response.status === 200) {
-            alert(response.data.message || "Product added to cart successfully!");
+            toast.success(response.data.message || "Product added to cart successfully!"); // Success toast
             // Optionally, update state or trigger re-render here
         } else {
-            alert(response.data.message || "Failed to add product to cart. Please try again.");
+            toast.error(response.data.message || "Failed to add product to cart. Please try again."); // Error toast
         }
     } catch (error) {
         console.error("Error adding product to cart:", error);
-        alert("An error occurred while adding the product to the cart. Please try again.");
+        toast.error("An error occurred while adding the product to the cart. Please try again."); // Error toast
     }
 };
 
