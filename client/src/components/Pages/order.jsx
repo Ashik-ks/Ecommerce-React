@@ -146,7 +146,7 @@ const OrderDetails = () => {
                                                         <span className="text-gray-500">
                                                             Quantity: {product.quantity}
                                                         </span>
-                                                        <span className="block mt-2 font-bold text-blue-600">
+                                                        <span className="block mt-3 text-lg font-bold text-blue-600">
                                                             Price To Pay: ₹{product.totalPrice}
                                                         </span>
                                                     </div>

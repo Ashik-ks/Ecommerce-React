@@ -16,10 +16,12 @@ function SearchPage() {
     const [searchProductItems, setSearchProductItems] = useState([]);
     const [searchProductCategories, setSearchProductCategories] = useState([]);
     const displayedIds = new Set(); // Track displayed IDs to prevent duplicates
+    const [showAll, setShowAll] = useState(false);
+
 
     const images = [lipbalmbanner, hairspraybanner, bathandboybanner];
     const navigate = useNavigate();
-    const { item, id, usertype } = useParams();  // Use both item and id from URL params
+    const { item, id, usertype } = useParams();
 
     const nextSlide = useCallback(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -49,6 +51,7 @@ function SearchPage() {
     }, [item, id]);
 
     const renderUniqueItems = (items) => {
+        const itemsToShow = showAll ? items : items.slice(0, 4);
         return items
             .filter((item) => {
                 // If the item's _id has already been displayed or it's the main product, skip it
@@ -272,9 +275,12 @@ function SearchPage() {
                                 {searchProduct.category.name}
                             </p>
                             <div className="text-center mt-1 text-blue-500">
-                                <span className="mb-5 text-lg">View All </span>
-                                <i className="fa-solid fa-arrow-right text-lg"></i>
-                            </div>
+    <span className="mb-5 text-lg cursor-pointer" onClick={() => setShowAll(!showAll)}>
+        {showAll ? "Show Less" : "View All"}
+    </span>
+    <i className="fa-solid fa-arrow-right text-lg"></i>
+</div>
+
                         </>
                     )}
                 </div>

@@ -67,7 +67,7 @@ exports.sendotp = async function (req, res) {
                     email: admin.email,
                     token: token,
                     userType: "Admin",
-                    id:admin._id,
+                    id: admin._id,
                 },
             });
         }
@@ -116,14 +116,15 @@ exports.sendotp = async function (req, res) {
                 userType: userTypeDocument._id,
                 name,
                 otp,
+                userStatus: "UnBlock", // Set the userStatus to "UnBlock" for new users
             };
 
             user = await users.create(body);
             console.log("New user created:", user);
 
             try {
-                const emailTemplate = await set_otp_template(email, otp);
-                await sendEmail(email, "User created", emailTemplate);
+                // const emailTemplate = await set_otp_template(email, otp);
+                // await sendEmail(email, "User created", emailTemplate);
                 console.log("OTP email sent successfully to new user:", email);
 
                 return res.status(200).send({
@@ -151,6 +152,7 @@ exports.sendotp = async function (req, res) {
 };
 
 
+
 exports.verifyotp = async function (req, res) {
     try {
         const { email, otp } = req.body;
@@ -166,6 +168,13 @@ exports.verifyotp = async function (req, res) {
         if (!user) {
             return res.status(400).send({
                 message: "User not found. Please register first.",
+            });
+        }
+
+        // Check if the user is blocked
+        if (user.userStatus === 'Block') {
+            return res.status(400).send({
+                message: "You are blocked. Please contact support.",
             });
         }
 
@@ -231,6 +240,7 @@ exports.verifyotp = async function (req, res) {
         });
     }
 };
+
 
 
 

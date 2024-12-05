@@ -225,7 +225,7 @@ function Singleview() {
                             className="wishlistheart"
                             style={{
                                 position: 'absolute',
-                                top: "-7px",
+                                top: "6px",
                                 left: "10px",
                                 zIndex: 10, // Ensure the heart is above the image
                             }}

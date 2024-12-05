@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import NavOne from "../nav/navOne";
 import HeaderComponent from "../nav/navSecond";
@@ -16,7 +16,7 @@ import bathandboybanner from "../../assets/images/bathand body banner.webp";
 function Category() {
     const { count } = useCount();
     const { item, id } = useParams();
-    let { usertype } = useParams();
+    const { usertype } = useParams();
     const [itemData, setItemData] = useState(null);
     const [data, setData] = useState([]);
     const [data1, setData1] = useState(null);
@@ -24,15 +24,15 @@ function Category() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [showAll, setShowAll] = useState(false); // State for toggling between show all or first 4 products
     const navigate = useNavigate();
 
     const images = [lipbalmbanner, hairspraybanner, bathandboybanner];
-    // Memoize addToCart function
+
     const addToCart = useCallback((itemId) => {
         console.log(`Adding item ${itemId} to the cart`);
     }, []);
 
-    // Memoize nextSlide and prevSlide functions
     const nextSlide = useCallback(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, []);
@@ -47,18 +47,14 @@ function Category() {
                 const decodedItem = JSON.parse(decodeURIComponent(item));
                 setItemData(decodedItem);
                 const itemId = decodedItem._id;
-                const categoryuserid = id || null; // Pass `null` for undefined user
+                const categoryuserid = id || null;
 
-                const categoryResponse = await fetch(
-                    `http://localhost:3000/fetchcategory/${itemId}/${categoryuserid}`
-                );
+                const categoryResponse = await fetch(`http://localhost:3000/fetchcategory/${itemId}/${categoryuserid}`);
                 const categoryData = await categoryResponse.json();
                 setData(categoryData.data.products);
                 setData2(categoryData.data.itemId);
 
-                const itemResponse = await fetch(
-                    `http://localhost:3000/fetchitem/${itemId}/${categoryuserid}`
-                );
+                const itemResponse = await fetch(`http://localhost:3000/fetchitem/${itemId}/${categoryuserid}`);
                 const itemData = await itemResponse.json();
                 setData1(itemData.data.products1);
             }
@@ -70,7 +66,6 @@ function Category() {
         }
     }, [item, id]);
 
-
     useEffect(() => {
         fetchData();
     }, [fetchData]);
@@ -78,20 +73,16 @@ function Category() {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error loading data</div>;
 
-
     const singleProduct = (productId, category) => {
-        // Handle navigation or action for a single product
         navigate(`/singleview/${productId}/${id}/${category}/${usertype}`);
     };
 
-    let token = localStorage.getItem(id)
-
     const addToWishlist = async (productId) => {
         try {
+            let token = localStorage.getItem(id);
             await AddToWishlist(productId, id, token);
         } catch (error) {
-            console.error("Error adding to cart:", error);
-            alert("Something went wrong while adding to the cart.");
+            console.error("Error adding to wishlist:", error);
         }
     };
 
@@ -107,9 +98,7 @@ function Category() {
                     <div className="w-full overflow-hidden relative">
                         <div
                             className="flex transition-transform duration-500 ease-in-out"
-                            style={{
-                                transform: `translateX(-${currentIndex * 100}%)`,
-                            }}
+                            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
                         >
                             {images.map((image, index) => (
                                 <div key={index} className="w-full flex-shrink-0">
@@ -121,7 +110,6 @@ function Category() {
                                 </div>
                             ))}
                         </div>
-
                         {/* Carousel Buttons */}
                         <button
                             className="absolute top-1/2 left-0 transform -translate-y-1/2 z-10 p-3 text-white bg-black bg-opacity-50 hover:bg-opacity-75 rounded-full"
@@ -140,184 +128,119 @@ function Category() {
             </div>
 
             {/* Featured Category Section */}
-            <div className="container text-center text-2xl font-bold mt-5 underline">Featured</div>
+            <div className="container text-center text-3xl font-bold mt-5 underline text-purple-500">Featured</div>
 
-{/* First Section: Display the first dataset (data1) */}
-<div className="max-w-screen-xl mx-auto mt-7 mb-8">
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {data1 && data1.length > 0 ? (
-            data1.map((item) => {
-                const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'fallback-image-url.jpg';
-
-                return (
-                    <div 
-                        key={item._id} 
-                        className="product-card bg-white shadow-md rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
-                    >
-                        <div className="relative" onClick={() => singleProduct(item._id, item.category)}>
-                            {/* Conditionally Render Wishlist Heart */}
-                            {id && id !== "undefined" && ( // Ensure `id` exists and is valid
-                                <span
-                                    id={`wishlistheart-${item._id}`}
-                                    className="wishlistheart"
-                                    style={{
-                                        position: 'absolute',
-                                        top: '-6px',
-                                        left: '10px',
-                                        zIndex: 10, // Ensure the heart is above the image
-                                    }}
+            {/* First Section: Display the first dataset (data1) */}
+            <div className="max-w-screen-xl mx-auto mt-7 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {data1 && data1.length > 0 ? (
+                        data1.map((item) => {
+                            const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'fallback-image-url.jpg';
+                            return (
+                                <div
+                                    key={item._id}
+                                    className="product-card bg-white shadow-md rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
                                 >
-                                    {/* Display red heart if in wishlist, black heart if not */}
-                                    <i
-                                        className={`fa fa-heart fs-5 ${item.isInWishlist ? 'text-danger' : 'text-slate-300'}`}
-                                        aria-hidden="true"
-                                        onClick={(e) => {
-                                            e.stopPropagation(); // Prevent bubbling
-                                            addToWishlist(item._id); // Add or remove from wishlist
-                                        }}
-                                    ></i>
-                                </span>
-                            )}
+                                    <div className="relative" onClick={() => singleProduct(item._id, item.category)}>
+                                        {/* Wishlist Heart */}
+                                        {id && id !== "undefined" && (
+                                            <span
+                                                id={`wishlistheart-${item._id}`}
+                                                className="wishlistheart"
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: '-6px',
+                                                    left: '10px',
+                                                    zIndex: 10,
+                                                }}
+                                            >
+                                                <i
+                                                    className={`fa fa-heart fs-5 ${item.isInWishlist ? 'text-danger' : 'text-slate-300'}`}
+                                                    aria-hidden="true"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        addToWishlist(item._id);
+                                                    }}
+                                                ></i>
+                                            </span>
+                                        )}
 
-                            {/* Product Image */}
-                            <img
-                                src={`http://localhost:3000/${imageUrl}`}  // Replace `imageUrl` with the actual URL
-                                alt={item.name}  // Alt text for the image (using item.name for better accessibility)
-                                className="w-full h-[100px] md:h-[250px] lg:h-[300px] object-cover rounded" // Fixed height, responsive breakpoints, object-cover, and rounded corners
-                            />
-                        </div>
+                                        {/* Product Image */}
+                                        <img
+                                            src={`http://localhost:3000/${imageUrl}`}
+                                            alt={item.name}
+                                            className="w-full h-[100px] md:h-[250px] lg:h-[300px] object-cover rounded"
+                                        />
+                                    </div>
 
-                        <div className="">
-                            <h3 className="font-semibold text-lg text-gray-800 truncate">{item.name}</h3>
-                            <div className="flex justify-start items-center gap-3 mt-2">
-                                <span className="text-lg font-bold text-black">Offer: ₹{item.discountPrice}</span>
-                                <span className="text-md text-gray-600 line-through">₹{item.price}</span>
-                            </div>
-                            <div className="mt-2 text-sm text-gray-500">{item.stockStatus}</div>
-
-                        </div>
-                    </div>
-                );
-            })
-        ) : (
-            <div className="col-span-full text-center text-gray-500">No products available</div>
-        )}
-    </div>
-</div>
-
-            <div className="container max-w-screen-xl mx-auto">
-                <div className="flex flex-wrap">
-                    <div className="w-full sm:w-1/2 p-2">
-                        <img
-                            src={categorybanner1}
-                            alt="Category Banner 1"
-                            className="w-full h-auto rounded-lg"
-                        />
-                    </div>
-                    <div className="w-full sm:w-1/2 p-2">
-                        <img
-                            src={categorybanner2}
-                            alt="Category Banner 2"
-                            className="w-full h-auto rounded-lg"
-                        />
-                    </div>
-                </div>
-            </div>
-
-            <div className="container max-w-screen-xl mx-auto mb-7">
-                <div className="text-center text-2xl font-bold mb-5">
-                    {data && data.length > 0 && (
-                        <>
-                            <div className="text-center text-3xl font-bold mt-5">{data2}</div>
-                            <div className="text-center mt-3 text-blue-500">
-                                <span className="mb-5">View All </span>
-                                <i className="fa-solid fa-arrow-right"></i>
-                            </div>
-                        </>
+                                    <div className="">
+                                        <h3 className="font-semibold text-lg text-gray-800 truncate">{item.name}</h3>
+                                        <div className="flex justify-start items-center gap-3 mt-2">
+                                            <span className="text-lg font-bold text-black">Offer: ₹{item.discountPrice}</span>
+                                            <span className="text-md text-gray-600 line-through">₹{item.price}</span>
+                                        </div>
+                                        <div className="mt-2 text-sm text-gray-500">{item.stockStatus}</div>
+                                    </div>
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <div className="col-span-full text-center text-gray-500">No products available</div>
                     )}
                 </div>
             </div>
 
-            {/* Second Section: Display the second dataset (data) */}
-            <div className="max-w-screen-xl mx-auto p-4">
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {data && data.length > 0 ? (
-            data.map((item) => (
-                <div
-                    key={item._id}
-                    className="product-card bg-white shadow-md rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
-                >
-                    {/* Product Image with Wishlist Heart Icon */}
-                    <div className="relative cursor-pointer" onClick={() => singleProduct(item._id, item.category)}>
-                        {/* Conditionally render Wishlist heart icon only if `id` exists */}
-                        {id && id !== "undefined" && (
-                            <span
-                                onClick={(e) => {
-                                    e.stopPropagation(); // Prevent event from bubbling up to the image click handler
-                                    addToWishlist(item._id); // Add/remove from wishlist based on current state
-                                }}
-                                id={`wishlistheart-${item._id}`}
-                                className="wishlistheart"
-                                style={{
-                                    position: "absolute",
-                                    top: "-12px",
-                                    left: "10px",
-                                    zIndex: 10,
-                                }}
-                            >
-                                <i
-                                    className={`fa fa-heart fs-5 ${item.isInWishlist ? 'text-danger' : 'text-slate-300'}`} // Red if in wishlist, black if not
-                                    aria-hidden="true"
-                                ></i>
-                            </span>
-                        )}
+            {/* "View All" Button to toggle products */}
+            <div className="text-center mb-4">
+                {data && data.length > 0 && (
+                    <>
+                        {/* Display the category name or any other relevant data */}
+                        <div className="text-center text-purple-500 text-3xl font-bold mt-5">{data2}</div>
 
-                        {/* Product Image */}
-                        <img
-                            src={`http://localhost:3000/${
-                                item.images && item.images[0] ? item.images[0] : "fallback-image-url.jpg"
-                            }`}
-                            alt={item.name || "Fallback Image Description"}
-                            className="w-full h-[100px] md:h-[250px] lg:h-[300px] object-cover mx-auto"
-                        />
-                    </div>
-
-                    {/* Product Details */}
-                    <div className="p-4">
-                        <h3 className="font-semibold text-lg text-gray-800 truncate">
-                            {item.name}
-                        </h3>
-                        <div className="flex justify-start items-center gap-3 mt-2">
-                            <span className="text-lg font-bold text-black">
-                                Offer: ₹{item.discountPrice}
-                            </span>
-                            <span className="text-md text-gray-600 line-through">
-                                ₹{item.price}
-                            </span>
-                        </div>
-                        <div className="mt-2 text-sm text-gray-500">
-                            {item.stockStatus}
-                        </div>
-                    </div>
-
-                    {/* Uncomment if you want to add the Add to Cart button */}
-                    {/* <div className="bg-white text-center pb-2">
+                        {/* Button to toggle between "Show All" and "Show Less" */}
                         <button
-                            className="addtocartbtn mt-2 hover:bg-gray-100 transition-colors duration-200"
-                            onClick={() => addToCart(item._id)}
+                            onClick={() => setShowAll(!showAll)}
+                            className="cursor-pointer text-xl text-black font-bold mt-2"
                         >
-                            Add to Cart
+                            {showAll ? "Show Less" : "View All"}
                         </button>
-                    </div> */}
-                </div>
-            ))
-        ) : (
-            <div className="col-span-full text-center text-gray-500">
-                No products available
+                        <i className="fa-solid fa-arrow-right ms-1"></i>
+                    </>
+                )}
             </div>
-        )}
-    </div>
-</div>
+
+
+            {/* Second Section: Display the second dataset (data) */}
+            <div className="max-w-screen-xl mx-auto p-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {(showAll ? data : data.slice(0, 4)).map((item) => {
+                        const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'fallback-image-url.jpg';
+                        return (
+                            <div
+                                key={item._id}
+                                className="product-card bg-white shadow-md rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                            >
+                                <div className="relative" onClick={() => singleProduct(item._id, item.category)}>
+                                    <img
+                                        src={`http://localhost:3000/${imageUrl}`}
+                                        alt={item.name}
+                                        className="w-full h-[100px] md:h-[250px] lg:h-[300px] object-cover rounded"
+                                    />
+                                </div>
+
+                                <div className="">
+                                    <h3 className="font-semibold text-lg text-gray-800 truncate">{item.name}</h3>
+                                    <div className="flex justify-start items-center gap-3 mt-2">
+                                        <span className="text-lg font-bold text-black">Offer: ₹{item.discountPrice}</span>
+                                        <span className="text-md text-gray-600 line-through">₹{item.price}</span>
+                                    </div>
+                                    <div className="mt-2 text-sm text-gray-500">{item.stockStatus}</div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
 
             <Footer />
         </>

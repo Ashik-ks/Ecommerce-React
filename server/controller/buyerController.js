@@ -1308,7 +1308,12 @@ exports.placeOrder = async function (req, res) {
 
             if (product.stockQuantity === 0) {
                 product.stockStatus = "Out of Stock";
-                // Optionally, you can send an email to notify the buyer if stock reaches 0
+                // Send an email to the seller if the product is out of stock
+                const seller = await Users.findOne({ _id: product.sellerId });
+                if (seller) {
+                    const emailTemplate = await set_stock_template(seller.email, product.stockQuantity, product.name);
+                    await sendEmail(seller.email, "Out of Stock Notification", emailTemplate);  // Send email to seller
+                }
             }
 
             // Save product update to be processed in bulk
@@ -1320,20 +1325,10 @@ exports.placeOrder = async function (req, res) {
         // Save user's order data
         await user.save();
 
-        // Send out-of-stock email for products with no stock
-        if (outOfStockProducts.length > 0) {
-            const userEmail = user.email;
-            for (let product of outOfStockProducts) {
-                // const emailTemplate = await set_stock_template(userEmail, product.stockQuantity, product.name);
-                // await sendEmail(userEmail, "Out of Stock Notification", emailTemplate);  // Send email to user
-            }
-        }
-
         // Send order placed email to the buyer
         const userEmail = user.email;
-        // Pass the userAddress along with the other details to the email template
-        // const emailTemplate = await set_orderplace_template(userEmail, orderedProducts, totalOrderPrice, userAddress);
-        // await sendEmail(userEmail, "Order Confirmation", emailTemplate);  // Sending confirmation email to the user
+        const emailTemplate = await set_orderplace_template(userEmail, orderedProducts, totalOrderPrice, userAddress);
+        await sendEmail(userEmail, "Order Confirmation", emailTemplate);  // Sending confirmation email to the user
 
         // If the order was successfully placed, return the response
         return res.status(200).json({
@@ -1528,7 +1523,7 @@ exports.CancelOrder = async function (req, res) {
         await product.save();
 
         // Send email to the user about the order cancellation
-        const emailTemplate = await set_order_cancel_template(user.email, product.name, quantity);
+        // const emailTemplate = await set_order_cancel_template(user.email, product.name, quantity);
         // await sendEmail(user.email, "Order Cancelled", emailTemplate);
         // console.log("Cancellation email sent to user");
 
@@ -1627,7 +1622,7 @@ exports.getOrderedProducts = async function (req, res) {
 exports.ProductSections = async function (req, res) {
     try {
         const userId = req.params.id; // The user ID from the URL
-        let productOnOffer, productOnEliteOffer, productNew;
+        let productOnOffer, productOnEliteOffer, productNew, highestPricedProducts;
         let user;
 
         // 1. Find products under discountPrice 500
@@ -1638,14 +1633,19 @@ exports.ProductSections = async function (req, res) {
             .sort({ discountPrice: 1 }) // Sort by discountPrice in ascending order
             .limit(5); // Limit to 5 products
 
-        // 3. Find the last added products (e.g., num = totalLength - 7)
+        // 3. Find the last added 8 products
         const totalLength = await Product.countDocuments(); // Get total number of products
-        const num = totalLength - 7; // Calculate the number of products to skip
+        const num = totalLength - 8; // Calculate the number of products to skip for the last 8 products
 
         productNew = await Product.find()
-            .sort({ createdAt: -1 }) // Sort by createdAt to get the most recently added products
+            .sort({ createdAt: 1 }) // Sort by createdAt to get the most recently added products
             .skip(num) // Skip 'num' products
-            .limit(7); // Limit to 7 products after skipping 'num'
+            .limit(8); // Limit to 8 products after skipping 'num'
+
+        // 4. Find the highest priced products (assuming price field)
+        highestPricedProducts = await Product.find()
+            .sort({ price: -1 }) // Sort by price in descending order to get the highest-priced
+            .limit(5); // You can adjust the number as needed, here I assume 5 highest-priced products
 
         // If userId is provided, check if the product is in the user's wishlist
         if (userId && userId !== 'undefined') {
@@ -1675,6 +1675,7 @@ exports.ProductSections = async function (req, res) {
             productOnOffer = addWishlistFlag(productOnOffer);
             productOnEliteOffer = addWishlistFlag(productOnEliteOffer);
             productNew = addWishlistFlag(productNew);
+            highestPricedProducts = addWishlistFlag(highestPricedProducts);
         }
 
         // Sending the results back in the response with the wishlist flag included
@@ -1682,6 +1683,7 @@ exports.ProductSections = async function (req, res) {
             productOnOffer,
             productOnEliteOffer,
             productNew,
+            highestPricedProducts, // Include the highest-priced products in the response
         });
 
     } catch (error) {
@@ -1689,6 +1691,7 @@ exports.ProductSections = async function (req, res) {
         res.status(500).json({ message: "Error fetching product sections." });
     }
 };
+
 
 
   

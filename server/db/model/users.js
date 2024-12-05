@@ -15,6 +15,11 @@ const users = new mongoose.Schema({
     otp: {
         type: String,
     },
+    userStatus: { 
+        type: String, 
+        enum: ["Block", "UnBlock"], 
+        default: "UnBlock" 
+    },
     address: [
         {
             street: {

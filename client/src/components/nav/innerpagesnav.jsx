@@ -8,6 +8,8 @@ import { faMagnifyingGlass, faHeart, faCartShopping, faUser, faGift, faCog, faRi
   from "@fortawesome/free-solid-svg-icons";
 import purpleLogo from "../../assets/images/purpplelogo.png";
 import purplejoinElite from "../../assets/images/purplejoinElite.png.gif";
+import {toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 function InnerPagesNav() {
@@ -65,64 +67,71 @@ function InnerPagesNav() {
         .post("http://localhost:3000/sendotp", { email, userType })
         .then((response) => {
           if (response.data.statusCode === 200) {
-            alert("An OTP has been sent to your email");
-
+            toast.success("An OTP has been sent to your email"); // Success toast
+  
             // Hide email and user type input sections
             setIsEmailSectionVisible(false);
             setIsUserTypeSectionVisible(false);
-
+  
             // Show OTP input field
             setIsOtpSectionVisible(true); // Show OTP section
           } else {
-            alert(response.data.message || "Error sending OTP");
+            toast.error(response.data.message || "Error sending OTP"); // Error toast
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          alert("Error sending OTP");
+          toast.error("Error sending OTP"); // Error toast
         });
     } else {
-      alert("Please enter a valid email address and user type");
+      toast.error("Please enter a valid email address and user type"); // Error toast for missing email or user type
     }
   };
 
   // Verify OTP function
   const verifyOtp = () => {
     const otp = document.getElementById("otpInput").value;
+  
     if (otp) {
       axios
         .post("http://localhost:3000/verifyotp", { email, otp })
         .then((response) => {
           if (response.data.statusCode === 200) {
-            alert("Login or Registration successful!");
-
+            toast.success("Login or Registration successful!"); // Success toast
+  
             let tokenkey = response.data.data.tokenid;
             let token = response.data.data.token;
-
+  
             // Store token in localStorage
             localStorage.setItem(tokenkey, token);
             localStorage.setItem(tokenkey + "_userType", response.data.data.userType);
-
+  
             if (response.data.data.userType === "Buyer") {
               navigate(`/index/${tokenkey}/${response.data.data.userType}`);
             } else if (response.data.data.userType === "Seller") {
               navigate(`/seller/${tokenkey}/${response.data.data.userType}`);
             }
-
+  
             closePopup(); // Close the popup
           } else {
-            alert("Invalid OTP. Please try again.");
+            // Extract the error message from the response data
+            const errorMessage = response.data.message || "Invalid OTP. Please try again.";
+            toast.error(errorMessage); // Error toast with the message from the server
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          alert("Error verifying OTP");
+          
+          // Extract the error message from the error response (if available)
+          const errorMessage = error.response?.data?.message || "Error verifying OTP";
+          toast.error(errorMessage); // Error toast
         });
     } else {
-      alert("Please enter the OTP");
+      toast.error("Please enter the OTP"); // Error toast for empty OTP input
     }
   };
-
+  
+  
   // Admin login logic
   const adminLogin = () => {
     const password = document.getElementById("passwordInput").value;
@@ -139,7 +148,7 @@ function InnerPagesNav() {
             localStorage.setItem(tokenkey + "_userType", response.data.data.userType);
 
             alert("Admin login successful!");
-            window.location.href = `admin.html?id=${tokenkey}`;
+            navigate(`/admin/${tokenkey}/${response.data.data.userType}`);
             closePopup();
           } else {
             alert("Invalid password. Please try again.");
@@ -206,6 +215,7 @@ function InnerPagesNav() {
 
   return (
     <>
+    
       <div className="border-b border-gray-300 pt-1 pb-2">
 
         <div className="grid lg:hidden grid-cols-2 gap-4 pb-2 border-b border-gray-300 pt-2 pb-2">
@@ -433,19 +443,19 @@ function InnerPagesNav() {
                 )}
               </div>
 
-              <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors">
+              <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors"onClick={() =>  {console.log({ id, usertype, state: "OFFERS" }); navigate(`/section/${id}/${usertype}/OFFERS`)}}>
                 OFFERS
               </span>
-              <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors">
+              <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors"onClick={() =>  {console.log({ id, usertype, state: "NEW" }); navigate(`/section/${id}/${usertype}/NEW`)}}>
                 NEW
               </span>
-              <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors">
+              <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors"onClick={() =>  {console.log({ id, usertype, state: "SPLURGE" }); navigate(`/section/${id}/${usertype}/SPLURGE`)}}>
                 SPLURGE
               </span>
-              <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors">
+              <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors"onClick={() =>  {console.log({ id, usertype, state: "MAGAZINE" }); navigate(`/section/${id}/${usertype}/MAGAZINE`)}}>
                 MAGAZINE
               </span>
-              <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors">
+              <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors"onClick={() =>  {console.log({ id, usertype, state: "ELITE OFFERS" }); navigate(`/section/${id}/${usertype}/ELITE OFFERS`)}}>
                 ELITE OFFERS
               </span>
             </div>

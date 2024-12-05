@@ -15,6 +15,7 @@ import AddtoWhishlistPage from './components/Pages/Wishlist';
 import Billing from './components/Pages/billing';
 import OrderDetails from './components/Pages/order';
 import Sections from './components/Pages/sections';
+import Dashboard from './components/Pages/admin';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/index/:id/:usertype" element={<Home />} />
           <Route path="/seller/:id/:usertype" element={<Seller />} />
+          <Route path="/admin/:id/:usertype" element={<Dashboard />} />
           <Route path="/category/:item/:id/:usertype" element={<Category />} />
           <Route path="/singleview/:pid/:id/:categoryid/:usertype" element={<Singleview />} />
           <Route path="/searchpage/:item/:id/:usertype" element={<SearchPage />} />
@@ -36,7 +38,7 @@ function App() {
           <Route path="/wishlist/:id/:usertype" element={<AddtoWhishlistPage />} />
           <Route path="/billing/:id/:pid/:usertype" element={<Billing />} />
           <Route path="/order/:id/:usertype" element={<OrderDetails />} />
-          <Route path="/section/:id/:usertype" element={<Sections />} />
+          <Route path="/section/:id/:usertype/:state" element={<Sections />} />
         </Routes>
       </CountProvider>
     </Router>

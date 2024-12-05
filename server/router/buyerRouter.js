@@ -12,7 +12,7 @@ function setAccessControl(access_types) {
 
 router.get('/user/:id', buyerController.getSingleuser);
 router.get('/category', buyerController.getCategory);
-router.get('/productsections/:id',setAccessControl("2,3"),buyerController.ProductSections);
+router.get('/productsections/:id',buyerController.ProductSections);
 router.post('/addaddress/:id', buyerController.addAddress);
 router.put('/updateaddress/:id/:index', buyerController.updateaddress);
 router.delete('/deleteaddress/:id/:index', buyerController.deleteaddress);

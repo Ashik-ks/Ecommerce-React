@@ -4,6 +4,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InnerPagesNav from "../nav/innerpagesnav";
 import Footer from "../footer/footer";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Profile() {
   const [userData, setUserData] = useState(null);
@@ -77,39 +79,47 @@ export default function Profile() {
 
   const verifyOtp = () => {
     const otp = document.getElementById("otpInput").value;
+  
     if (otp) {
       axios
         .post("http://localhost:3000/verifyotp", { email, otp })
         .then((response) => {
           setUserData(response.data);
+          
           if (response.data.statusCode === 200) {
             alert("Login or Registration successful!");
-
+  
             const { tokenid, token, userType } = response.data.data;
-
+  
             localStorage.setItem(tokenid, token);
             localStorage.setItem(`${tokenid}_userType`, userType);
-
+  
             if (userType === "Buyer") {
-              navigate(`/index/${tokenid}/${response.data.data.userType}`);
+              navigate(`/index/${tokenid}/${userType}`);
               window.location.reload();
             } else if (userType === "Seller") {
-              navigate(`/seller/${tokenid}/${response.data.data.userType}`);
+              navigate(`/seller/${tokenid}/${userType}`);
             }
-
+  
             closePopup();
           } else {
-            alert("Invalid OTP. Please try again.");
+            // Display the specific error message from the server response
+            const errorMessage = response.data.message || "Invalid OTP. Please try again.";
+            alert(errorMessage); // Alert with error message
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          alert("Error verifying OTP");
+          
+          // Handle the error and display the error message from the server if available
+          const errorMessage = error.response?.data?.message || "Error verifying OTP";
+          alert(errorMessage); // Alert with the error message
         });
     } else {
-      alert("Please enter the OTP");
+      alert("Please enter the OTP"); // Alert for empty OTP input
     }
   };
+  
 
   const adminLogin = () => {
     const password = document.getElementById("passwordInput").value;
@@ -120,11 +130,13 @@ export default function Profile() {
           if (response.data.statusCode === 200) {
             const { token, id, userType } = response.data.data;
 
+            const tokenkey = id;
+
             localStorage.setItem(id, token);
             localStorage.setItem(`${id}_userType`, userType);
 
             alert("Admin login successful!");
-            window.location.href = `admin.html?id=${id}`;
+            navigate(`/admin/${tokenkey}/${response.data.data.userType}`);
             closePopup();
           } else {
             alert("Invalid password. Please try again.");
@@ -142,6 +154,7 @@ export default function Profile() {
   return (
     <>
       <InnerPagesNav />
+      <ToastContainer position="top-center" autoClose={2000} />
       <div className="div border-b border-gray-300 pb-4">
   <div className="contentdiv w-1/2 mx-auto bg-white shadow-lg rounded-lg ">
     {id === undefined || id === 'undefined' ? (

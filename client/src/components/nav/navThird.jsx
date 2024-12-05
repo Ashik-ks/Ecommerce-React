@@ -109,19 +109,19 @@ function NavThird() {
           </div>
 
           {/* Other Nav Items */}
-          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors" onClick={()=> navigate(`/section/${id}/${usertype}`)}>
+          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors" onClick={() =>  {console.log({ id, usertype, state: "OFFERS" }); navigate(`/section/${id}/${usertype}/OFFERS`)}}>
             OFFERS
           </span>
-          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors" onClick={()=> navigate(`/section/${id}/${usertype}`)}>
+          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors" onClick={() => navigate(`/section/${id}/${usertype}/NEW`)}>
             NEW
           </span>
-          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors" onClick={()=> navigate(`/section/${id}/${usertype}`)}>
+          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors" onClick={()=> navigate(`/section/${id}/${usertype}/SPLURGE`)}>
             SPLURGE
           </span>
-          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors" onClick={()=> navigate(`/section/${id}/${usertype}`)}>
+          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors" onClick={()=> navigate(`/section/${id}/${usertype}/MAGAZINE`)}>
             MAGAZINE
           </span>
-          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors" onClick={()=> navigate(`/section/${id}/${usertype}`)}>
+          <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4  text-gray-800 hover:text-blue-500 transition-colors" onClick={() => navigate(`/section/${id}/${usertype}/ELITE OFFERS`)}>
             ELITE OFFERS
           </span>
         </div>

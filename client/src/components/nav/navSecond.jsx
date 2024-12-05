@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useCount } from '../CountContext';
 import axios from 'axios';
 import { faMagnifyingGlass, faHeart, faCartShopping, faUser, faGift, faCog, faRightToBracket, }
-  from "@fortawesome/free-solid-svg-icons";
+from "@fortawesome/free-solid-svg-icons";
 import purpleLogo from "../../assets/images/purpplelogo.png"; // Adjust the import based on your actual path
 import purplejoinElite from "../../assets/images/purplejoinElite.png.gif";
 import { ToastContainer, toast } from "react-toastify";
@@ -90,42 +90,48 @@ const HeaderComponent = () => {
   // Verify OTP logic
   const verifyOtp = () => {
     const otp = document.getElementById("otpInput").value;
+    
     if (otp) {
       axios
         .post("http://localhost:3000/verifyotp", { email, otp })
         .then((response) => {
           if (response.data.statusCode === 200) {
             toast.success("Login or Registration successful!"); // Success toast
-  
+    
             let tokenkey = response.data.data.tokenid;
             let token = response.data.data.token;
-  
+    
             // Store token in localStorage
             localStorage.setItem(tokenkey, token);
             localStorage.setItem(tokenkey + "_userType", response.data.data.userType);
-  
+    
             const userTypeValue = response.data.data.userType || "Unknown";
-  
+    
             if (response.data.data.userType === "Buyer") {
               navigate(`/index/${tokenkey}/${userTypeValue}`);
               window.location.reload();
             } else if (response.data.data.userType === "Seller") {
               navigate(`/seller/${tokenkey}/${userTypeValue}`);
             }
-  
+    
             closePopup(); // Close the popup
           } else {
-            toast.error("Invalid OTP. Please try again."); // Error toast
+            // Display the specific error message from the server
+            const errorMessage = response.data.message || "Invalid OTP. Please try again.";
+            toast.error(errorMessage); // Error toast
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          toast.error("Error verifying OTP"); // Error toast
+          // Handle server errors and display the error message
+          const errorMessage = error.response?.data?.message || "Error verifying OTP";
+          toast.error(errorMessage); // Error toast
         });
     } else {
-      toast.error("Please enter the OTP"); // Error toast
+      toast.error("Please enter the OTP"); // Error toast for empty OTP field
     }
   };
+  
   
   // Admin login logic
   const adminLogin = () => {
@@ -141,11 +147,12 @@ const HeaderComponent = () => {
             // Store token in localStorage
             localStorage.setItem(tokenkey, token);
             localStorage.setItem(tokenkey + "_userType", response.data.data.userType);
+
+            const userTypeValue = response.data.data.userType || "Unknown";
   
             toast.success("Admin login successful!"); // Success toast
-            window.location.href = `admin.html?id=${tokenkey}/${response.data.data.userType}`;
-  
-            closePopup();
+            navigate(`/admin/${tokenkey}/${userTypeValue}`);
+               closePopup();
           } else {
             toast.error("Invalid password. Please try again."); // Error toast
           }
