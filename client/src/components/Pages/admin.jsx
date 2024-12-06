@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Footer from "../footer/footer"
+import Footer from "../footer/footer";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 import purpleLogo from "../../assets/images/purpplelogo.png";
@@ -93,74 +93,101 @@ const Dashboard = () => {
     }
   };
 
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  const handleSidebarToggle = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleCloseSidebar = () => {
+    setSidebarOpen(false);
+  };
+
   return (
-<>
-<div className="flex h-screen">
-  {/* Sidebar */}
-  <div className="sidebar p-4 bg-gray-800 text-white w-64 flex-none">
-  <div className="d-flex align-items-center mb-4 ms-3">
-    <img src={purpleLogo} alt="Purple Logo" className="purpplelogo1" />
-  </div>
-  <nav className="nav flex flex-col space-y-4"> {/* Added space-y-4 */}
-    <a href="#" className="nav-link active d-flex items-center py-2 gap-2 hover:bg-gray-700 px-2">
-      <i className="fas fa-home"></i>
-      <span className="ml-2">Dashboard</span>
-    </a>
-    <a href="#" className="nav-link d-flex items-center py-2 gap-2 hover:bg-gray-700 px-2">
-      <i className="fas fa-users"></i>
-      <span className="ml-2">Buyers</span>
-    </a>
-    <a href="#" className="nav-link d-flex items-center py-2 gap-2 hover:bg-gray-700 px-2">
-      <i className="fas fa-folder"></i>
-      <span className="ml-2">Sellers</span>
-    </a>
-    <a href="#" className="nav-link d-flex items-center py-2 gap-2 hover:bg-gray-700 px-2">
-      <i className="fas fa-calendar-alt"></i>
-      <span className="ml-2">Orders</span>
-    </a>
-    <a href="#" className="nav-link d-flex items-center py-2 gap-2 hover:bg-gray-700 px-2">
-      <i className="fas fa-chart-pie"></i>
-      <span className="ml-2">Products</span>
-    </a>
-    <a href="#" className="nav-link d-flex items-center py-2 gap-2 hover:bg-gray-700 px-2">
-      <i className="fas fa-file-alt"></i>
-      <span className="ml-2">Emails</span>
-    </a>
-    <a href="#" className="nav-link d-flex items-center py-2 gap-2 hover:bg-gray-700 px-2">
-      <i className="fas fa-cog"></i>
-      <button className="ml-2 border-0 bg-transparent text-light" onClick={handleLogout}>
-        Logout
-      </button>
-    </a>
-  </nav>
+    <>
+      <div className="flex flex-col md:flex-row h-screen">
+        {/* Sidebar */}
+        <div>
+          <button
+            onClick={handleSidebarToggle}
+            className="md:hidden p-4 text-white bg-gray-800"
+          >
+            <i className="fas fa-bars"></i>
+          </button>
 
-</div>
+          <div
+            className={`sidebar p-4 bg-gray-800 text-white w-full md:w-64 flex-none fixed inset-0 md:relative transform transition-transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+            style={{ height: '100vh' }} // Ensure the sidebar height is the same as the screen height
+          >
+            <div className="d-flex align-items-center mb-4 ms-3">
+              <img src={purpleLogo} alt="Purple Logo" className="purpplelogo1" />
+            </div>
 
+            <button
+              className="absolute top-4 right-4 text-white"
+              onClick={handleCloseSidebar}
+            >
+              <i className="fas fa-times"></i>
+            </button>
 
-  {/* Main content (graphdiv) */}
-  <div className="graphdiv flex-1 p-4 flex flex-col">
-    <div className="flex justify-between items-center mb-4">
-      <div className="flex space-x-4">
-        <img src={purpleLogo} alt="purplelogo" className="purpplelogo1" />
-        <img src={purplejoinElite} alt="Purple Logo" className="PurpleLogoelite" />
+            <nav className="nav flex flex-col space-y-4">
+              <a href="#" className="dashboard nav-link active d-flex items-center py-2 gap-2 hover:bg-gray-700 px-2">
+                <i className="fas fa-home"></i>
+                <span className="ml-2">Dashboard</span>
+              </a>
+              <a href="#" className="nav-link d-flex items-center py-2 gap-2 hover:bg-gray-700 px-2">
+                <i className="fas fa-users"></i>
+                <span className="ml-2">Buyers</span>
+              </a>
+              <a href="#" className="nav-link d-flex items-center py-2 gap-2 hover:bg-gray-700 px-2">
+                <i className="fas fa-folder"></i>
+                <span className="ml-2">Sellers</span>
+              </a>
+              <a href="#" className="nav-link d-flex items-center py-2 gap-2 hover:bg-gray-700 px-2">
+                <i className="fas fa-calendar-alt"></i>
+                <span className="ml-2">Orders</span>
+              </a>
+              <a href="#" className="nav-link d-flex items-center py-2 gap-2 hover:bg-gray-700 px-2">
+                <i className="fas fa-chart-pie"></i>
+                <span className="ml-2">Products</span>
+              </a>
+              <a href="#" className="nav-link d-flex items-center py-2 gap-2 hover:bg-gray-700 px-2">
+                <i className="fas fa-file-alt"></i>
+                <span className="ml-2">Emails</span>
+              </a>
+              <a href="#" className="nav-link d-flex items-center py-2 gap-2 hover:bg-gray-700 px-2">
+                <i className="fas fa-cog"></i>
+                <button className="ml-2 border-0 bg-transparent text-light" onClick={handleLogout}>
+                  Logout
+                </button>
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="graphdiv flex-1 p-4 flex flex-col">
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex space-x-4">
+              <img src={purpleLogo} alt="purplelogo" className="purpplelogo1" />
+              <img src={purplejoinElite} alt="Purple Logo" className="PurpleLogoelite" />
+            </div>
+            <div className="text-end text-lg font-bold">
+              <span>Admin</span>
+            </div>
+          </div>
+
+          <div className="border border-dashed border-gray-400 rounded contentarea flex-1">
+            <div className="container mt-4">
+              <Bar data={chartData} options={chartOptions} />
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="text-end text-lg font-bold">
-        <span>Admin</span>
-      </div>
-    </div>
 
-    <div className="border border-dashed border-gray-400 rounded contentarea flex-1">
-      <div className="container mt-4">
-        <Bar data={chartData} options={chartOptions} />
-      </div>
-    </div>
-  </div>
-</div>
-
-<Footer />
-</>
-
-
+      <Footer />
+      <ToastContainer />
+    </>
   );
 };
 

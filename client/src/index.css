@@ -594,5 +594,25 @@
   0% { transform: translate(0); }
   100% { transform: translate(-100%); }
 }
-
-
+/* @media (max-width: 768px) {
+  .nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+}
+@media (max-width: 768px) {
+  .dashboard{
+   margin-top: 10px;
+}
+}
+@media (max-width: 563px) {
+  .nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 12px;
+}
+} */
