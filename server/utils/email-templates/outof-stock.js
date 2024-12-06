@@ -12,7 +12,7 @@ exports.outOfStock = function (email,stockQuantity,productname) {
                   font-family: Arial, sans-serif;
                 }
                 .banner {
-                  background-color: #FFA500;
+                  background-color: #ff0000;
                   color: white;
                   padding: 20px;
                   text-align: center;
@@ -37,11 +37,11 @@ exports.outOfStock = function (email,stockQuantity,productname) {
             </head>
             <body>
               <div class="banner">
-                <h2>Reset Your Password</h2>
+                <h2>Stock Update Alert!</h2>
               </div>
               <div class="container">
                 <p>Dear Seller,${email}</p>
-                <p>The stockQuantity of your product  : <b>${productname} is ${stockQuantity} now</b></p>
+                <p>The stockQuantity of your product  : <b>${productname} is ${stockQuantity} quantity available now</b></p>
                 <p>The product has a impact in market.</p>
                 <p>Please update your stock and grow with us</p>
                 <div class="regards">With regards,<br>Purple</div>

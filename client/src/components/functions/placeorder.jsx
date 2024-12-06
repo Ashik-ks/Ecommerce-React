@@ -36,11 +36,14 @@ const PlaceOrder = async (id, items, addressId, setLoading, navigate, usertype) 
   } catch (error) {
     setLoading(false); // Stop loading state
     console.error("Error placing order:", error);
-    toast.error("An error occurred while placing your order. Please try again later.");
+
+    // Extract server error message if available
+    if (error.response && error.response.data && error.response.data.message) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error("An error occurred while placing your order. Please try again later.");
+    }
   }
 };
-
-
-
 
 export default PlaceOrder;

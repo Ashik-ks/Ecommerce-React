@@ -122,6 +122,11 @@ function Billing() {
     }
   };
 
+  const singleProduct = (productId, category) => {
+    // Navigate to the single product view
+    navigate(`/singleview/${productId}/${id}/${category}/${usertype}`);
+};
+
   return (
     <>
       <InnerPagesNav />
@@ -165,7 +170,11 @@ function Billing() {
             <div>
               {cart.map((product) => (
                 <div key={product._id} className="bg-white border-b border-gray-300 flex flex-col sm:flex-row gap-4 sm:gap-10 items-center p-4">
-                  <img src={`http://localhost:3000/${product.images[0]}`} alt={product.name} className="w-[6.2rem] h-20 object-cover rounded-md" />
+                  <img src={`http://localhost:3000/${product.images[0]}`} onClick={(e) => {
+                      e.stopPropagation(); 
+                      singleProduct(product._id, product.category);
+                  }}
+                   alt={product.name} className="w-[6.2rem] h-20 object-cover rounded-md" />
                   <div className="flex-1 text-center sm:text-left">
                     <h4 className="text-base sm:text-xl font-semibold">{product.name}</h4>
                     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 mt-2">

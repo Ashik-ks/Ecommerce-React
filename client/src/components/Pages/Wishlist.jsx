@@ -78,6 +78,12 @@ function AddToWishlistPage() {
         fetchWishlistData();
     }, [id]);
 
+    const singleProduct = (productId, category) => {
+      // Navigate to the single product view
+      navigate(`/singleview/${productId}/${id}/${category}/${usertype}`);
+  };
+  
+
     return (
         <>
             <InnerPagesNav />
@@ -105,6 +111,10 @@ function AddToWishlistPage() {
           >
             <img
               src={`http://localhost:3000/${product.images[0]}`}
+              onClick={(e) => {
+                e.stopPropagation(); 
+                singleProduct(product._id, product.category);
+            }}
               alt={product.name}
               className="w-[6.2rem] h-20 object-cover rounded-md"
             />

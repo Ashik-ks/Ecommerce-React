@@ -1266,7 +1266,6 @@ exports.placeOrder = async function (req, res) {
         let totalOrderPrice = 0;
         let orderedProducts = [];
         let productUpdates = [];
-        let outOfStockProducts = [];
 
         for (let item of items) {
             const { product_id, quantity } = item;
@@ -1281,8 +1280,10 @@ exports.placeOrder = async function (req, res) {
 
             // Check for stock availability
             if (product.stockQuantity < quantity) {
-                outOfStockProducts.push(product);  // Add to out-of-stock list if product is unavailable
-                continue;  // Skip this product and move to the next one
+                return res.status(400).json({
+                    success: false,
+                    message: `Product "${product.name}" has insufficient stock. Available quantity: ${product.stockQuantity}, requested quantity: ${quantity}.`,
+                });
             }
 
             // Calculate the total price for the product based on the discount price
@@ -1311,8 +1312,8 @@ exports.placeOrder = async function (req, res) {
                 // Send an email to the seller if the product is out of stock
                 const seller = await Users.findOne({ _id: product.sellerId });
                 if (seller) {
-                    const emailTemplate = await set_stock_template(seller.email, product.stockQuantity, product.name);
-                    await sendEmail(seller.email, "Out of Stock Notification", emailTemplate);  // Send email to seller
+                    // const emailTemplate = await set_stock_template(seller.email, product.stockQuantity, product.name);
+                    // await sendEmail(seller.email, "Out of Stock Notification", emailTemplate);  // Send email to seller
                 }
             }
 
@@ -1327,8 +1328,8 @@ exports.placeOrder = async function (req, res) {
 
         // Send order placed email to the buyer
         const userEmail = user.email;
-        const emailTemplate = await set_orderplace_template(userEmail, orderedProducts, totalOrderPrice, userAddress);
-        await sendEmail(userEmail, "Order Confirmation", emailTemplate);  // Sending confirmation email to the user
+        // const emailTemplate = await set_orderplace_template(userEmail, orderedProducts, totalOrderPrice, userAddress);
+        // await sendEmail(userEmail, "Order Confirmation", emailTemplate);  // Sending confirmation email to the user
 
         // If the order was successfully placed, return the response
         return res.status(200).json({

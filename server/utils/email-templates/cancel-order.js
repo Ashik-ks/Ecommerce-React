@@ -37,11 +37,11 @@ exports.cancelOrder = function (email,product,quantity) {
             </head>
             <body>
               <div class="banner">
-                <h2>Reset Your Password</h2>
+                <h2>Order Cancel</h2>
               </div>
               <div class="container">
                 <p>Dear user,${email}</p>
-                <p>Your Order for: <b>${product} with quantity${quantity} is canceled successfully</b></p>
+                <p>Your Order for: <b>${product} with quantity ${quantity} is cancelled successfully</b></p>
                 <p>Shop more with us..</p>
                 <div class="regards">With regards,<br>Purple</div>
               </div>
