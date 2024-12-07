@@ -4,51 +4,86 @@ const UserType = require('../db/model/userType');
 const { success_function, error_function } = require('../utils/responsehandler');
 const bcrypt = require('bcrypt');
 const mongoose = require("mongoose");
+const set_block_template = require("../utils/email-templates/block").block
+const sendEmail = require("../utils/send-email").sendEmail;
 
 // get count
 exports.getCount = async function (req, res) {
   try {
     // Get the total count of users
     const userCount = await Users.countDocuments();
-    console.log("userCount : ", userCount);
+    console.log("userCount:", userCount);
 
     // Get the seller userType ID
     const sellerType = await UserType.findOne({ userType: 'Seller' });
-    console.log("sellerType : ", sellerType);
+    console.log("sellerType:", sellerType);
 
     // Get the count of sellers
     const sellerCount = await Users.countDocuments({ userType: sellerType._id });
-    console.log("sellerCount : ", sellerCount);
+    console.log("sellerCount:", sellerCount);
 
-    const productCount = await Products.countDocuments()
-    console.log("productCount : ", productCount)
+    // Get the product count
+    const productCount = await Products.countDocuments();
+    console.log("productCount:", productCount);
 
-    // Get all users
+    // Fetch users
     const users = await Users.find();
+    console.log("Fetched Users:", users);
 
-    // Calculate the total number of orders from all users
+    // Prepare order details
     let orderCount = 0;
-    users.forEach(user => {
+    let totalPrice = 0;  // Variable to store total price of all orders
+    const orders = []; // To store each order's total price, ID, and product name
+
+    // Loop through users to process their orders
+    for (let user of users) {
       if (user.orders && user.orders.length) {
         orderCount += user.orders.length;
-      }
-    });
-    console.log("orderCount: ", orderCount);
 
+        // Loop through orders for each user
+        for (let order of user.orders) {
+          if (order.totalPrice) {
+            totalPrice += order.totalPrice;  // Add each order's total price to the totalPrice variable
+
+            // Fetch the product name using productId from the Products collection
+            const product = await Products.findById(order.productId);
+            
+            // Check if product exists and push order details
+            if (product) {
+              orders.push({
+                orderId: order._id,
+                totalPrice: order.totalPrice,
+                productId: order.productId,  // Include product ID
+                productName: product.name,   // Fetch product name from the Products collection
+              });
+            }
+          }
+        }
+      }
+    }
+
+    console.log("orderCount:", orderCount);
+    console.log("orders:", orders);
+    console.log("totalPrice of all orders:", totalPrice); // Log the total price
+
+    // Return the response with all the counts and the total price of all orders
     return res.status(200).json({
       success: true,
-      message: "Counts  fetched successfully",
+      message: "Counts fetched successfully",
       userCount,
       sellerCount,
       orderCount,
-      productCount
+      productCount,
+      totalPrice,  // Send total price of all orders
+      orders       // Send detailed orders in the response
     });
   } catch (error) {
     return error_function(res, error);
   }
 };
 
-exports.getBuyerDetails = async function (req, res) {
+
+exports.getBuyer = async function (req, res) {
   try {
     // Find the Buyer type in the UserType collection
     const buyerType = await UserType.findOne({ userType: "Buyer" });
@@ -92,7 +127,6 @@ exports.getBuyerdetails = async function (req, res) {
     const id = req.params.id;
     console.log("id:", id);
 
-    // Validate the `id` parameter
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
         success: false,
@@ -100,7 +134,6 @@ exports.getBuyerdetails = async function (req, res) {
       });
     }
 
-    // Find the user by their ID
     const user = await Users.findOne({ _id: id });
     console.log("user:", user);
 
@@ -111,62 +144,65 @@ exports.getBuyerdetails = async function (req, res) {
       });
     }
 
-    // Collect product IDs from the user's orders and cart
     let orderProductIds = [];
     let cartProductIds = [];
+    let wishlistProductIds = [];
 
-    // Collect product IDs from the orders
     if (Array.isArray(user.orders) && user.orders.length > 0) {
       orderProductIds = user.orders
-        .filter(order => order && order.productId) // Ensure valid structure
-        .map(order => order.productId); // Collect productId from orders
+        .filter(order => order && order.productId) 
+        .map(order => order.productId);
     }
 
-    // Collect product IDs from the cart
     if (Array.isArray(user.addtocart) && user.addtocart.length > 0) {
-      console.log("addtocart contents:", user.addtocart); // Debugging
-      cartProductIds = user.addtocart; // Use directly as it already contains product IDs
-    } else {
-      console.warn("addtocart is empty or not an array.");
+      cartProductIds = user.addtocart; 
     }
-    console.log("Filtered cartProductIds:", cartProductIds);
 
-    // Fetch products for the collected product IDs
+    if (Array.isArray(user.wishlist) && user.wishlist.length > 0) {
+      wishlistProductIds = user.wishlist; 
+    }
+
+    console.log("Filtered wishlistProductIds:", wishlistProductIds);
+
     const orderProducts = await Products.find({ _id: { $in: orderProductIds } });
     console.log("orderProducts:", orderProducts);
 
     const cartProducts = await Products.find({ _id: { $in: cartProductIds } });
     console.log("cartProducts:", cartProducts);
 
-    // Respond with the user details and differentiated order/cart products
+    const wishlistProducts = await Products.find({ _id: { $in: wishlistProductIds } });
+    console.log("wishlistProducts:", wishlistProducts);
+
     return res.status(200).json({
       success: true,
-      message: "Order and cart details fetched successfully",
+      message: "Order, cart, and wishlist details fetched successfully",
       data: {
         user: {
           id: user._id,
           name: user.name,
           email: user.email,
-          userStatus: user.userStatus, // Include userStatus
+          userStatus: user.userStatus, 
           orders: user.orders,
-          cart: user.addtocart, // Include cart details
-          wishlist: user.wishlist, // Include wishlist
+          cart: user.addtocart, 
+          wishlist: user.wishlist, 
         },
-        orderProducts, // Products that are in the orders
-        cartProducts,  // Products that are in the cart
+        orderProducts,    
+        cartProducts,     
+        wishlistProducts, 
       },
     });
   } catch (error) {
-    console.error("Error fetching order details:", error);
+    console.error("Error fetching user details:", error);
     return res.status(500).json({
       success: false,
-      message: "Something went wrong while fetching order details",
+      message: "Something went wrong while fetching user details",
     });
   }
 };
 
 
-exports.getSellerDetails = async function (req, res) {
+
+exports.getSeller = async function (req, res) {
   try {
     // Find the seller type in the UserType collection
     const sellerType = await UserType.findOne({ userType: "Seller" });
@@ -230,9 +266,10 @@ exports.getSellerdetails = async function (req, res) {
       });
     }
 
-    // Collect product IDs from the user's orders and cart
+    // Collect product IDs from the user's orders, cart, and wishlist
     let orderProductIds = [];
     let cartProductIds = [];
+    let wishlistProductIds = [];
 
     // Collect product IDs from the orders
     if (Array.isArray(user.orders) && user.orders.length > 0) {
@@ -243,12 +280,15 @@ exports.getSellerdetails = async function (req, res) {
 
     // Collect product IDs from the cart
     if (Array.isArray(user.addtocart) && user.addtocart.length > 0) {
-      console.log("user.addtocart contents:", user.addtocart); // Debugging
       cartProductIds = user.addtocart; // Use directly if it's an array of product IDs
-    } else {
-      console.warn("addtocart is empty or not an array.");
     }
-    console.log("Filtered cartProductIds:", cartProductIds);
+
+    // Collect product IDs from the wishlist
+    if (Array.isArray(user.wishlist) && user.wishlist.length > 0) {
+      wishlistProductIds = user.wishlist; // Use directly as it already contains product IDs
+    }
+
+    console.log("Filtered wishlistProductIds:", wishlistProductIds);
 
     // Fetch products for the collected product IDs
     const orderProducts = await Products.find({ _id: { $in: orderProductIds } });
@@ -257,11 +297,14 @@ exports.getSellerdetails = async function (req, res) {
     const cartProducts = await Products.find({ _id: { $in: cartProductIds } });
     console.log("cartProducts:", cartProducts);
 
-    // Now find the seller's own listed products
+    const wishlistProducts = await Products.find({ _id: { $in: wishlistProductIds } });
+    console.log("wishlistProducts:", wishlistProducts);
+
+    // Fetch the seller's own listed products
     const sellerProducts = await Products.find({ sellerId: user._id });
     console.log("sellerProducts:", sellerProducts);
 
-    // Respond with the seller's details, their products, and differentiated order/cart products
+    // Respond with the seller's details, their products, and differentiated order/cart/wishlist products
     return res.status(200).json({
       success: true,
       message: "Seller details fetched successfully",
@@ -272,10 +315,12 @@ exports.getSellerdetails = async function (req, res) {
           email: user.email,
           orders: user.orders,
           cart: user.addtocart, // Include cart details in the response
+          wishlist: user.wishlist, // Include wishlist in the response
         },
-        sellerProducts, // Products added by the seller
-        orderProducts, // Products that are in the orders
-        cartProducts, // Products that are in the cart
+        sellerProducts,    // Products added by the seller
+        orderProducts,     // Products that are in the orders
+        cartProducts,      // Products that are in the cart
+        wishlistProducts,  // Products that are in the wishlist
       },
     });
   } catch (error) {
@@ -287,9 +332,10 @@ exports.getSellerdetails = async function (req, res) {
   }
 };
 
+
 exports.getProductOrderDetails = async function (req, res) {
   try {
-    const id = req.params.id;
+    const id = req.params.pid;
 
     // Validate the `id` parameter
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -429,9 +475,91 @@ exports.getAllOrders = async function (req, res) {
   }
 };
 
+exports.BlockOrUnblock = async function (req, res) {
+  try {
+      let id = req.params.id;
+      let description = req.params.description;
+      console.log("description : ",description)
 
+      // Check if ID exists in the users collection
+      let user = await Users.findById(id);
 
+      if (user) {
+          // Update userStatus for the user
+          user.userStatus = user.userStatus === 'Block' ? 'UnBlock' : 'Block';
+          await user.save();
 
+          // Send email notification for user block/unblock
+          // const emailTemplate = await set_block_template(user.email, description);
+          // await sendEmail(user.email, "block", emailTemplate);
+
+          return res.status(200).json({
+              message: `User ${user.userStatus} successfully.`,
+              user,
+          });
+      } else {
+          // Check if ID exists in the Product collection
+          let product = await Products.findById(id);
+
+          if (product) {
+              // Update productStatus for the product
+              product.productStatus = product.productStatus === 'Block' ? 'UnBlock' : 'Block';
+              await product.save();
+
+              // Find the seller's email address (using sellerId from the product)
+              let seller = await Users.findById(product.sellerId);
+              if (seller) {
+                  // Send email notification for product block/unblock to the seller
+                  // const emailTemplate2 = await set_block_template(seller.email, description);
+                  // await sendEmail(seller.email, "block", emailTemplate2);
+              }
+
+              return res.status(200).json({
+                  message: `Product ${product.productStatus} successfully.`,
+                  product,
+              });
+          } else {
+              // If ID not found in both collections
+              return res.status(404).json({
+                  message: 'ID not found in Users or Products collection.',
+              });
+          }
+      }
+  } catch (error) {
+      console.error('Error in BlockOrUnblock function:', error);
+      res.status(500).json({
+          message: 'Internal server error',
+          error: error.message,
+      });
+  }
+};
+
+exports.getproductsall = async (req, res) => {
+  try {
+      // Fetch all products from the Product collection
+      const products = await Products.find();
+
+      // Check if products are found
+      if (products.length === 0) {
+          return res.status(404).json({
+              success: false,
+              message: 'No products found'
+          });
+      }
+
+      // Return the products in the response
+      return res.status(200).json({
+          success: true,
+          responseProducts: products
+      });
+  } catch (error) {
+      console.error("Error fetching products:", error);
+      return res.status(500).json({
+          success: false,
+          message: 'Server error while fetching products'
+      });
+  }
+};
 
 
 

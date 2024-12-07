@@ -8,7 +8,6 @@ const mongoose = require('mongoose');
 const set_stock_template = require("../utils/email-templates/outof-stock").outOfStock;
 const set_orderplace_template = require("../utils/email-templates/orderplaced").orderPlace;
 const set_order_cancel_template = require("../utils/email-templates/cancel-order").cancelOrder
-
 const sendEmail = require("../utils/send-email").sendEmail;
 
 
@@ -500,9 +499,9 @@ exports.getallproduct = async function (req, res) {
         let user;
 
         // If id is 'null' or null, fetch all products
-        if (id === 'null' || id === null || id === 'undefined' || id === undefined) {
-            // Fetch all products without user filtering
-            products = await Product.find();
+        if (id === 'null' || id === null || id === 'undefined' || id === undefined || id === '67248385873af4e595676d61') {
+            // Fetch all products without user filtering, excluding blocked products
+            products = await Product.find({ productStatus: { $ne: 'Block' } });
         } else {
             // Fetch user by ID
             user = await Users.findOne({ _id: id });
@@ -526,13 +525,16 @@ exports.getallproduct = async function (req, res) {
                 });
             }
 
-            // Fetch all products based on userType
+            // Fetch all products based on userType, excluding blocked products
             if (userType.userType === 'Seller') {
-                // If the user is a Seller, exclude their own products
-                products = await Product.find({ sellerId: { $ne: id } });
+                // If the user is a Seller, exclude their own products and blocked products
+                products = await Product.find({ 
+                    sellerId: { $ne: id }, 
+                    productStatus: { $ne: 'Block' } 
+                });
             } else {
-                // If the user is a Buyer, fetch all products
-                products = await Product.find();
+                // If the user is a Buyer, fetch all products excluding blocked ones
+                products = await Product.find({ productStatus: { $ne: 'Block' } });
             }
         }
 
@@ -555,7 +557,7 @@ exports.getallproduct = async function (req, res) {
 
                 // Check if the product ID exists in the user's wishlist
                 const isInWishlist = wishlist.includes(productId);  // Check if the product is in the wishlist
-                console.log(" isInWishlist: ", isInWishlist)
+                console.log("isInWishlist: ", isInWishlist)
 
                 // Return product data with the `isInWishlist` flag
                 return {
@@ -569,6 +571,7 @@ exports.getallproduct = async function (req, res) {
                     item: product.item,
                     name: product.name,
                     price: product.price,
+                    productStatus: product.productStatus,
                     sellerId: product.sellerId,
                     stockQuantity: product.stockQuantity,
                     stockStatus: product.stockStatus,
@@ -612,6 +615,7 @@ exports.getallproduct = async function (req, res) {
         });
     }
 };
+
 
 //get products based on search
 exports.getSearch = async function (req, res) {
@@ -743,8 +747,8 @@ exports.getSingleproduct = async function (req, res) {
                 // Fetch all products in the same category
                 let categoryProduct = await Product.find({ category: Category._id });
 
-                // If `id` is undefined, skip the wishlist logic
-                if (id === 'undefined') {
+                // If `id` is undefined or user is not found, skip the wishlist logic
+                if (id === 'undefined' || !await Users.findOne({ _id: id })) {
                     return res.status(200).send({
                         success: true,
                         statuscode: 200,
@@ -752,7 +756,7 @@ exports.getSingleproduct = async function (req, res) {
                         productcategory: Category.name,
                         categoryProduct: categoryProduct, // No `isWishlist` flag
                         sellername: sellername?.email || "Unknown",
-                        message: "Products fetched successfully (no user ID provided)",
+                        message: "Products fetched successfully (no user ID or user not found)",
                     });
                 }
 
@@ -800,6 +804,7 @@ exports.getSingleproduct = async function (req, res) {
         });
     }
 };
+
 
 
 //to add products in addtocart

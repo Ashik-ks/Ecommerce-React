@@ -16,6 +16,9 @@ import Billing from './components/Pages/billing';
 import OrderDetails from './components/Pages/order';
 import Sections from './components/Pages/sections';
 import Dashboard from './components/Pages/admin';
+import AdminViewpage from './components/Pages/adminviewpages';
+import AdminListing from './components/Pages/adminlisting';
+import AdminSingleView from './components/Pages/adminsingleview';
 
 function App() {
   return (
@@ -39,6 +42,10 @@ function App() {
           <Route path="/billing/:id/:pid/:usertype" element={<Billing />} />
           <Route path="/order/:id/:usertype" element={<OrderDetails />} />
           <Route path="/section/:id/:usertype/:state" element={<Sections />} />
+          <Route path="/adminviewpage/:id/:usertype/:state" element={<AdminViewpage />} />
+          <Route path="/adminlistingpage/:id/:usertype/:state/:buyerid" element={<AdminListing />} />
+          <Route path="/adminsingleviewpage/:id/:usertype/:pid" element={<AdminSingleView />} />
+
         </Routes>
       </CountProvider>
     </Router>

@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
 .offcanvas-top {
     height: 42vh;
   }
@@ -594,25 +597,101 @@
   0% { transform: translate(0); }
   100% { transform: translate(-100%); }
 }
-/* @media (max-width: 768px) {
-  .nav {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
+.chart-container {
+  width: 100%;
+  max-width: 850px; /* Fixed width of 800px */
+  height: auto; /* Height adjusts automatically */
+  margin: 0 auto; /* Center the chart horizontally */
 }
+
+.chart-container canvas {
+  width: 100% !important; /* Make canvas 100% of its container */
+  height: auto !important; /* Let the height adjust automatically */
 }
-@media (max-width: 768px) {
-  .dashboard{
-   margin-top: 10px;
+
+@media (max-width: 600px) {
+  .chart-container {
+    max-width: 100%; 
+  }
 }
+.PurpleLogoeliteadmin{
+  width: 40px;
 }
-@media (max-width: 563px) {
-  .nav {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
-    font-size: 12px;
+
+.admincontainerimg {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
 }
+
+.user-details {
+  flex-grow: 1;
+}
+
+.user-name {
+  font-weight: bold;
+}
+
+.user-email {
+  color: #888;
+}
+
+.user-actions button {
+  margin-right: 10px;
+}
+.adminbtn {
+padding: 2px 4px 3px 4px ;
+  border: 2px solid #6f42c1; /* Default border color */
+  color: #6f42c1; /* Default text color */
+  background-color: transparent;
+  border-radius: 7px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.adminbtn:hover {
+  /* Ensure hover applies the correct styles */
+  background-color: #6f42c1; /* Background color for hover */
+  color: white; /* Text color change on hover */
+  border-color: white; /* Border color change on hover */
+}
+.carousel-container {
+  margin-bottom: 2rem;
+  overflow: hidden; /* Ensures content stays inside the container */
+}
+
+.product-card-container {
+  display: flex;
+  justify-content: center;  /* Center the product cards horizontally */
+  align-items: center;
+}
+
+.product-card {
+  width: 280px; /* Fixed width for each product card */
+  transition: transform 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+/* .product-card:hover {
+  transform: scale(1.05); 
 } */
+
+.image-container img {
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.slick-track {
+  display: flex; 
+  justify-content: start;
+}
+
+.slick-slide {
+  display: flex;
+  flex-direction: column;
+}
+
+

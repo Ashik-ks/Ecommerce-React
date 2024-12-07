@@ -54,6 +54,11 @@ const products = new mongoose.Schema({
         enum: ["In Stock", "Out of Stock", "backordered"], 
         default: "In Stock" 
     },
+    productStatus: { 
+        type: String, 
+        enum: ["Block", "UnBlock"], 
+        default: "UnBlock" 
+    },
     images: { 
         type: [String], 
     },

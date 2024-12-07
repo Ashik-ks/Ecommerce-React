@@ -247,42 +247,50 @@ const SettingsPage = () => {
                 </div>
 
                 <div className="container max-w-screen-xl mx-auto px-4">
-                    {products.length === 0 ? (
-                        <p className="text-center">You have no products.</p>
-                    ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                            {products.map((product) => {
-                                const productImage = product.images ? product.images[0] : "placeholder.jpg";
-                                return (
-                                    <div key={product._id} className="product-card shadow p-3 mb-5 mt-3 bg-body rounded border-1 lh-lg">
-                                        <div className="text-center">
-                                            <img
-                                                src={`http://localhost:3000/${productImage}`}
-                                                alt={product.name}
-                                                className="w-full h-[150px] object-cover md:h-[200px] lg:h-[250px]"
-                                            />
-                                        </div>
-
-                                        <div className="text-xl font-medium mt-2">
-                                            {product.name.slice(0, 20)}{product.name.length > 30 ? '...' : ''}
-                                        </div>
-                                        <p className="text-md font-medium">Price: ${parseFloat(product.price).toFixed(2)}</p>
-                                        <p className="text-md font-medium">Stock: {product.stockQuantity}</p>
-
-                                        <div className="mt-4 text-center">
-                                            <button
-                                                onClick={() => handleEditClick(product._id)}
-                                                className="addtocartbtn"
-                                            >
-                                                Update
-                                            </button>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+    {products.length === 0 ? (
+        <p className="text-center">You have no products.</p>
+    ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {products.map((product) => {
+                const productImage = product.images ? product.images[0] : "placeholder.jpg";
+                return (
+                    <div key={product._id} className="product-card shadow p-3 mb-5 mt-3 bg-body rounded border-1 lh-lg">
+                        <div className="text-center">
+                            <img
+                                src={`http://localhost:3000/${productImage}`}
+                                alt={product.name}
+                                className="w-full h-[150px] object-cover md:h-[200px] lg:h-[250px]"
+                            />
                         </div>
-                    )}
-                </div>
+
+                        <div className="text-xl font-medium mt-2">
+                            {product.name.slice(0, 20)}{product.name.length > 30 ? '...' : ''}
+                        </div>
+                        <p className="text-md font-medium">Price: ${parseFloat(product.price).toFixed(2)}</p>
+                        <p className="text-md font-medium">Stock: {product.stockQuantity}</p>
+
+                        {/* Display product status and conditionally apply red color if status is 'Block' */}
+                        <p
+                            className={`text-md font-medium ${product.productStatus === 'Block' ? 'text-red-500' : ''}`}
+                        >
+                            Stock Status: {product.productStatus}
+                        </p>
+
+                        <div className="mt-4 text-center">
+                            <button
+                                onClick={() => handleEditClick(product._id)}
+                                className="addtocartbtn"
+                            >
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    )}
+</div>
+
 
                 {/* Show form to edit product */}
                 {showForm && (
@@ -343,6 +351,7 @@ const SettingsPage = () => {
                         className="w-full p-2 border rounded-md"
                     />
                 </div>
+                
 
                 {/* Update Image Checkbox */}
                 <div className="mb-4">
