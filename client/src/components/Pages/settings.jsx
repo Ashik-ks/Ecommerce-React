@@ -1,21 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 import InnerPagesNav from "../nav/innerpagesnav";
 import Footer from "../footer/footer";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faTag,
-  faAlignLeft,
-  faList,
-  faListAlt,
-  faCube,
-  faDollarSign,
-  faTags,
-  faBoxes,
-  faImages,
-  faWeight,
-  faPaperPlane,
-} from '@fortawesome/free-solid-svg-icons';
+import {faTag,faAlignLeft,faList,faListAlt,faCube,faDollarSign,faTags,faBoxes,faImages,faWeight,faPaperPlane,}
+from '@fortawesome/free-solid-svg-icons';
 
 const SettingsPage = () => {
     const { id, usertype } = useParams();
@@ -196,6 +186,25 @@ const SettingsPage = () => {
         }
     };
 
+
+    const handleDeleteClick = async (pid) => {
+        try {
+            const response = await axios.delete(`http://localhost:3000/deleteproduct/${pid}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.status === 200) {
+                alert("Product deleted successfully!");
+            }
+        } catch (error) {
+            console.error("Error deleting the product:", error);
+            alert("Failed to delete the product. Please try again.");
+        }
+    };
+    
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -214,33 +223,41 @@ const SettingsPage = () => {
         </div>
     </div>
 
-                <div className="border border-gray-300 p-5 bg-white flex justify-between w-full max-w-screen-xl mx-auto px-4 py-6 mt-5">
-                    <div className="">
-                        <h2 className="font-bold text-xl">Bring Your Products to Life!</h2>
-                        <p className="text-gray-500 mt-2">Share your amazing products with our community! Complete the form below to add a new item to our store.</p>
-                    </div>
-                    <button
-                        className="bg-black text-white flex items-center gap-2 py-2 px-4 rounded-md hover:bg-gray-800"
-                        onClick={() => navigate(`/addproduct/${id}/${usertype}`)}
-                    >
-                        Add Products
-                        <i className="fas fa-arrow-right"></i>
-                    </button>
-                </div>
+    <div className="space-y-5">
+    {/* Add Products Section */}
+    <div className="border border-gray-300 p-5 bg-white flex flex-col sm:flex-row justify-between items-center w-full max-w-screen-xl mx-auto px-4 py-6">
+        <div className="text-center sm:text-left">
+            <h2 className="font-bold text-xl">Bring Your Products to Life!</h2>
+            <p className="text-gray-500 mt-2">
+                Share your amazing products with our community! Complete the form below to add a new item to our store.
+            </p>
+        </div>
+        <button
+            className="mt-4 sm:mt-0 bg-black text-white flex items-center gap-2 py-2 px-4 rounded-md hover:bg-gray-800"
+            onClick={() => navigate(`/addproduct/${id}/${usertype}`)}
+        >
+            Add Products
+            <i className="fas fa-arrow-right"></i>
+        </button>
+    </div>
 
-                <div className="border border-gray-300 p-5 bg-white flex justify-between w-full max-w-screen-xl mx-auto px-4 py-6 mt-5">
-                    <div className="">
-                        <h2 className="font-bold text-xl">Stay Connected: Check Your Email for Exciting Updates!</h2>
-                        <p className="text-gray-500 mt-2">Make sure to check your inbox (and spam folder) regularly to ensure you don’t miss out on any important information.</p>
-                    </div>
-                    <button
-                        className="bg-black text-white flex items-center gap-2 py-2 px-4 rounded-md hover:bg-gray-800"
-                       
-                    >
-                        Notifications
-                        <i className="fas fa-arrow-right"></i>
-                    </button>
-                </div>
+    {/* Notifications Section */}
+    <div className="border border-gray-300 p-5 bg-white flex flex-col sm:flex-row justify-between items-center w-full max-w-screen-xl mx-auto px-4 py-6">
+        <div className="text-center sm:text-left">
+            <h2 className="font-bold text-xl">Stay Connected: Check Your Email for Exciting Updates!</h2>
+            <p className="text-gray-500 mt-2">
+                Make sure to check your inbox (and spam folder) regularly to ensure you don’t miss out on any important information.
+            </p>
+        </div>
+        <button
+            className="mt-4 sm:mt-0 bg-black text-white flex items-center gap-2 py-2 px-4 rounded-md hover:bg-gray-800"
+        >
+            Notifications
+            <i className="fas fa-arrow-right"></i>
+        </button>
+    </div>
+</div>
+
 
                 <div className="max-w-screen-xl mt-10 mb-3 mx-auto text-3xl font-bold text-center underline decoration-black">
                 Manage Your Added Products
@@ -250,11 +267,11 @@ const SettingsPage = () => {
     {products.length === 0 ? (
         <p className="text-center">You have no products.</p>
     ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {products.map((product) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ms-2 gap-4">
+            {products.map((product) => { 
                 const productImage = product.images ? product.images[0] : "placeholder.jpg";
                 return (
-                    <div key={product._id} className="product-card shadow p-3 mb-5 mt-3 bg-body rounded border-1 lh-lg">
+                    <div key={product._id} className="product-card1 shadow p-3 mb-5 mt-3 bg-body rounded border-1 lh-lg">
                         <div className="text-center">
                             <img
                                 src={`http://localhost:3000/${productImage}`}
@@ -276,12 +293,18 @@ const SettingsPage = () => {
                             Stock Status: {product.productStatus}
                         </p>
 
-                        <div className="mt-4 text-center">
+                        <div className="mt-4 flex gap-3">
                             <button
                                 onClick={() => handleEditClick(product._id)}
                                 className="addtocartbtn"
                             >
                                 Update
+                            </button>
+                            <button
+                                onClick={() => handleDeleteClick(product._id)}
+                                className="addtocartbtn"
+                            >
+                                Delete
                             </button>
                         </div>
                     </div>

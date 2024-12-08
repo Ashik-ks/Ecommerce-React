@@ -218,7 +218,7 @@ function InnerPagesNav() {
     
       <div className="border-b border-gray-300 pt-1 pb-2">
 
-        <div className="grid lg:hidden grid-cols-2 gap-4 pb-2 border-b border-gray-300 pt-2 pb-2">
+        <div className="grid xl:hidden grid-cols-2 gap-4 pb-2 border-b border-gray-300 pt-2 pb-2">
           {/* Second Column */}
           <div className="flex items-center justify-start ml-6 mt-3 gap-2" onClick={() => navigate(`/index/${id}/${usertype}`)}>
             <img src={purpleLogo} alt="purplelogo" className="purpplelogo1" />
@@ -366,200 +366,199 @@ function InnerPagesNav() {
           </div>
         </div>
 
-        <div className="container mt-3">
-          <div className="grid grid-cols-12 items-center">
-            {/* First Div: Logo Section */}
-            <div className="col-span-3  flex items-center justify-center hidden lg:flex" onClick={() => navigate(`/index/${id}/${usertype}`)}>
-              <button className="flex items-center gap-2 border-0">
-                <img
-                  src={purpleLogo}
-                  alt="purplelogo"
-                  className="h-8 object-contain"
-                />
-                <img
-                  src={purplejoinElite}
-                  alt="purpleElite"
-                  className="h-8 object-contain"
-                />
-              </button>
-            </div>
+        <div className="mt-3 grid grid-cols-12 items-center ms-10">
+    {/* First Div: Logo Section */}
+    <div className="col-span-3 flex items-center justify-center hidden xl:flex" onClick={() => navigate(`/index/${id}/${usertype}`)}>
+        <button className="flex items-center gap-2 border-0">
+            <img
+                src={purpleLogo}
+                alt="purplelogo"
+                className="h-8 object-contain"
+            />
+            <img
+                src={purplejoinElite}
+                alt="purpleElite"
+                className="h-8 object-contain"
+            />
+        </button>
+    </div>
 
-            {/* Middle Div: Navigation Section */}
-            <div className="col-span-9 lg:col-span-7 sm:col-span-12  NavigationBar flex flex-wrap items-center justify-around lg:space-x-4">
-              <div
-                className="relative group flex-shrink-0"
-                onMouseEnter={() => setShowCategories(true)}
-                onMouseLeave={() => setShowCategories(false)}
-              >
-                <span className="secondnavtext text-gray-800 cursor-pointer hover:text-blue-500 transition-colors">
-                  SHOP CATEGORIES
-                </span>
-                {showCategories && (
-                  <div className="itemsdiv absolute top-full left-0 w-[800px] bg-white border border-gray-200 shadow-lg z-10 p-4">
+    {/* Middle Div: Navigation Section */}
+    <div className="col-span-12 xl:col-span-7 sm:col-span-12 NavigationBar flex flex-wrap items-center justify-around lg:space-x-4">
+        <div
+            className="relative group flex-shrink-0"
+            onMouseEnter={() => setShowCategories(true)}
+            onMouseLeave={() => setShowCategories(false)}
+        >
+            <span className="secondnavtext text-gray-800 cursor-pointer hover:text-blue-500 transition-colors">
+                SHOP CATEGORIES
+            </span>
+            {showCategories && (
+                <div className="itemsdiv absolute top-full left-0 w-[800px] bg-white border border-gray-200 shadow-lg z-10 p-4">
                     <div className="flex flex-col">
-                      <div className="flex flex-wrap sm:space-x-4 mb-4">
-                        {categoriesData.map((category) => (
-                          <div
-                            key={category._id}
-                            className={`category px-2 cursor-pointer text-gray-700 hover:bg-gray-100 transition-colors duration-300 ${hoveredCategory && hoveredCategory._id === category._id ? "bg-gray-100" : ""
-                              }`}
-                            onMouseEnter={() => setHoveredCategory(category)}
-                          >
-                            {category.name}
-                          </div>
-                        ))}
-                      </div>
-                      <div className="w-full">
-                        {hoveredCategory && (
-                          <div className="bg-white p-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                              {hoveredCategory.subcategories.map((subcategory) => (
+                        <div className="flex flex-wrap sm:space-x-4 mb-4">
+                            {categoriesData.map((category) => (
                                 <div
-                                  key={subcategory._id}
-                                  className="hover:bg-gray-100 transition-colors duration-300"
+                                    key={category._id}
+                                    className={`category px-2 cursor-pointer text-gray-700 hover:bg-gray-100 transition-colors duration-300 ${hoveredCategory && hoveredCategory._id === category._id ? "bg-gray-100" : ""
+                                        }`}
+                                    onMouseEnter={() => setHoveredCategory(category)}
                                 >
-                                  <h4 className="font-semibold text-lg text-gray-800 mb-3">
-                                    {subcategory.name}
-                                  </h4>
-                                  <ul className="space-y-2">
-                                    {subcategory.items.map((item) => (
-                                      <li
-                                        key={item._id}
-                                        className="text-sm text-gray-600 hover:text-blue-500 cursor-pointer transition-colors duration-300"
-                                        onClick={() => handleItemClick(item)}
-                                      >
-                                        {item.name}
-                                      </li>
-                                    ))}
-                                  </ul>
+                                    {category.name}
                                 </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
+                            ))}
+                        </div>
+                        <div className="w-full">
+                            {hoveredCategory && (
+                                <div className="bg-white p-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {hoveredCategory.subcategories.map((subcategory) => (
+                                            <div
+                                                key={subcategory._id}
+                                                className="hover:bg-gray-100 transition-colors duration-300"
+                                            >
+                                                <h4 className="font-semibold text-lg text-gray-800 mb-3">
+                                                    {subcategory.name}
+                                                </h4>
+                                                <ul className="space-y-2">
+                                                    {subcategory.items.map((item) => (
+                                                        <li
+                                                            key={item._id}
+                                                            className="text-sm text-gray-600 hover:text-blue-500 cursor-pointer transition-colors duration-300"
+                                                            onClick={() => handleItemClick(item)}
+                                                        >
+                                                            {item.name}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                </div>
+            )}
+        </div>
 
-              <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors"onClick={() =>  {console.log({ id, usertype, state: "OFFERS" }); navigate(`/section/${id}/${usertype}/OFFERS`)}}>
-                OFFERS
-              </span>
-              <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors"onClick={() =>  {console.log({ id, usertype, state: "NEW" }); navigate(`/section/${id}/${usertype}/NEW`)}}>
-                NEW
-              </span>
-              <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors"onClick={() =>  {console.log({ id, usertype, state: "SPLURGE" }); navigate(`/section/${id}/${usertype}/SPLURGE`)}}>
-                SPLURGE
-              </span>
-              <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors"onClick={() =>  {console.log({ id, usertype, state: "MAGAZINE" }); navigate(`/section/${id}/${usertype}/MAGAZINE`)}}>
-                MAGAZINE
-              </span>
-              <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors"onClick={() =>  {console.log({ id, usertype, state: "ELITE OFFERS" }); navigate(`/section/${id}/${usertype}/ELITE OFFERS`)}}>
-                ELITE OFFERS
-              </span>
-            </div>
+        <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors" onClick={() => { console.log({ id, usertype, state: "OFFERS" }); navigate(`/section/${id}/${usertype}/OFFERS`) }}>
+            OFFERS
+        </span>
+        <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors" onClick={() => { console.log({ id, usertype, state: "NEW" }); navigate(`/section/${id}/${usertype}/NEW`) }}>
+            NEW
+        </span>
+        <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors" onClick={() => { console.log({ id, usertype, state: "SPLURGE" }); navigate(`/section/${id}/${usertype}/SPLURGE`) }}>
+            SPLURGE
+        </span>
+        <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors" onClick={() => { console.log({ id, usertype, state: "MAGAZINE" }); navigate(`/section/${id}/${usertype}/MAGAZINE`) }}>
+            MAGAZINE
+        </span>
+        <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors" onClick={() => { console.log({ id, usertype, state: "ELITE OFFERS" }); navigate(`/section/${id}/${usertype}/ELITE OFFERS`) }}>
+            ELITE OFFERS
+        </span>
+    </div>
 
-            {/* Third Div: User Section */}
-            <div className="col-span-1 lg:col-span-2  flex items-center justify-center gap-5 hidden lg:flex">
-              <span onClick={(e) => {
-                e.preventDefault();
-                if (id !== 'undefined' && id !== null) {
-                  navigate(`/wishlist/${id}/${usertype}`);
-                } else {
-                  console.error("ID is undefined or null, navigation aborted.");
-                }
-              }}>
-                <i className="fa-regular fa-heart text-2xl"></i>
-              </span>
-              <span className="relative" onClick={(e) => {
-                e.preventDefault();
-                if (id !== 'undefined' && id !== null) {
-                  navigate(`/cart/${id}/${usertype}`);
-                } else {
-                  console.error("ID is undefined or null, navigation aborted.");
-                }
-              }}>
-                <FontAwesomeIcon
-                  icon={faCartShopping}
-                  className="icon-smile mt-1"
-                />
-                {count > 0 && (
-                  <span
+    {/* Third Div: User Section */}
+    <div className="col-span-1 lg:col-span-2 flex items-center justify-center gap-5 hidden xl:flex">
+        <span onClick={(e) => {
+            e.preventDefault();
+            if (id !== 'undefined' && id !== null) {
+                navigate(`/wishlist/${id}/${usertype}`);
+            } else {
+                console.error("ID is undefined or null, navigation aborted.");
+            }
+        }}>
+            <i className="fa-regular fa-heart text-2xl"></i>
+        </span>
+        <span className="relative" onClick={(e) => {
+            e.preventDefault();
+            if (id !== 'undefined' && id !== null) {
+                navigate(`/cart/${id}/${usertype}`);
+            } else {
+                console.error("ID is undefined or null, navigation aborted.");
+            }
+        }}>
+            <FontAwesomeIcon
+                icon={faCartShopping}
+                className="icon-smile mt-1"
+            />
+            {count > 0 && (
+                <span
                     className="absolute top-0 right-0 bg-indigo-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center text-[10px] transform translate-x-1/2 -translate-y-1/2"
                     id="cartcount"
-                  >
+                >
                     {count}
-                  </span>
-                )}
-              </span>
-              <div className="dropdown relative inline-block">
-                <span className="dropbtn d-flex gap-3 p-3 text-gray-700 text-sm">
-                  <i className="fa-regular fa-face-smile icon-smile" />
                 </span>
-                <div className="dropdown-content hidden">
-                  <a href="#" className="flex gap-3 p-3 text-gray-700 text-sm items-center">
+            )}
+        </span>
+        <div className="dropdown relative inline-block">
+            <span className="dropbtn d-flex gap-3 p-3 text-gray-700 text-sm">
+                <i className="fa-regular fa-face-smile icon-smile" />
+            </span>
+            <div className="dropdown-content hidden">
+                <a href="#" className="flex gap-3 p-3 text-gray-700 text-sm items-center">
                     <FontAwesomeIcon icon={faUser} className="text-gray-500 text-lg" />
                     <button className="dropdowntext ms-2">My Account</button>
-                  </a>
-                  <a href="#" className="flex gap-3 p-3 text-gray-700 text-sm items-center">
+                </a>
+                <a href="#" className="flex gap-3 p-3 text-gray-700 text-sm items-center">
                     <FontAwesomeIcon icon={faGift} className="text-gray-500 text-lg" />
-                    <span className="dropdowntext ms-2" onClick={(event) =>  {event.preventDefault();navigate(`/order/${id}/${usertype}`)} }>Orders</span>
-                  </a>
-                  <a href="#" className="flex gap-3 p-3 text-gray-700 text-sm items-center">
+                    <span className="dropdowntext ms-2" onClick={(event) => { event.preventDefault(); navigate(`/order/${id}/${usertype}`) }}>Orders</span>
+                </a>
+                <a href="#" className="flex gap-3 p-3 text-gray-700 text-sm items-center">
                     <FontAwesomeIcon icon={faHeart} className="text-gray-500 text-lg" />
                     <span className="dropdowntext ms-2" onClick={(e) => {
-                      e.preventDefault();
-                      if (id !== 'undefined' && id !== null) {
-                        navigate(`/wishlist/${id}/${usertype}`);
-                      } else {
-                        console.error("ID is undefined or null, navigation aborted.");
-                      }
+                        e.preventDefault();
+                        if (id !== 'undefined' && id !== null) {
+                            navigate(`/wishlist/${id}/${usertype}`);
+                        } else {
+                            console.error("ID is undefined or null, navigation aborted.");
+                        }
                     }}>Wishlist</span>
-                  </a>
-                  {usertype === 'Seller' && (
+                </a>
+                {usertype === 'Seller' && (
                     <a
-                      href="#"
-                      className="flex gap-3 p-3 text-gray-700 text-sm items-center"
+                        href="#"
+                        className="flex gap-3 p-3 text-gray-700 text-sm items-center"
                     >
-                      <FontAwesomeIcon
-                        icon={faCog}
-                        className="text-gray-500 text-lg"
-                      />
-                      <span className="dropdowntext ms-2">Settings</span>
+                        <FontAwesomeIcon
+                            icon={faCog}
+                            className="text-gray-500 text-lg"
+                        />
+                        <span className="dropdowntext ms-2">Settings</span>
                     </a>
-                  )}
+                )}
 
-                  {isLoggedIn ? (
+                {isLoggedIn ? (
                     <div className="logout flex gap-3 p-3 text-gray-700 text-sm items-center" id="logout">
-                      <span>
-                        <FontAwesomeIcon icon={faRightToBracket} className="text-gray-500 text-lg ms-1" />
-                      </span>
-                      <button
-                        className="loginbtn border-0 w-full text-left text-gray-500"
-                        onClick={handleLogout}
-                      >
-                        <span className="text-xs text-gray-700">Log Out</span>
-                      </button>
+                        <span>
+                            <FontAwesomeIcon icon={faRightToBracket} className="text-gray-500 text-lg ms-1" />
+                        </span>
+                        <button
+                            className="loginbtn border-0 w-full text-left text-gray-500"
+                            onClick={handleLogout}
+                        >
+                            <span className="text-xs text-gray-700">Log Out</span>
+                        </button>
                     </div>
-                  ) : (
+                ) : (
                     <div className="login flex gap-3 p-3 text-gray-700 text-sm items-center" id="login">
-                      <span>
-                        <FontAwesomeIcon icon={faRightToBracket} className="text-gray-500 text-lg ms-1" />
-                      </span>
-                      <button
-                        className="loginbtn border-0 text-gray-500"
-                        onClick={openPopup}
-                      >
-                        <span className="logintext text-gray-700">Login or Register</span>
-                      </button>
+                        <span>
+                            <FontAwesomeIcon icon={faRightToBracket} className="text-gray-500 text-lg ms-1" />
+                        </span>
+                        <button
+                            className="loginbtn border-0 text-gray-500"
+                            onClick={openPopup}
+                        >
+                            <span className="logintext text-gray-700">Login or Register</span>
+                        </button>
                     </div>
-                  )}
-                </div>
-              </div>
+                )}
             </div>
-          </div>
         </div>
+    </div>
+</div>
+
 
         {isPopupOpen && (
           <div className="popup fixed inset-0 z-50 flex justify-center items-center">

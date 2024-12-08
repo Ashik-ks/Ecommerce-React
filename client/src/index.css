@@ -262,7 +262,15 @@
   z-index: 10;
   transition: transform 0.2s ease-in-out;
 }
-
+.wishlistheart1 {
+  background-color: white;
+  color: red;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 4px 8px;
+  position: absolute;
+  transition: transform 0.2s ease-in-out;
+}
 
 /* Wishlist Heart Hover Effect */
 .wishlistheart:hover {
@@ -280,7 +288,7 @@
 
 /* Add to Cart Button Styling */
 .addtocartbtn {
-  width: 100%;
+  width: 140px;
   padding: 7px 14px;
   border: 2px solid #6f42c1;
   color: #6f42c1;
@@ -369,13 +377,7 @@
   height: 380px;
   box-shadow: #000;
 }
-.datacontainercategorysinglepage{
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);  /* 4 equal columns */
-  row-gap: 50px;  /* Space between grid items */
-  column-gap: 20px;
-  padding: 20px;
-}
+
 /* From Uiverse.io by Akshdeep74644 */ 
 .container1 {
   position: relative;
@@ -693,5 +695,71 @@ padding: 2px 4px 3px 4px ;
   display: flex;
   flex-direction: column;
 }
+#singleproductcontainer {
+  display: grid;
+  grid-template-columns:10% 30% 60%; /* Three equal columns for large screens */
+  gap: 16px; /* Optional: Spacing between grid items */
+}
 
+@media (max-width: 1000px) {
+  #singleproductcontainer {
+    grid-template-columns: 30% 70%; /* Two columns for smaller screens */
+  }
 
+  #singleproductcontainer > div:nth-child(3) {
+    grid-column: span 2; /* Make the third column take the full width in the next line */
+  }
+}
+
+@media (max-width: 450px) {
+  .addtocartbtn{
+    max-width: 130px; 
+  }
+}
+@media (max-width: 400px) {
+  .addtocartbtn{
+    max-width: 100px;
+    font-size: 10px;
+  }
+}
+@media (max-width: 450px) {
+  .description{
+font-size: 13px;  }
+}
+@media (max-width: 450px) {
+  .categoryText{
+font-size: 10px;
+margin-left: 15px;
+  }
+}
+@media (max-width: 600px) {
+  .totalprice{
+font-size: 17px;
+  }
+}
+@media (max-width: 600px) {
+  .totalpricediv{
+display: flex;
+column-gap: 10px;
+justify-content: start;
+  }
+}
+@media (max-width: 600px) {
+  .totalpricebtn{
+font-size: 13px;
+padding: 5px;
+width: 120px;
+  }
+}
+@media (max-width: 600px) {
+  .totalpricebtn1{
+font-size: 13px;
+padding: 5px;
+width: 140px;
+  }
+}
+@media (max-width: 450px) {
+  .product-card {
+    margin-left: 55px;
+}
+}

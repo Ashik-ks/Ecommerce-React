@@ -131,8 +131,8 @@ function Category() {
             <div className="container text-center text-3xl font-bold mt-5 underline text-purple-500">Featured</div>
 
             {/* First Section: Display the first dataset (data1) */}
-            <div className="max-w-screen-xl mx-auto mt-7 mb-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="container max-w-screen-xl px-4 py-6 mx-auto">
+                <div className="grid-container">
                     {data1 && data1.length > 0 ? (
                         data1.map((item) => {
                             const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'fallback-image-url.jpg';
@@ -211,8 +211,8 @@ function Category() {
 
 
             {/* Second Section: Display the second dataset (data) */}
-            <div className="max-w-screen-xl mx-auto p-2">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="container max-w-screen-xl px-4 py-6 mx-auto">
+                <div className="grid-container">
                     {(showAll ? data : data.slice(0, 4)).map((item) => {
                         const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'fallback-image-url.jpg';
                         return (

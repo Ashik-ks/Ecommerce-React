@@ -201,73 +201,77 @@ function AdminSingleView() {
     </div>
 
     {/* Data Container */}
-    <div className="dataContainer flex-1 border-b border-gray-300 pt-2 pb-2 ">
-        <div className="max-w-screen-xl mx-auto">
-            <div className="imgcontainer ms-5">
-                {/* Category Breadcrumb */}
-                <div className="pt-2" id="categorydiv">
-                    <div className="categoryText text-gray-600">
-                        HOME &gt; {categoryProducts || 'Unknown'} &gt;{' '}
-                        {productData?.subcategory || 'Unknown'} &gt;{' '}
-                        {productData?.item || 'Unknown'} &gt;{' '}
-                        {productData?.name || 'Unknown'}
-                    </div>
+    <div className="dataContainer flex-1 border-b border-gray-300 bg-slate-100 pt-2 pb-2">
+    <div className="max-w-screen-xl mx-auto">
+        <div className="imgcontainer ms-5">
+            {/* Category Breadcrumb */}
+            <div className="pt-2" id="categorydiv">
+                <div className="categoryText text-gray-600">
+                    HOME &gt; {categoryProducts || 'Unknown'} &gt;{' '}
+                    {productData?.subcategory || 'Unknown'} &gt;{' '}
+                    {productData?.item || 'Unknown'} &gt;{' '}
+                    {productData?.name || 'Unknown'}
                 </div>
+            </div>
 
-                {/* Product Details */}
-                <div id="singleproductcontainer" className="mt-3 bg-white p-2">
-                    <div className="flex gap-4">
-                        {/* Left Side Images */}
-                        <div className="w-1/12">
-                            <div className="flex flex-col gap-1" id="imageunzoom">
-                                {productData?.images.map((image, index) => (
-                                    <img
-                                        key={index}
-                                        alt="Product Image"
-                                        className="img-fluid"
-                                        height="100"
-                                        src={`http://localhost:3000/${image}`}
-                                        width="100"
-                                        onClick={() => displayZoomedImage(image)}
-                                    />
-                                ))}
-                            </div>
-                        </div>
+            {/* Product Details */}
+            <div id="" className="mt-3 bg-white p-2">
+    <div className="flex flex-col md:flex-row gap-4">
+        {/* Left Side Images */}
+        <div className="w-full md:w-[10%]">
+    <div className="flex flex-wrap gap-2" id="imageunzoom">
+        {productData?.images.map((image, index) => (
+            <img
+                key={index}
+                alt="Product Image"
+                className="img-fluid"
+                height="100"
+                src={`http://localhost:3000/${image}`}
+                width="100"
+                onClick={() => displayZoomedImage(image)}
+            />
+        ))}
+    </div>
+</div>
 
-                        {/* Zoomed Image */}
-                        <div className="">
-                            <div className="text-center mt-1" id="imagezoom">
-                                <img
-                                    id="zoomedImg"
-                                    className="zoomedImg w-full h-auto"
-                                    src={`http://localhost:3000/${zoomedImage || productData?.images[0]}`}
-                                    alt="Zoomed Image"
-                                />
-                            </div>
-                        </div>
 
-                        {/* Product Details */}
-                        <div className="w-5/12 pt-2 ms-5">
-                            <h1 className="text-lg font-semibold mb-1">{productData?.description}</h1>
-                            <div className="flex flex-col mt-2">
-                                <span className="mb-1">Price ₹{productData?.price}</span>
-                                <span className="text-green-600 font-bold mb-1">
-                                    Discount Price ₹{productData?.discountPrice}
-                                </span>
-                                <span className="font-semibold text-green-600 mb-2">{productData?.weight} gm</span>
-                                <span className="font-semibold text-black mb-2">stockStatus : {productData?.stockStatus}</span>
-                                <span className="font-semibold text-black mb-2">productStatus : {productData?.productStatus}</span>
-                                <span className="font-semibold text-black mb-2">stockQuantity : {productData?.stockQuantity}</span>
-                            </div>
-                            <div className="mt-1 mb-1">Inclusive of all taxes</div>
-                            <span className="text-sm font-semibold mt-1">Seller: {sellerData}</span>
-                        </div>
-                    </div>
-                </div>
+        {/* Zoomed Image */}
+        <div className="w-full md:w-[30%]">
+            <div className="text-center mt-1" id="imagezoom">
+                <img
+                    id="zoomedImg"
+                    className="zoomedImg w-full h-auto"
+                    src={`http://localhost:3000/${zoomedImage || productData?.images[0]}`}
+                    alt="Zoomed Image"
+                />
+            </div>
+        </div>
 
-                <div className="order-details mt-6">
-                    <h2 className="text-lg font-semibold mb-2 ms-4 underline">Order Details</h2>
-                    {userOrderDetails.length > 0 ? (
+        {/* Product Details */}
+        <div className="w-full md:w-[60%] pt-2 ms-5">
+            <h1 className="text-lg font-semibold mb-1 description">{productData?.description}</h1>
+            <div className="flex flex-col mt-2">
+                <span className="mb-1">Price ₹{productData?.price}</span>
+                <span className="text-green-600 font-bold mb-1">
+                    Discount Price ₹{productData?.discountPrice}
+                </span>
+                <span className="font-semibold text-green-600 mb-2">{productData?.weight} gm</span>
+                <span className="font-semibold text-black mb-2">stockStatus: {productData?.stockStatus}</span>
+                <span className="font-semibold text-black mb-2">productStatus: {productData?.productStatus}</span>
+                <span className="font-semibold text-black mb-2">stockQuantity: {productData?.stockQuantity}</span>
+            </div>
+            <div className="mt-1 mb-1">Inclusive of all taxes</div>
+            <span className="text-sm font-semibold mt-1">Seller: {sellerData}</span>
+        </div>
+    </div>
+</div>
+
+
+            {/* Order Details */}
+            <div className="order-details mt-6">
+                <h2 className="text-lg font-semibold mb-2 ms-4 underline">Order Details</h2>
+                {userOrderDetails.length > 0 ? (
+                    <div className="overflow-x-auto">
                         <table className="min-w-full shadow-md">
                             <thead>
                                 <tr>
@@ -278,25 +282,27 @@ function AdminSingleView() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {userOrderDetails.map((user, index) => (
+                                {userOrderDetails.map((user, index) =>
                                     user.orders.map((order, orderIndex) => (
                                         <tr key={`${index}-${orderIndex}`}>
                                             <td className="py-2 px-4 text-left">{order.orderId}</td>
                                             <td className="py-2 px-4 text-left">{user.email}</td>
-                                            <td className="py-2 px-10 ">{order.quantity}</td>
-                                            <td className="py-2 px-10 text-left">₹{order.totalPrice}</td>
+                                            <td className="py-2 px-4 text-left">{order.quantity}</td>
+                                            <td className="py-2 px-4 text-left">₹{order.totalPrice}</td>
                                         </tr>
                                     ))
-                                ))}
+                                )}
                             </tbody>
                         </table>
-                    ) : (
-                        <p>No orders found for this product.</p>
-                    )}
-                </div>
+                    </div>
+                ) : (
+                    <p>No orders found for this product.</p>
+                )}
             </div>
         </div>
     </div>
+</div>
+
 </div>
 
         </>

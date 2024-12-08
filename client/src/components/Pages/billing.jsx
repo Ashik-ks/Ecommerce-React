@@ -200,12 +200,12 @@ function Billing() {
               ))}
               <div className="bg-white px-5 mt-6 pb-5">
                 <div className="flex justify-between items-center">
-                  <div className="flex justify-between gap-5 w-full sm:w-auto">
-                    <span className="text-2xl font-bold">Total Price</span>
-                    <span className="text-2xl font-bold text-green-600">₹{totalPrice}</span>
+                  <div className="totalpricediv flex justify-between gap-5 w-full sm:w-auto">
+                    <span className="text-2xl font-bold totalprice">Total Price</span>
+                    <span className="text-2xl font-bold text-green-600 totalprice">₹{totalPrice}</span>
                   </div>
                   <button
-                    className="w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg text-lg cursor-pointer transition-all duration-300 hover:bg-purple-700"
+                    className="totalpricebtn1 w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg text-lg cursor-pointer transition-all duration-300 hover:bg-purple-700"
                     onClick={placeOrder}
                     disabled={loading}
                   >

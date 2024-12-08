@@ -110,83 +110,105 @@ function Singleview() {
                         </div>
 
                         {/* Product Details */}
-                        <div id="singleproductcontainer" className="mt-3 bg-white p-2">
-                            <div className="flex gap-4">
-                                {/* Left Side Images */}
-                                <div className="w-2/12">
-                                    <div className="flex flex-col gap-1" id="imageunzoom">
-                                        {productData?.images.map((image, index) => (
-                                            <img
-                                                key={index}
-                                                alt="Product Image"
-                                                className="img-fluid"
-                                                height="100"
-                                                src={`http://localhost:3000/${image}`}
-                                                width="100"
-                                                onClick={() => displayZoomedImage(image)}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
+                        <div id="singleproductcontainer" className="mt-3 bg-white p-2 ">
+    {/* Left Side Images */}
+    <div className=" leftsideimgs">
+        <div className="flex flex-col gap-1" id="imageunzoom">
+            {productData?.images.map((image, index) => (
+                <img
+                    key={index}
+                    alt="Product Image"
+                    className="h-full img-fluid"
+                    height="200px"
+                    src={`http://localhost:3000/${image}`}
+                    width="100"
+                    onClick={() => displayZoomedImage(image)}
+                />
+            ))}
+        </div>
+    </div>
 
-                                {/* Zoomed Image */}
-                                <div className="">
-                                    <div className="text-center mt-1" id="imagezoom">
-                                        <img
-                                            id="zoomedImg"
-                                            className="zoomedImg w-full h-auto"  // Added w-full to make it take full width
-                                            src={`http://localhost:3000/${zoomedImage || productData?.images[0]}`}
-                                            alt="Zoomed Image"
-                                        />
-                                    </div>
-                                </div>
-                                {/* Product Details */}
-                                <div className="w-5/12 pt-2 ms-5">
-                                    <h1 className="text-lg font-semibold mb-1">{productData?.description}</h1>
-                                    <div className="flex flex-col mt-2">
-                                        <span className="mb-1">Price ₹{productData?.price}</span>
-                                        <span className="text-green-600 font-bold mb-1">
-                                            Discount Price ₹{productData?.discountPrice}
-                                        </span>
-                                        <span className="font-semibold text-green-600">{productData?.weight} gm</span>
-                                    </div>
-                                    <div className="mt-1 mb-1">Inclusive of all taxes</div>
-                                    <span className="text-sm font-semibold mt-1">Seller: {sellerData}</span>
+    {/* Zoomed Image */}
+    <div className="">
+        <div className="text-center mt-1" id="imagezoom">
+            <img
+                id="zoomedImg"
+                className="zoomedImg w-full h-auto"
+                src={`http://localhost:3000/${zoomedImage || productData?.images[0]}`}
+                alt="Zoomed Image"
+            />
+        </div>
+    </div>
 
-                                    {/* Wishlist and Buy Now Buttons */}
-                                    <div className="flex gap-4 mt-25">
-                                        <div className="bg-white text-center pb-2">
-                                            <button
-                                                className="addtocartbtn mt-2"
-                                                onClick={() => addToCart(productData._id)}
-                                            >
-                                                Add to Cart
-                                            </button>
-                                        </div>
-                                        <div className="bg-white text-center pb-2 bg-white text-center pb-2">
-                                            <button
-                                                className="addtocartbtn mt-2 flex gap-3 items-center"
-                                                onClick={() => handleWishlist(productData?._id)}
-                                            >
-                                                <FontAwesomeIcon icon={faHeart} className="text-purple-400" />
-                                                <span className="">Wishlist</span>
-                                            </button></div>
-                                        <div className="bg-white text-center pb-2 ">
-                                            <button
-                                                className="addtocartbtn mt-2 flex gap-3 items-center"
-                                                onClick={() => handleBuyNow(productData?._id)}
-                                            >
-                                                <FontAwesomeIcon icon={faShoppingCart} className="text-purple-400" />
-                                                <span className=""  onClick={() => {
+    {/* Product Details */}
+    <div className="pt-2 ms-5">
+    <h1 className="text-lg font-semibold mb-1 description">{productData?.description}</h1>
+    <div className="flex flex-col mt-2">
+        <span className="mb-1">Price ₹{productData?.price}</span>
+        <span className="text-green-600 font-bold mb-1">
+            Discount Price ₹{productData?.discountPrice}
+        </span>
+        <span className="font-semibold text-green-600">{productData?.weight} gm</span>
+    </div>
+    <div className="mt-1 mb-1">Inclusive of all taxes</div>
+    <span className="text-sm font-semibold mt-1">Seller: {sellerData}</span>
 
-                navigate(`/billing/${id}/${productData._id}/${usertype}`);
-            }}>Buy Now</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    {/* Conditional Rendering of Wishlist and Cart Buttons */}
+    <div className="flex gap-5 mt-5">
+        {/* Add to Cart or Go to Cart */}
+        <div className="text-start">
+            {!productData?.isInCart ? (
+                <button
+                    className="addtocartbtn mt-2"
+                    onClick={() => addToCart(productData._id)}
+                >
+                    Add to Cart
+                </button>
+            ) : (
+                <button
+                    className="addtocartbtn mt-2"
+                    onClick={() => navigate(`/cart/${id}/${usertype}`)}
+                >
+                    Go to Cart
+                </button>
+            )}
+        </div>
+
+        {/* Wishlist Button with Conditional Heart Icon */}
+        <div className="text-center">
+            <button
+                className="addtocartbtn mt-2 flex gap-3 items-center"
+                onClick={() => addToWishlist(productData._id)}
+            >
+                <FontAwesomeIcon
+                    icon={faHeart}
+                    className={productData?.isWishlist ? "text-red-500" : "text-purple-400"}
+                />
+                <span>{productData?.isWishlist ? "In Wishlist" : "Wishlist"}</span>
+            </button>
+        </div>
+
+        {/* Buy Now Button */}
+        <div className="text-center">
+            <button
+                className="addtocartbtn mt-2 flex gap-3 items-center"
+                onClick={() => handleBuyNow(productData?._id)}
+            >
+                <FontAwesomeIcon icon={faShoppingCart} className="text-purple-400" />
+                <span
+                    onClick={() => {
+                        navigate(`/billing/${id}/${productData._id}/${usertype}`);
+                    }}
+                >
+                    Buy Now
+                </span>
+            </button>
+        </div>
+    </div>
+</div>
+
+</div>
+
                     </div>
 
                     {/* Related Products */}
@@ -196,14 +218,13 @@ function Singleview() {
 
                     {/* Grid for Related Products */}
 {/* Grid for Related Products */}
-<div className="datacontainercategorysinglepage mt-5">
+<div className="grid-container mt-5 grid grid-cols-4 gap-4">
     {relatedProducts?.map((relatedProduct) => {
         const imageUrl = relatedProduct?.images[0]
             ? `http://localhost:3000/${relatedProduct.images[0]}`
-            : 'fallback-image-url.jpg'; // Use fallback image if not available
+            : 'fallback-image-url.jpg';
 
-        // Determine if the heart should be highlighted based on the wishlist status
-        const isInWishlist = relatedProduct?.isWishlist ? 'text-red-500' : 'text-slate-300'; // Apply color class dynamically
+        const isInWishlist = relatedProduct?.isWishlist ? 'text-red-500' : 'text-slate-300';
 
         return (
             <div
@@ -211,49 +232,39 @@ function Singleview() {
                 className="flex flex-col shadow-md p-4 bg-light rounded cursor-pointer relative overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
                 onClick={() => singleProduct(relatedProduct._id, relatedProduct.category)}
             >
-                {/* Conditionally Render Wishlist Heart */}
-                {id && id !== "undefined" && ( // Render heart only if `id` exists and is valid
+                {id && id !== "undefined" && (
                     <div
                         className="position-relative"
                         onClick={(e) => {
-                            e.stopPropagation(); // Prevent navigation click event
-                            addToWishlist(relatedProduct._id); // Handle add/remove from wishlist
+                            e.stopPropagation();
+                            addToWishlist(relatedProduct._id);
                         }}
                     >
                         <span
                             id={`wishlistheart-${relatedProduct._id}`}
-                            className="wishlistheart"
-                            style={{
-                                position: 'absolute',
-                                top: "6px",
-                                left: "10px",
-                                zIndex: 10, // Ensure the heart is above the image
-                            }}
+                            className="absolute top-1 left-2 z-10 wishlistheart1"
                         >
                             <i
-                                className={`fa fa-heart fs-5 ${isInWishlist}`} // Dynamically style the heart icon
+                                className={`fa fa-heart text-lg ${isInWishlist}`}
                                 aria-hidden="true"
                             ></i>
                         </span>
                     </div>
                 )}
 
-                {/* Product Image */}
                 <img
                     src={imageUrl}
-                    className="w-full mx-auto h-[100px] object-cover md:h-[250px] lg:h-[300px]" // Fixed height and responsive styles
+                    className="w-full mx-auto h-[100px] object-cover md:h-[250px] lg:h-[300px]"
                     alt="Related Product"
                     onClick={(e) => {
-                        e.stopPropagation(); // Prevent parent click event if the user clicks the image
+                        e.stopPropagation();
                         singleProduct(relatedProduct._id, relatedProduct.category);
                     }}
                 />
 
-                {/* Product Details */}
                 <div className="mt-4">
-                    <div className="text-sm text-gray-800">
-                        {relatedProduct?.name.slice(0, 23)}
-                        {relatedProduct.name.length > 30 ? '...' : ''}
+                    <div className="text-sm text-gray-800 truncate">
+                        {relatedProduct?.name}
                     </div>
                     <div className="mt-1 text-lg font-bold text-black">
                         Offer: ₹{relatedProduct?.discountPrice}
@@ -261,10 +272,7 @@ function Singleview() {
                     <div className="text-md text-gray-600 line-through">
                         Price: ₹{relatedProduct?.price}
                     </div>
-                    <div
-                        className="mt-1 text-sm text-gray-500"
-                        style={{ fontSize: '1rem', fontWeight: 'bold' }}
-                    >
+                    <div className="mt-1 text-sm text-gray-500 font-bold">
                         {relatedProduct?.stockStatus}
                     </div>
                 </div>
@@ -272,6 +280,10 @@ function Singleview() {
         );
     })}
 </div>
+
+
+
+
 
                 </div>
             </div>

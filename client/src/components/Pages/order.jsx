@@ -71,12 +71,12 @@ const OrderDetails = () => {
 
             if (response.data.success) {
                 toast.success("Order canceled successfully!", {
-                    onClose: () => window.location.reload(), 
+                    onClose: () => window.location.reload(),
                     autoClose: 1000,
                     className: "bg-purple-600 text-white font-semibold rounded-lg shadow-lg",
-                    bodyClassName: "text-center text-black", 
+                    bodyClassName: "text-center text-black",
                     progressClassName: "bg-purple-300",
-                });                
+                });
                 setOrders(orders.filter((order) => order.orderId !== orderId));
             } else {
                 toast.error(response.data.message || "Failed to cancel order.");
@@ -91,105 +91,99 @@ const OrderDetails = () => {
         <>
             <InnerPagesNav />
             <ToastContainer position="top-center" autoClose={2000} />
-            <div className="container mx-auto">
-                <div className="grid grid-cols-12">
-                    <div className="col-span-3"></div>
-                    <div className="col-span-6 border">
-                        <div id="fetchallorderproducts">
-                            {loading ? (
-                                <p>Loading orders...</p>
-                            ) : error ? (
-                                <div className="text-center py-10">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-16 w-16 text-gray-400 mx-auto mb-4"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                        strokeWidth={2}
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M3 3h18l-2 13H5L3 3zm3 14a3 3 0 106 0H6zm12 0a3 3 0 106 0h-6z"
-                                        />
-                                    </svg>
-                                    <p className="text-gray-500 text-lg">{error}</p>
-                                </div>
-                            ) : (
-                                orders.map((product) => {
-                                    return (
-                                        <div
-                                            key={product.orderId}
-                                            className="bg-white p-4 border-b border-gray-300 mt-4"
-                                        >
-                                            <div className="flex items-center">
-                                                <img
-                                                    src={`http://localhost:3000/${product.productImage[0]}`}
-                                                    alt={product.productName}
-                                                    className="rounded mr-4 w-22 h-16 object-cover"
-                                                />
-                                                <div>
-                                                    <h5 className="text-lg font-semibold">{product.productName}</h5>
-                                                    <p className="text-gray-600">{product.productDescription}</p>
-                                                    <div className="flex items-center mt-2">
-                                                        <span className="line-through text-green-600">
-                                                            ₹{product.price}
-                                                        </span>
-                                                        {product.discountPrice && (
-                                                            <span className="text-blue-600 font-bold ml-2">
-                                                                ₹{product.discountPrice}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                    <div className="mt-4">
-                                                        <span className="text-gray-500">
-                                                            Quantity: {product.quantity}
-                                                        </span>
-                                                        <span className="block mt-3 text-lg font-bold text-blue-600">
-                                                            Price To Pay: ₹{product.totalPrice}
-                                                        </span>
-                                                    </div>
-                                                    <div className="mt-4">
-                                                        <button
-                                                            className="bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200"
-                                                            onClick={() =>
-                                                                cancelOrder(
-                                                                    product.orderId,
-                                                                    product.productId,
-                                                                    product.quantity
-                                                                )
-                                                            }
-                                                        >
-                                                            Cancel Order
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                })
-                            )}
-                        </div>
-                        <div className="border-t">
-                            <div className="py-3 border-gray-300">
-                                <span className="text-md text-gray-600 px-3 sm:px-5">
-                                    About Our Return Policy <i className="fa fa-long-arrow-right"></i>
-                                </span>
-                            </div>
-                            <div className="border-t border-gray-300 py-4">
-                                <span className="text-md text-gray-600 px-3 sm:px-5">
-                                    Terms And Conditions <i className="fa fa-long-arrow-right"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div id="totalprice" className="mt-4">
-                            {/* Display total price logic here if needed */}
-                        </div>
-                    </div>
-                    <div className="col-span-3"></div>
+            <div className="orderdetailsdiv w-full lg:w-auto">
+    <div className="w-full lg:w-1/2 mx-auto border maindiv1 ">
+        <div id="fetchallorderproducts">
+            {loading ? (
+                <p>Loading orders...</p>
+            ) : error ? (
+                <div className="text-center py-10">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-16 w-16 text-gray-400 mx-auto mb-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3 3h18l-2 13H5L3 3zm3 14a3 3 0 106 0H6zm12 0a3 3 0 106 0h-6z"
+                        />
+                    </svg>
+                    <p className="text-gray-500 text-lg">{error}</p>
                 </div>
+            ) : (
+                orders.map((product) => {
+                    return (
+                        <div
+                            key={product.orderId}
+                            className="bg-white p-4 border-b border-gray-300 mt-4"
+                        >
+                            <div className="flex flex-col sm:flex-row items-center">
+                                <img
+                                    src={`http://localhost:3000/${product.productImage[0]}`}
+                                    alt={product.productName}
+                                    className="rounded mb-4 sm:mb-0 sm:mr-4 w-22 h-16 object-cover"
+                                />
+                                <div className="w-full">
+                                    <h5 className="text-lg font-semibold">{product.productName}</h5>
+                                    <p className="text-gray-600">{product.productDescription}</p>
+                                    <div className="flex items-center mt-2">
+                                        <span className="line-through text-green-600">
+                                            ₹{product.price}
+                                        </span>
+                                        {product.discountPrice && (
+                                            <span className="text-blue-600 font-bold ml-2">
+                                                ₹{product.discountPrice}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="mt-4">
+                                        <span className="text-gray-500">
+                                            Quantity: {product.quantity}
+                                        </span>
+                                        <span className="block mt-3 text-lg font-bold text-blue-600 ">
+                                            Price To Pay: ₹{product.totalPrice}
+                                        </span>
+                                    </div>
+                                    <div className="mt-4">
+                                        <button
+                                            className="bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200"
+                                            onClick={() =>
+                                                cancelOrder(
+                                                    product.orderId,
+                                                    product.productId,
+                                                    product.quantity
+                                                )
+                                            }
+                                        >
+                                            Cancel Order
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })
+            )}
+        </div>
+        <div className="border-t">
+            <div className="py-3 border-gray-300">
+                <span className="text-md text-gray-600 px-3 sm:px-5">
+                    About Our Return Policy <i className="fa fa-long-arrow-right"></i>
+                </span>
             </div>
+            <div className="border-t border-gray-300 py-4">
+                <span className="text-md text-gray-600 px-3 sm:px-5">
+                    Terms And Conditions <i className="fa fa-long-arrow-right"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
             <Footer />
         </>
     );

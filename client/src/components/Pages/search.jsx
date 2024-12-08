@@ -176,8 +176,8 @@ function SearchPage() {
             </div>
 
             {/* Products Section */}
-            <div className="max-w-screen-xl mx-auto p-4 mt-8">
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="container max-w-screen-xl px-4 py-6 mx-auto">
+    <div className="grid-container">
         {/* Render the main product only if it hasn't been displayed yet */}
         {searchProduct && !displayedIds.has(searchProduct._id) && (
             <div
@@ -267,7 +267,7 @@ function SearchPage() {
                 </div>
             </div>
 
-            <div className="container max-w-screen-xl mx-auto mb-7 mt-5">
+            <div className="container max-w-screen-xl px-4 py-6 mx-auto">
                 <div className="text-center text-2xl font-bold mb-5">
                     {searchProduct?.category?.name && (
                         <>

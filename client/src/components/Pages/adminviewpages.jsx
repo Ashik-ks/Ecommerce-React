@@ -307,151 +307,169 @@ function AdminViewpage() {
                 {/* Conditional Rendering for Products, Buyers, Sellers, or Orders */}
                 {state === "Products" ? (
                     filteredProducts.length > 0 ? (
-                        <div className="grid-container">
-                            {filteredProducts.map((product) => (
-                                <div key={product._id} className="product-card" >
-                                    <div>
-                                        <img
-                                            src={`http://localhost:3000/${product.images ? product.images[0] : 'fallback-image-url.jpg'}`}
-                                            className="w-full mx-auto h-[100px] object-cover md:h-[250px] lg:h-[300px] rounded-md"
-                                            alt="Product" onClick={(event) => {
-                                                event.preventDefault();
-                                                navigate(`/adminsingleviewpage/${id}/${usertype}/${product._id}`);
-                                            }}
-                                        />
-                                    </div>
-                                    <button className="border-0">
-                                        <div className="d-flex justify-content-start">
-                                            <span className="fs-6 text-gray-800">
-                                                {product.name.slice(0, 20)}
-                                                {product.name.length > 30 ? "..." : ""}
-                                            </span>
-                                        </div>
-                                        <div className="d-flex justify-content-between">
-                                            <div className="text-gray-800 text-sm">
-                                                <p>Price: {product.price}</p>
-                                                <p className="text-green-500">{product.stockStatus}</p>
-                                            </div>
-                                        </div>
-                                    </button>
-                                    <button
-                                        className={`adminbtn ${product.productStatus === "UnBlock" ? "hover:bg-red-500" : "hover:bg-blue-500"}`}
-                                        onClick={(event) => {
-                                            event.stopPropagation(); // Prevent parent onClick from firing
-                                            handleBlockButtonClick(product._id);
-                                        }}
-                                    >
-                                        {product.productStatus === "UnBlock" ? "Block" : "UnBlock"}
-                                    </button>
-                                    {/* Description Input when Block Button is clicked */}
-                                    {blockId === product._id && (
-                                        <div className="block-description">
-                                            <textarea
-                                                placeholder="Enter reason for blocking"
-                                                value={description}
-                                                onChange={(e) => setDescription(e.target.value)}
-                                                className="w-full mt-2 p-2 border border-gray-300 rounded"
-                                            />
-                                            <button
-                                                onClick={() => blockProduct(product._id)}
-                                                className="adminbtn mt-2"
-                                            >
-                                                Confirm Block
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
+<div className="grid-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 justify-items-start">
+    {filteredProducts.map((product) => (
+        <div key={product._id} className="product-card1 bg-slate-50 p-4 rounded-lg shadow-lg min-h-0 w-full">
+            <div>
+                <img
+                    src={`http://localhost:3000/${product.images ? product.images[0] : 'fallback-image-url.jpg'}`}
+                    className="w-full mx-auto h-[150px] object-cover rounded-md md:h-[250px] lg:h-[300px]"
+                    alt="Product"
+                    onClick={(event) => {
+                        event.preventDefault();
+                        navigate(`/adminsingleviewpage/${id}/${usertype}/${product._id}`);
+                    }}
+                />
+            </div>
+            <button className="border-0 w-full mt-2">
+                <div className="flex justify-start">
+                    <span className="text-sm font-semibold text-gray-800">
+                        {product.name.slice(0, 20)}
+                        {product.name.length > 30 ? "..." : ""}
+                    </span>
+                </div>
+                <div className="flex justify-between mt-2">
+                    <div className="text-sm text-gray-800">
+                        <p>Price: {product.price}</p>
+                        <p className="text-green-500">{product.stockStatus}</p>
+                    </div>
+                </div>
+            </button>
+            <button
+                className={`adminbtn mt-2 w-full ${product.productStatus === "UnBlock" ? "hover:bg-red-500" : "hover:bg-blue-500"}`}
+                onClick={(event) => {
+                    event.stopPropagation(); // Prevent parent onClick from firing
+                    handleBlockButtonClick(product._id);
+                }}
+            >
+                {product.productStatus === "UnBlock" ? "Block" : "UnBlock"}
+            </button>
+            {/* Description Input when Block Button is clicked */}
+            {blockId === product._id && (
+                <div className="block-description w-full mt-2">
+                    <textarea
+                        placeholder="Enter reason for blocking"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="w-full p-2 border border-gray-300 rounded"
+                    />
+                    <button
+                        onClick={() => blockProduct(product._id)}
+                        className="adminbtn mt-2 w-full"
+                    >
+                        Confirm Block
+                    </button>
+                </div>
+            )}
+        </div>
+    ))}
+</div>
+
+
                     ) : (
                         <p>No products found.</p>
                     )
                 ) : state === "Buyers" ? (
                     filteredBuyers.map((buyer) => (
                         <div className="user-card user-card shadow-lg p-5 mb-4 bg-slate-50 rounded mt-8" key={buyer._id}>
-                            <div className="user-card-content flex items-center justify-between">
-                                <div>{buyer.name}</div>
-                                <div>{buyer.email}</div>
-                                <div>{buyer.address[0].state}/{buyer.address[0].city}/{buyer.address[0].street}</div>
-                                <button
-                                    onClick={() => handleBlockButtonClick(buyer._id)}
-                                    className={`adminbtn ${buyer.userStatus === "UnBlock" ? "hover:bg-red-500" : "hover:bg-blue-500"}`}
-                                >
-                                    {buyer.userStatus === "UnBlock" ? "Block" : "UnBlock"}
-                                </button>
-
-                                {/* Show description input when block button is clicked */}
-                                {blockId === buyer._id && (
-                                    <div className="block-description">
-                                        <textarea
-                                            placeholder="Enter reason for blocking"
-                                            value={description}
-                                            onChange={(e) => setDescription(e.target.value)}
-                                            className="w-full mt-2 p-2 border border-gray-300 rounded"
-                                        />
-                                        <button
-                                            onClick={() => blockProduct(buyer._id)}
-                                            className="adminbtn mt-2"
-                                        >
-                                            Confirm Block
-                                        </button>
-                                    </div>
-                                )}
+                        <div className="user-card-content grid grid-cols-1 sm:grid-cols-4 gap-4 items-center justify-between">
+                          
+                          <div className="text-sm font-semibold text-center">{buyer.name}</div>
+                          <div className="text-sm font-semibold text-center">{buyer.email}</div>
+                          
+                          {/* Address Section */}
+                          <div className="text-sm text-gray-600 text-center">
+                            {buyer.address && buyer.address[0] ? (
+                              `${buyer.address[0].state} / ${buyer.address[0].city} / ${buyer.address[0].street}`
+                            ) : (
+                              "N/A"
+                            )}
+                          </div>
+                          
+                          {/* Block/Unblock Button */}
+                          <div className="flex justify-center">
+                            <button
+                              onClick={() => handleBlockButtonClick(buyer._id)}
+                              className={`adminbtn ${buyer.userStatus === "UnBlock" ? "hover:bg-red-500" : "hover:bg-blue-500"}`}
+                            >
+                              {buyer.userStatus === "UnBlock" ? "Block" : "UnBlock"}
+                            </button>
+                          </div>
+                      
+                          {/* Description Input when Block Button is clicked */}
+                          {blockId === buyer._id && (
+                            <div className="block-description w-full sm:w-auto col-span-4">
+                              <textarea
+                                placeholder="Enter reason for blocking"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                className="w-full mt-2 p-2 border border-gray-300 rounded sm:w-72"
+                              />
+                              <button
+                                onClick={() => blockProduct(buyer._id)}
+                                className="adminbtn mt-2"
+                              >
+                                Confirm Block
+                              </button>
                             </div>
+                          )}
                         </div>
+                      </div>
+                      
 
                     ))
                 ) :
                     state === "Sellers" ? (
                         filteredSellers.map((seller) => (
                             <div className="user-card shadow-lg p-5 mb-4 bg-slate-50 rounded mt-8" key={seller._id}>
-                                <div className="user-card-content flex items-center justify-between">
-                                    {seller.image && (
-                                        <img
-                                            src={`http://localhost:3000/${seller.image}`}
-                                            alt={seller.name}
-                                            className="admincontainerimg"
-                                        />
-                                    )}
-                                    <div className="user-name">Seller ID: {seller._id}</div>
-                                    <div className="user-email">{seller.email}</div>
-                                    
-                                    {/* Address Section - Display address or "N/A" */}
-                                    <div>
-                                        {seller.address && seller.address[0] ? (
-                                            `${seller.address[0].country} / ${seller.address[0].city} / ${seller.address[0].street}`
-                                        ) : (
-                                            "N/A"
-                                        )}
-                                    </div>
-                                    
-                                    {/* Block/Unblock Button */}
-                                    <button
-                                        onClick={() => handleBlockButtonClick(seller._id)}
-                                        className={`adminbtn ${seller.userStatus === "UnBlock" ? "hover:bg-red-500" : "hover:bg-blue-500"}`}
-                                    >
-                                        {seller.userStatus === "UnBlock" ? "Block" : "UnBlock"}
-                                    </button>
-                                    
-                                    {/* Description Input when Block Button is clicked */}
-                                    {blockId === seller._id && (
-                                        <div className="block-description">
-                                            <textarea
-                                                placeholder="Enter reason for blocking"
-                                                value={description}
-                                                onChange={(e) => setDescription(e.target.value)}
-                                                className="w-full mt-2 p-2 border border-gray-300 rounded"
-                                            />
-                                            <button
-                                                onClick={() => blockProduct(seller._id)}
-                                                className="adminbtn mt-2"
-                                            >
-                                                Confirm Block
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
+                           <div className="user-card-content grid grid-cols-1 sm:grid-cols-4 gap-4 items-center justify-between">
+  <div className="user-name text-sm font-semibold text-center">
+    Seller ID: {seller._id}
+  </div>
+  <div className="user-email text-sm font-semibold text-center">
+    {seller.email}
+  </div>
+  
+  {/* Address Section - Display address or "N/A" */}
+  <div className="user-address text-sm text-gray-600 text-center">
+    {seller.address && seller.address[0] ? (
+      `${seller.address[0].country} / ${seller.address[0].city} / ${seller.address[0].street}`
+    ) : (
+      "N/A"
+    )}
+  </div>
+  
+  {/* Block/Unblock Button */}
+  <div className="flex justify-center">
+    <button
+      onClick={() => handleBlockButtonClick(seller._id)}
+      className={`adminbtn ${seller.userStatus === "UnBlock" ? "hover:bg-red-500" : "hover:bg-blue-500"}`}
+    >
+      {seller.userStatus === "UnBlock" ? "Block" : "UnBlock"}
+    </button>
+  </div>
+
+  {/* Description Input when Block Button is clicked */}
+  {blockId === seller._id && (
+    <div className="block-description w-full sm:w-auto col-span-4">
+      <textarea
+        placeholder="Enter reason for blocking"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        className="w-full mt-2 p-2 border border-gray-300 rounded sm:w-72"
+      />
+      <button
+        onClick={() => blockProduct(seller._id)}
+        className="adminbtn mt-2"
+      >
+        Confirm Block
+      </button>
+    </div>
+  )}
+</div>
+
+                          </div>
+                          
                         ))
                     ) 
                 : state === "orders" ? (

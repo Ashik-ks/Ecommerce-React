@@ -747,37 +747,58 @@ exports.getSingleproduct = async function (req, res) {
                 // Fetch all products in the same category
                 let categoryProduct = await Product.find({ category: Category._id });
 
-                // If `id` is undefined or user is not found, skip the wishlist logic
+                // If `id` is undefined or user is not found, skip the wishlist and cart logic
                 if (id === 'undefined' || !await Users.findOne({ _id: id })) {
                     return res.status(200).send({
                         success: true,
                         statuscode: 200,
-                        product: product,
+                        product: product, // Send product with no wishlist or cart flags
                         productcategory: Category.name,
-                        categoryProduct: categoryProduct, // No `isWishlist` flag
+                        categoryProduct: categoryProduct, // No `isWishlist` or `isInCart` flag
                         sellername: sellername?.email || "Unknown",
                         message: "Products fetched successfully (no user ID or user not found)",
                     });
                 }
 
-                // Fetch the user's wishlist if `id` is defined
-                let user = await Users.findOne({ _id: id }, { wishlist: 1 });
+                // Fetch the user's wishlist and cart if `id` is defined
+                let user = await Users.findOne({ _id: id }, { wishlist: 1, addtocart: 1 });
                 let userWishlist = user?.wishlist || [];
+                let userCart = user?.addtocart || []; // Assuming the cart field is named `addtocart`
 
-                // Add isWishlist flag for each product in categoryProduct
+                // Log the userWishlist and userCart for debugging
+                console.log("User Wishlist: ", userWishlist);
+                console.log("User Cart: ", userCart);
+
+                // Add `isWishlist` and `isInCart` flags for the single product
+                product.isWishlist = userWishlist.includes(product._id.toString()); // Check if product is in wishlist
+                product.isInCart = userCart.includes(product._id.toString()); // Check if product is in cart
+
+                // Log the updated product with flags for debugging
+                console.log("Updated Product with flags: ", product);
+
+                // Add `isWishlist` and `isInCart` flags for each product in `categoryProduct`
                 categoryProduct = categoryProduct.map((item) => {
                     return {
                         ...item._doc, // Spread product fields
                         isWishlist: userWishlist.includes(item._id.toString()), // Check if product is in wishlist
+                        isInCart: userCart.includes(item._id.toString()), // Check if product is in cart
                     };
                 });
 
+                // Log the category products with flags
+                console.log("Category Products with Flags: ", categoryProduct);
+
+                // Send response with updated flags
                 return res.status(200).send({
                     success: true,
                     statuscode: 200,
-                    product: product,
+                    product: {
+                        ...product._doc, // Spread original product data
+                        isWishlist: product.isWishlist, // Ensure isWishlist flag is included
+                        isInCart: product.isInCart, // Ensure isInCart flag is included
+                    },
                     productcategory: Category.name,
-                    categoryProduct: categoryProduct,
+                    categoryProduct: categoryProduct, // Send category products with `isWishlist` and `isInCart` flags
                     sellername: sellername?.email || "Unknown",
                     message: "Products fetched successfully",
                 });
@@ -804,8 +825,6 @@ exports.getSingleproduct = async function (req, res) {
         });
     }
 };
-
-
 
 //to add products in addtocart
 exports.addToCart = async function (req, res) {
