@@ -8,7 +8,7 @@ import { faMagnifyingGlass, faHeart, faCartShopping, faUser, faGift, faCog, faRi
   from "@fortawesome/free-solid-svg-icons";
 import purpleLogo from "../../assets/images/purpplelogo.png";
 import purplejoinElite from "../../assets/images/purplejoinElite.png.gif";
-import {toast} from "react-toastify";
+import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
@@ -37,7 +37,8 @@ function InnerPagesNav() {
     // Clear user data, session, or perform any necessary logout logic
     setIsLoggedIn(false);
     setUserType(null);
-    alert("You have been logged out.");
+    
+    toast.success("You have been logged out.");  // Success toast for logout
     navigate(`/`);
   };
 
@@ -135,6 +136,7 @@ function InnerPagesNav() {
   // Admin login logic
   const adminLogin = () => {
     const password = document.getElementById("passwordInput").value;
+    
     if (password) {
       axios
         .post("http://localhost:3000/sendotp", { email, password, userType: "Admin" })
@@ -142,24 +144,24 @@ function InnerPagesNav() {
           if (response.data.statusCode === 200) {
             let token = response.data.data.token;
             let tokenkey = response.data.data.id;
-
+  
             // Store token in localStorage
             localStorage.setItem(tokenkey, token);
             localStorage.setItem(tokenkey + "_userType", response.data.data.userType);
-
-            alert("Admin login successful!");
+  
+            toast.success("Admin login successful!");  // Success toast
             navigate(`/admin/${tokenkey}/${response.data.data.userType}`);
             closePopup();
           } else {
-            alert("Invalid password. Please try again.");
+            toast.error("Invalid password. Please try again.");  // Error toast for invalid password
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          alert("Error during admin login");
+          toast.error("Error during admin login");  // Error toast for request failure
         });
     } else {
-      alert("Please enter a valid password");
+      toast.error("Please enter a valid password");  // Error toast if password is empty
     }
   };
 

@@ -4,7 +4,7 @@ import axios from "axios";
 import InnerPagesNav from "../nav/innerpagesnav";
 import Footer from "../footer/footer";
 import PlaceOrder from "../functions/placeorder"; 
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function Billing() {
@@ -130,7 +130,6 @@ function Billing() {
   return (
     <>
       <InnerPagesNav />
-      <ToastContainer position="top-center" autoClose={2000} />
       <div className="container mx-auto px-4">
         <div className="flex justify-center">
           <div className="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 border border-gray-300">

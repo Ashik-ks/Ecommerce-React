@@ -7,7 +7,7 @@ import purplejoinElite from "../../assets/images/purplejoinElite.png.gif";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import AddToCart from "../functions/addtocart";
-import { ToastContainer } from "react-toastify";
+import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function AdminSingleView() {
@@ -107,7 +107,6 @@ function AdminSingleView() {
     return (
         <>
         <div className="dashboard-wrapper" style={{ display: "flex", height: "100vh" }}>
-    <ToastContainer position="top-center" autoClose={2000} />
 
     <div>
         <button
@@ -248,7 +247,7 @@ function AdminSingleView() {
         </div>
 
         {/* Product Details */}
-        <div className="w-full md:w-[60%] pt-2 ms-5">
+        <div className="w-full md:w-[60%] pt-2 ps-5">
             <h1 className="text-lg font-semibold mb-1 description">{productData?.description}</h1>
             <div className="flex flex-col mt-2">
                 <span className="mb-1">Price ₹{productData?.price}</span>

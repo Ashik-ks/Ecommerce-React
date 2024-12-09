@@ -5,6 +5,8 @@ import InnerPagesNav from "../nav/innerpagesnav";
 import Footer from "../footer/footer";
 import AddToWishlist from "../functions/addtowishlist";
 import AddToCart from "../functions/addtocart";
+import {toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 function AddToWishlistPage() {
@@ -36,47 +38,47 @@ function AddToWishlistPage() {
     };
 
     useEffect(() => {
-        const fetchWishlistData = async () => {
-            const token = localStorage.getItem(id);
+      const fetchWishlistData = async () => {
+          const token = localStorage.getItem(id);
 
-            if (!token) {
-                console.error('No token found for the user.');
-                alert('Please log in to access your wishlist.');
-                return;
-            }
+          if (!token) {
+              console.error('No token found for the user.');
+              toast.error('Please log in to access your wishlist.'); // Show error toast
+              return;
+          }
 
-            try {
-                const response = await axios.get(`http://localhost:3000/getallWishlist/${id}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
+          try {
+              const response = await axios.get(`http://localhost:3000/getallWishlist/${id}`, {
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${token}`,
+                  },
+              });
 
-                // Log the entire response to see what is returned from the server
-                console.log('API Response:', response.data);
+              console.log('API Response:', response.data);
 
-                const { products, count, address, totalprice } = response.data;
+              const { products, count, address, totalprice } = response.data;
 
-                // Check if the products array is empty or malformed
-                if (!products || !Array.isArray(products)) {
-                    console.error('Unexpected API response:', { products });
-                    alert('Invalid data received from server.');
-                    return;
-                }
+              if (!products || !Array.isArray(products)) {
+                  console.error('Unexpected API response:', { products });
+                  toast.error('Invalid data received from server.'); // Show error toast
+                  return;
+              }
 
-                setWishlist(products);
-                setCount(count);
-                setPincode(address);
-                setTotalPrice(totalprice);
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while fetching your wishlist. Please try again later.');
-            }
-        };
+              // Assuming you have state hooks to set wishlist data
+              setWishlist(products);
+              setCount(count);
+              setPincode(address);
+              setTotalPrice(totalprice);
 
-        fetchWishlistData();
-    }, [id]);
+          } catch (error) {
+              console.error('Error:', error);
+              toast.error('An error occurred while fetching your wishlist. Please try again later.'); // Show error toast
+          }
+      };
+
+      fetchWishlistData();
+  }, [id]);
 
     const singleProduct = (productId, category) => {
       // Navigate to the single product view

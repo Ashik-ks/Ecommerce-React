@@ -19,10 +19,13 @@ import Dashboard from './components/Pages/admin';
 import AdminViewpage from './components/Pages/adminviewpages';
 import AdminListing from './components/Pages/adminlisting';
 import AdminSingleView from './components/Pages/adminsingleview';
+import {ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <>
+      <ToastContainer position="top-center" autoClose={2000} />
     <Router>
       <CountProvider>
         <Routes>

@@ -7,7 +7,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import "chartjs-adapter-date-fns"; // Import date adapter for time scales
 import CountUp from "react-countup";
 import { FaUsers, FaBox, FaChartLine, FaDollarSign } from "react-icons/fa"; // Importing icons
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import purpleLogo from "../../assets/images/purpplelogo.png";
 import purplejoinElite from "../../assets/images/purplejoinElite.png.gif";

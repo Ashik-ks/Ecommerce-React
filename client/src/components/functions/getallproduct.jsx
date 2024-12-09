@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useCount } from '../CountContext';
 import axios from 'axios';
 import AddToWishlist from './addtowishlist';
+import {toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AllProducts = () => {
     const [products, setProducts] = useState([]);

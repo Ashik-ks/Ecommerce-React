@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InnerPagesNav from "../nav/innerpagesnav";
 import Footer from "../footer/footer";
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Profile() {
@@ -60,23 +60,23 @@ export default function Profile() {
         .post("http://localhost:3000/sendotp", { email, userType })
         .then((response) => {
           if (response.data.statusCode === 200) {
-            alert("An OTP has been sent to your email");
+            toast.success("An OTP has been sent to your email");
             setIsEmailSectionVisible(false);
             setIsUserTypeSectionVisible(false);
             setIsOtpSectionVisible(true);
           } else {
-            alert(response.data.message || "Error sending OTP");
+            toast.error(response.data.message || "Error sending OTP");
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          alert("Error sending OTP");
+          toast.error("Error sending OTP");
         });
     } else {
-      alert("Please enter a valid email address and user type");
+      toast.error("Please enter a valid email address and user type");
     }
   };
-
+  
   const verifyOtp = () => {
     const otp = document.getElementById("otpInput").value;
   
@@ -85,9 +85,9 @@ export default function Profile() {
         .post("http://localhost:3000/verifyotp", { email, otp })
         .then((response) => {
           setUserData(response.data);
-          
+  
           if (response.data.statusCode === 200) {
-            alert("Login or Registration successful!");
+            toast.success("Login or Registration successful!");
   
             const { tokenid, token, userType } = response.data.data;
   
@@ -103,58 +103,56 @@ export default function Profile() {
   
             closePopup();
           } else {
-            // Display the specific error message from the server response
             const errorMessage = response.data.message || "Invalid OTP. Please try again.";
-            alert(errorMessage); // Alert with error message
+            toast.error(errorMessage);
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          
-          // Handle the error and display the error message from the server if available
+  
           const errorMessage = error.response?.data?.message || "Error verifying OTP";
-          alert(errorMessage); // Alert with the error message
+          toast.error(errorMessage);
         });
     } else {
-      alert("Please enter the OTP"); // Alert for empty OTP input
+      toast.error("Please enter the OTP");
     }
   };
   
 
   const adminLogin = () => {
     const password = document.getElementById("passwordInput").value;
+    
     if (password) {
       axios
         .post("http://localhost:3000/sendotp", { email, password, userType: "Admin" })
         .then((response) => {
           if (response.data.statusCode === 200) {
             const { token, id, userType } = response.data.data;
-
+  
             const tokenkey = id;
-
+  
             localStorage.setItem(id, token);
             localStorage.setItem(`${id}_userType`, userType);
-
-            alert("Admin login successful!");
+  
+            toast.success("Admin login successful!");
             navigate(`/admin/${tokenkey}/${response.data.data.userType}`);
             closePopup();
           } else {
-            alert("Invalid password. Please try again.");
+            toast.error("Invalid password. Please try again.");
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          alert("Error during admin login");
+          toast.error("Error during admin login");
         });
     } else {
-      alert("Please enter a valid password");
+      toast.error("Please enter a valid password");
     }
   };
 
   return (
     <>
       <InnerPagesNav />
-      <ToastContainer position="top-center" autoClose={2000} />
       <div className="div border-b border-gray-300 pb-4">
   <div className="contentdiv w-1/2 mx-auto bg-white shadow-lg rounded-lg ">
     {id === undefined || id === 'undefined' ? (

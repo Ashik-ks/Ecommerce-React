@@ -12,6 +12,8 @@ import purplebanner4 from "../../assets/images/purplebanner4.avif";
 import smallbanner1 from "../../assets/images/smallbanner1.webp";
 import smallbanner2 from "../../assets/images/smallbanner2.webp";
 import smallbanner3 from "../../assets/images/smallbanner3.webp";
+import {toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Seller() {
   const [currentIndex, setCurrentIndex] = useState(0);

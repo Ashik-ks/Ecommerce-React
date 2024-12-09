@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate,useParams } from 'react-router-dom';
 import axios from "axios";
+import {toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function NavThird() {
   const [categoriesData, setCategoriesData] = useState([]);

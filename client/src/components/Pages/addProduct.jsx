@@ -5,6 +5,8 @@ import Footer from "../footer/footer";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faTag,faAlignLeft,faList,faListAlt,faCube,faDollarSign,faTags,faBoxes,faImages,faWeight,faPaperPlane,}
 from '@fortawesome/free-solid-svg-icons';
+import {toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Addproduct() {
   const { id, usertype } = useParams();

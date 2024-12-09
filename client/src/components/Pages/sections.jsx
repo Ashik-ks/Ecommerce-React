@@ -4,6 +4,8 @@ import InnerPagesNav from "../nav/innerpagesnav";
 import Footer from "../footer/footer";
 import axios from "axios";
 import AddToWishlist from "../functions/addtowishlist";
+import {toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Sections() {
   const { id, usertype, state } = useParams();

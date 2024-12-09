@@ -1,6 +1,8 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMobileScreen, faCircleInfo, faTruck } from '@fortawesome/free-solid-svg-icons';
+import {toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function NavOne() {
   return (

@@ -12,7 +12,7 @@ import purplebanner4 from "../../assets/images/purplebanner4.avif";
 import smallbanner1 from "../../assets/images/smallbanner1.webp";
 import smallbanner2 from "../../assets/images/smallbanner2.webp";
 import smallbanner3 from "../../assets/images/smallbanner3.webp";
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function Home() {
@@ -47,7 +47,6 @@ function Home() {
       <NavOne />
       <HeaderComponent />
       <NavThird />
-      <ToastContainer position="top-center" autoClose={2000} />
       <div class="max-w-screen-xl mx-auto mt-5 mb-5">
       <div className="relative mx-auto">
         <div className="w-full overflow-hidden relative">

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import InnerPagesNav from "../nav/innerpagesnav";
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Footer from "../footer/footer";
 
@@ -90,7 +90,6 @@ const OrderDetails = () => {
     return (
         <>
             <InnerPagesNav />
-            <ToastContainer position="top-center" autoClose={2000} />
             <div className="orderdetailsdiv w-full lg:w-auto">
     <div className="w-full lg:w-1/2 mx-auto border maindiv1 ">
         <div id="fetchallorderproducts">

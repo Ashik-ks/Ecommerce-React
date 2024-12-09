@@ -724,14 +724,17 @@ padding: 2px 4px 3px 4px ;
 }
 @media (max-width: 450px) {
   .description{
-font-size: 13px;  }
+font-size: 13px;
 }
+}
+
 @media (max-width: 450px) {
   .categoryText{
 font-size: 10px;
-margin-left: 15px;
+padding-left: 5px;
   }
 }
+
 @media (max-width: 600px) {
   .totalprice{
 font-size: 17px;
@@ -763,3 +766,81 @@ width: 140px;
     margin-left: 55px;
 }
 }
+.popup-overlay1 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Darker overlay for better contrast */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it appears above other elements */
+}
+
+.popup-content1 {
+  background-color: #fff; /* White background for the popup */
+  padding: 1.5rem; /* Padding for content */
+  border-radius: 12px; /* Rounded corners for the popup */
+  width: 40%; /* Popup width is 40% of the screen */
+  max-width: 90%; /* Ensure max width is 90% for smaller screens */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Softer box shadow for modern design */
+  transition: all 0.3s ease-in-out; /* Smooth transition effect */
+  height: auto;
+  max-height: 80vh; /* Prevent overflow */
+  overflow-y: auto; /* Allow scroll if content exceeds max height */
+}
+
+.popup-content1 h3 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-align: center; /* Center the heading */
+}
+
+.popup-content1 textarea {
+  width: 100%;
+  height: 120px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  resize: none; /* Prevent resizing of the textarea */
+  font-size: 14px;
+  color: #333;
+  background-color: #f0f0f0; /* Slightly different background color for the textarea */
+  margin-bottom: 20px; /* Add some space below the textarea */
+}
+
+.popup-content1 button {
+  padding: 12px;
+  background-color: #4caf50; /* Green button */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  margin-right: 4%; /* Space between buttons */
+}
+
+.popup-content1 button:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+.popup-content1 button.cancel-btn {
+  background-color: #f44336; /* Red cancel button */
+}
+
+.popup-content1 button.cancel-btn:hover {
+  background-color: #e53935; /* Darker red on hover */
+}
+
+.popup-content1 .button-container {
+  display: flex;
+  justify-content: space-between; /* Buttons are spaced evenly */
+}
+
+
+

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import InnerPagesNav from "../nav/innerpagesnav";
 import Footer from "../footer/footer";
+import axios from 'axios';
+import {toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddressComponent = () => {
   const { id } = useParams(); // Extract `id` from URL params
@@ -69,62 +72,49 @@ const AddressComponent = () => {
         const addressIndex = addresses.findIndex(address => address.id === selectedAddress.id);
   
         if (addressIndex === -1) {
-          alert("Address not found.");
+          toast.error("Address not found.");  // Error toast
           return;
         }
   
         // Update the address via PUT request
-        const response = await fetch(`http://localhost:3000/updateaddress/${id}/${addressIndex}`, {
-          method: "PUT",
+        const response = await axios.put(`http://localhost:3000/updateaddress/${id}/${addressIndex}`, body, {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(body),
         });
   
-        const result = await response.json();
-        if (response.ok) {
+        if (response.status === 200) {
           // Update the address in the state
           setAddresses(addresses.map((address, index) =>
             index === addressIndex ? { ...address, ...body } : address
           ));
-          alert("Address updated successfully");
-  
-          // Reload the page to reflect the updates
+          toast.success("Address updated successfully");  // Success toast
           window.location.reload();
         } else {
-          alert("Error updating address: " + result.message);
+          toast.error("Error updating address: " + response.data.message);  // Error toast
         }
       } else {
         // Add new address
-        const response = await fetch(`http://localhost:3000/addaddress/${id}`, {
-          method: "POST", // POST for adding a new address
+        const response = await axios.post(`http://localhost:3000/addaddress/${id}`, body, {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(body),
         });
   
-        const result = await response.json();
-        if (response.ok) {
+        if (response.status === 200) {
           // Add the new address to the state
-          setAddresses([...addresses, result.data]);
-          alert("Address added successfully");
-  
-          // Reload the page to reflect the new address
+          setAddresses([...addresses, response.data.data]);
+          toast.success("Address added successfully");  // Success toast
           window.location.reload();
         } else {
-          alert("Error adding address: " + result.message);
+          toast.error("Error adding address: " + response.data.message);  // Error toast
         }
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred while processing the request.");
+      toast.error("An error occurred while processing the request.");  // Error toast
     }
   };
-  
-  
-  
   
   const handleAddressEdit = (index) => {
     setSelectedAddress(addresses[index]);
@@ -136,29 +126,30 @@ const AddressComponent = () => {
     try {
       // Ensure that the address index is valid
       if (index < 0 || index >= addresses.length) {
-        setMessage("Invalid address index.");
+        toast.error("Invalid address index.");  // Error toast
         return;
       }
   
       // Get the user ID and address index
       console.log("Deleting address with userId:", id, " and index:", index);  // Debugging
   
-      // Send DELETE request with userId and address index
-      const response = await fetch(`http://localhost:3000/deleteaddress/${id}/${index}`, {
-        method: "DELETE",
+      // Send DELETE request with userId and address index using axios
+      const response = await axios.delete(`http://localhost:3000/deleteaddress/${id}/${index}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
   
-      const result = await response.json();
-      if (response.ok) {
+      if (response.status === 200) {
         // Remove address from state if deletion was successful
         setAddresses(addresses.filter((_, i) => i !== index));
-        setMessage(result.message || "Address deleted successfully");
+        toast.success(response.data.message || "Address deleted successfully");  // Success toast
       } else {
-        setMessage(result.message || "Error deleting address.");
+        toast.error(response.data.message || "Error deleting address.");  // Error toast
       }
     } catch (error) {
       console.error("Error deleting address:", error);
-      setMessage("An error occurred while deleting the address.");
+      toast.error("An error occurred while deleting the address.");  // Error toast
     }
   };
   

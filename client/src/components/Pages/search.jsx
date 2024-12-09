@@ -9,6 +9,8 @@ import categorybanner2 from "../../assets/images/categorybanner2.webp";
 import lipbalmbanner from "../../assets/images/lipbalmbanner.webp";
 import hairspraybanner from "../../assets/images/hairspraybanner.webp";
 import bathandboybanner from "../../assets/images/bathand body banner.webp";
+import {toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function SearchPage() {
     const [currentIndex, setCurrentIndex] = useState(0);

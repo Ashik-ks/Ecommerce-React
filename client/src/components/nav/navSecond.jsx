@@ -8,7 +8,7 @@ import { faMagnifyingGlass, faHeart, faCartShopping, faUser, faGift, faCog, faRi
 from "@fortawesome/free-solid-svg-icons";
 import purpleLogo from "../../assets/images/purpplelogo.png"; // Adjust the import based on your actual path
 import purplejoinElite from "../../assets/images/purplejoinElite.png.gif";
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const HeaderComponent = () => {

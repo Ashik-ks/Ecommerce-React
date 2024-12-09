@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import AddToCart from "../functions/addtocart";
 import AddToWishlist from "../functions/addtowishlist";
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
@@ -95,13 +95,12 @@ function Singleview() {
     return (
         <>
             <InnerPagesNav />
-            <ToastContainer position="top-center" autoClose={2000} />
             <div className="border-b border-gray-300 pt-2 pb-2 bg-gray-100">
-                <div className="dataContainer max-w-screen-xl mx-auto">
+                <div className=" max-w-screen-xl mx-auto">
                     <div className="container">
                         {/* Category Breadcrumb */}
                         <div className="pt-4" id="categorydiv">
-                            <div className="categoryText text-gray-600">
+                            <div className="categoryText text-gray-600 ">
                                 HOME &gt; {categoryProducts || 'Unknown'} &gt;{' '}
                                 {productData?.subcategory || 'Unknown'} &gt;{' '}
                                 {productData?.item || 'Unknown'} &gt;{' '}
@@ -110,10 +109,10 @@ function Singleview() {
                         </div>
 
                         {/* Product Details */}
-                        <div id="singleproductcontainer" className="mt-3 bg-white p-2 ">
+                        <div id="pdetails" className="flex flex-col md:flex-row gap-4 ">
     {/* Left Side Images */}
-    <div className=" leftsideimgs">
-        <div className="flex flex-col gap-1" id="imageunzoom">
+    <div className="w-full md:w-[10%]">
+        <div className="leftsideimg flex flex-wrap gap-2" id="imageunzoom">
             {productData?.images.map((image, index) => (
                 <img
                     key={index}
@@ -129,7 +128,7 @@ function Singleview() {
     </div>
 
     {/* Zoomed Image */}
-    <div className="">
+    <div className="w-full md:w-[40%]">
         <div className="text-center mt-1" id="imagezoom">
             <img
                 id="zoomedImg"
@@ -141,7 +140,7 @@ function Singleview() {
     </div>
 
     {/* Product Details */}
-    <div className="pt-2 ms-5">
+    <div className="w-full md:w-[50%] pt-2 ps-5 ">
     <h1 className="text-lg font-semibold mb-1 description">{productData?.description}</h1>
     <div className="flex flex-col mt-2">
         <span className="mb-1">Price ₹{productData?.price}</span>

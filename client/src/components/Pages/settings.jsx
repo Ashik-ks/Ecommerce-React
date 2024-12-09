@@ -6,6 +6,8 @@ import Footer from "../footer/footer";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faTag,faAlignLeft,faList,faListAlt,faCube,faDollarSign,faTags,faBoxes,faImages,faWeight,faPaperPlane,}
 from '@fortawesome/free-solid-svg-icons';
+import {toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SettingsPage = () => {
     const { id, usertype } = useParams();
@@ -28,42 +30,37 @@ const SettingsPage = () => {
 
     useEffect(() => {
         const getSellerProducts = async () => {
-            try {
-                if (!id) {
-                    throw new Error("Seller ID not found in URL");
-                }
-
-                if (!token) {
-                    throw new Error("Authorization token is missing");
-                }
-
-                const response = await fetch(`http://localhost:3000/getsellerproduct/${id}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch products. Status: ${response.status}`);
-                }
-
-                const parsedResponse = await response.json();
-                if (parsedResponse.success) {
-                    setProducts(parsedResponse.data || []);
-                } else {
-                    throw new Error(parsedResponse.message || "No products found for this seller.");
-                }
-            } catch (error) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
+          try {
+            if (!id) {
+              throw new Error("Seller ID not found in URL");
             }
+    
+            if (!token) {
+              throw new Error("Authorization token is missing");
+            }
+    
+            const response = await axios.get(`http://localhost:3000/getsellerproduct/${id}`, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            });
+    
+            if (response.data.success) {
+              setProducts(response.data.data || []);
+            } else {
+              throw new Error(response.data.message || "No products found for this seller.");
+            }
+          } catch (error) {
+            setError(error.message);
+            toast.error(error.message); // Show error toast
+          } finally {
+            setLoading(false);
+          }
         };
-
+    
         getSellerProducts();
-    }, [id, token]);
+      }, [id, token]);
 
     const handleEditClick = (productId) => {
         setProductData({ id: productId });
@@ -74,16 +71,16 @@ const SettingsPage = () => {
     const fetchProductData = async (productId) => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:3000/getproductdataedit/${id}/${productId}`, {
-                method: 'GET',
+            const response = await axios.get(`http://localhost:3000/getproductdataedit/${id}/${productId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
             });
-
-            const product = await response.json();
+    
+            const product = response.data; // Access the response data directly
             console.log("response : ", product);
+            
             if (product.data) {
                 setFormValues({
                     description: product.data.description || "",
@@ -95,7 +92,7 @@ const SettingsPage = () => {
             }
         } catch (error) {
             console.error("Error fetching product details:", error);
-            alert("An error occurred while fetching product data.");
+            toast.error("An error occurred while fetching product data."); // Use toast to show the error message
         } finally {
             setLoading(false);
         }
@@ -103,7 +100,7 @@ const SettingsPage = () => {
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-
+    
         // Prepare the payload data
         const payload = {
             description: formValues.description,
@@ -112,27 +109,24 @@ const SettingsPage = () => {
             stockQuantity: parseInt(formValues.stockQuantity, 10),
             images: updateImage ? await convertImagesToBase64(formValues.images) : productData.images || []
         };
-
+    
         try {
-            const response = await fetch(`http://localhost:3000/editproduct/${productData.id}`, {
-                method: 'PUT',
+            const response = await axios.put(`http://localhost:3000/editproduct/${productData.id}`, payload, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify(payload),
             });
-
-            const result = await response.json();
-            if (response.ok) {
-                alert("Product updated successfully!");
+    
+            if (response.data.success) {  // Assuming response contains a success field
+                toast.success("Product updated successfully!");
                 setShowForm(false); // Close the form after successful update
             } else {
-                alert(result.message || "Failed to update the product.");
+                toast.error(response.data.message || "Failed to update the product.");
             }
         } catch (error) {
             console.error("Error updating product:", error);
-            alert("An error occurred while updating the product.");
+            toast.error("An error occurred while updating the product.");
         }
     };
 
@@ -187,7 +181,7 @@ const SettingsPage = () => {
     };
 
 
-    const handleDeleteClick = async (pid) => {
+  const handleDeleteClick = async (pid) => {
         try {
             const response = await axios.delete(`http://localhost:3000/deleteproduct/${pid}`, {
                 headers: {
@@ -195,14 +189,16 @@ const SettingsPage = () => {
                     'Content-Type': 'application/json',
                 },
             });
+    
             if (response.status === 200) {
-                alert("Product deleted successfully!");
+                toast.success("Product deleted successfully!");
             }
         } catch (error) {
             console.error("Error deleting the product:", error);
-            alert("Failed to delete the product. Please try again.");
+            toast.error("Failed to delete the product. Please try again.");
         }
     };
+    
     
 
     if (loading) {
