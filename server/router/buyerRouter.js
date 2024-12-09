@@ -21,7 +21,7 @@ router.get('/fetchitem/:id/:userid', buyerController.getitem);
 router.get('/fetchcategory/:id/:userid', buyerController.getcategory);
 router.get('/getallproducts/:id', buyerController.getallproduct);
 router.get('/searchproducts/:id/:userid', buyerController.getSearch);
-router.get('/getSingleproduct/:id/:pid', buyerController.getSingleproduct);
+router.get('/getSingleproduct/:id/:pid',buyerController.getSingleproduct);
 router.put('/addtoCart/:id/:productid',setAccessControl("2,3"),buyerController.addToCart);
 router.put('/updateaddtoCart/:id/:productid',setAccessControl("2,3"),buyerController.updateAddToCart);
 router.get('/getalladdtoCart/:id',setAccessControl("2,3"),buyerController.getAllAddToCart);

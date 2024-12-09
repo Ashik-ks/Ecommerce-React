@@ -16,10 +16,10 @@ const OrderDetails = () => {
 
     // Fetch orders on component mount
     useEffect(() => {
-        if (!id || !token) {
-            toast.error("User ID and token are required.");
-            return;
-        }
+        // if (!id || !token) {
+        //     toast.error("Login to see your Orders");
+        //     return;
+        // }
 
         const getOrders = async () => {
             setLoading(true); // Set loading state

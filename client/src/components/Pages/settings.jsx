@@ -30,37 +30,43 @@ const SettingsPage = () => {
 
     useEffect(() => {
         const getSellerProducts = async () => {
+          setLoading(true); // Start loading
           try {
             if (!id) {
               throw new Error("Seller ID not found in URL");
             }
-    
+      
             if (!token) {
               throw new Error("Authorization token is missing");
             }
-    
+      
             const response = await axios.get(`http://localhost:3000/getsellerproduct/${id}`, {
               headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
               },
             });
-    
+      
             if (response.data.success) {
-              setProducts(response.data.data || []);
+              if (Array.isArray(response.data.data) && response.data.data.length > 0) {
+                setProducts(response.data.data); // Products found
+              } else {
+                setProducts([]); // No products found
+              }
             } else {
-              throw new Error(response.data.message || "No products found for this seller.");
+              throw new Error(response.data.message || "Failed to fetch products.");
             }
           } catch (error) {
-            setError(error.message);
             toast.error(error.message); // Show error toast
           } finally {
-            setLoading(false);
+            setLoading(false); // End loading
           }
         };
-    
+      
         getSellerProducts();
       }, [id, token]);
+      
+      
 
     const handleEditClick = (productId) => {
         setProductData({ id: productId });

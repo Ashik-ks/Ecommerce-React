@@ -174,7 +174,8 @@ exports.addProduct = async function (req, res) {
 // fetch all products of seller
 exports.getSellerProducts = async function (req, res) {
     try {
-        let id = req.params.id; // Get seller's ID from request parameters
+        let id = req.params.id; 
+        console.log("id : ",id)
 
         // Fetch products belonging to the seller
         let products = await Product.find({ sellerId: id });

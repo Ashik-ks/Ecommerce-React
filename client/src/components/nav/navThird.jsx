@@ -40,7 +40,7 @@ function NavThird() {
   }, []);
 
   return (
-    <div className="container-fluid border-b border-gray-300 relative">
+    <div className="container-fluid border-b border-gray-300 relative ">
       <div className="container mx-auto px-4">
         {/* Navigation Bar */}
         <div className="NavigationBar flex flex-wrap items-center justify-center py-2 bg-white  lg:space-x-4">

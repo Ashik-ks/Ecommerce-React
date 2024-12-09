@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Line } from "react-chartjs-2";
 import axios from "axios";
-import Footer from "../footer/footer";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, TimeScale, PointElement, LineElement } from "chart.js";
 import "chartjs-adapter-date-fns"; // Import date adapter for time scales
 import CountUp from "react-countup";
@@ -267,8 +266,6 @@ const Dashboard = () => {
   </div>
 
 </div>
-
-      <ToastContainer />
     </>
   );
 };
