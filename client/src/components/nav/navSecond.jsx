@@ -11,9 +11,8 @@ import purplejoinElite from "../../assets/images/purplejoinElite.png.gif";
 import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+
 const HeaderComponent = () => {
-  const { count } = useCount();
-  console.log("count : ", count)
   const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -26,7 +25,9 @@ const HeaderComponent = () => {
   const [data7, setData7] = useState([]); // State to store fetched data
   const [query, setQuery] = useState(""); // State for search query
   const [filteredResults, setFilteredResults] = useState([]);
-  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const { count, loading, error, setUser } = useCount();
+  console.log("count : ", count)
+
 
   const navigate = useNavigate();
   let { id } = useParams();
@@ -35,6 +36,11 @@ const HeaderComponent = () => {
   if (!id) {
     id = undefined || 'undefined'
   }
+
+  useEffect(() => {
+    const userId = id; // Replace with actual user ID (e.g., after login)
+    setUser(userId); // This will trigger the count fetch
+  }, [setUser]);
 
   const openOffcanvas = () => setIsOffcanvasOpen(true);
   const closeOffcanvas = () => setIsOffcanvasOpen(false);
@@ -46,6 +52,7 @@ const HeaderComponent = () => {
   const closePopup = () => {
     setIsPopupOpen(false);
   };
+
 
   // Handle email input
   const handleEmailInput = (enteredEmail) => {

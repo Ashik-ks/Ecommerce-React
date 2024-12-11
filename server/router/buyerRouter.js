@@ -14,6 +14,7 @@ router.get('/user/:id', buyerController.getSingleuser);
 router.get('/category', buyerController.getCategory);
 router.get('/productsections/:id',buyerController.ProductSections);
 router.post('/addaddress/:id', buyerController.addAddress);
+router.get('/addtocartcount/:id', buyerController.getAddToCartCount);
 router.put('/updateaddress/:id/:index', buyerController.updateaddress);
 router.delete('/deleteaddress/:id/:index', buyerController.deleteaddress);
 router.delete('/deleteuser/:id', buyerController.deleteuser);

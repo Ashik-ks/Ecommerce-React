@@ -6,7 +6,7 @@ const Admin  = require('../db/model/admin');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require("crypto");
-const set_otp_template =require("../utils/email-templates/set-password").resetPassword;
+const set_otp_template =require("../utils/email-templates/login").loginotp;
 const sendEmail = require("../utils/send-email").sendEmail;
 const dotenv = require('dotenv');
 dotenv.config();
@@ -97,15 +97,30 @@ exports.sendotp = async function (req, res) {
                 });
             }
 
+            // Update OTP for existing user and save
             user.otp = otp;
             await user.save();
             console.log("Updated OTP for existing user:", otp);
 
-            return res.status(200).send({
-                statusCode: 200,
-                data: { email },
-                message: "User exists. OTP updated in database.",
-            });
+            // Send OTP email when updating OTP for an existing user
+            try {
+                // const emailTemplate = await set_otp_template(email, otp);
+                // await sendEmail(email, "OTP Updated", emailTemplate); // Email sent on OTP update
+                console.log("OTP update email sent to existing user:", email);
+                
+                return res.status(200).send({
+                    statusCode: 200,
+                    data: { email },
+                    message: "User exists. OTP updated and email sent.",
+                });
+            } catch (emailError) {
+                console.error("Failed to send OTP email:", emailError.message);
+                return res.status(500).send({
+                    statusCode: 500,
+                    message: "User exists. OTP updated, but failed to send OTP email.",
+                });
+            }
+
         } else {
             console.log("No existing user found, creating a new user");
 
@@ -124,18 +139,16 @@ exports.sendotp = async function (req, res) {
 
             try {
                 // const emailTemplate = await set_otp_template(email, otp);
-                // await sendEmail(email, "User created", emailTemplate);
+                // await sendEmail(email, "User created", emailTemplate); // Send OTP email for new user
                 console.log("OTP email sent successfully to new user:", email);
-
+            
                 return res.status(200).send({
                     statusCode: 200,
                     data: { email },
                     message: "New user created. OTP sent to your email. Please check your inbox.",
                 });
             } catch (emailError) {
-                console.error("Failed to send OTP email:", emailError);
-
-                // Consider rolling back user creation or notifying admin
+                console.error("Failed to send OTP email:", emailError.message);
                 return res.status(500).send({
                     statusCode: 500,
                     message: "New user created, but failed to send OTP email. Please try again later.",
@@ -150,7 +163,6 @@ exports.sendotp = async function (req, res) {
         });
     }
 };
-
 
 
 exports.verifyotp = async function (req, res) {

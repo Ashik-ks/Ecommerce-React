@@ -8,13 +8,11 @@ import { faMagnifyingGlass, faHeart, faCartShopping, faUser, faGift, faCog, faRi
   from "@fortawesome/free-solid-svg-icons";
 import purpleLogo from "../../assets/images/purpplelogo.png";
 import purplejoinElite from "../../assets/images/purplejoinElite.png.gif";
-import {toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
 function InnerPagesNav() {
-  const { count } = useCount();
-  console.log("count: ", count)
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [email, setEmail] = useState('');
@@ -26,18 +24,25 @@ function InnerPagesNav() {
   const [categoriesData, setCategoriesData] = useState([]);
   const [showCategories, setShowCategories] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState(null);
+  const { count, loading, error, setUser } = useCount();
+  console.log("count : ", count)
 
 
   const navigate = useNavigate();
   const { id } = useParams();
   let { usertype } = useParams();
 
+  useEffect(() => {
+    const userId = id; // Replace with actual user ID (e.g., after login)
+    setUser(userId); // This will trigger the count fetch
+  }, [setUser]);
+
 
   const handleLogout = () => {
     // Clear user data, session, or perform any necessary logout logic
     setIsLoggedIn(false);
     setUserType(null);
-    
+
     toast.success("You have been logged out.");  // Success toast for logout
     navigate(`/`);
   };
@@ -69,11 +74,11 @@ function InnerPagesNav() {
         .then((response) => {
           if (response.data.statusCode === 200) {
             toast.success("An OTP has been sent to your email"); // Success toast
-  
+
             // Hide email and user type input sections
             setIsEmailSectionVisible(false);
             setIsUserTypeSectionVisible(false);
-  
+
             // Show OTP input field
             setIsOtpSectionVisible(true); // Show OTP section
           } else {
@@ -92,27 +97,27 @@ function InnerPagesNav() {
   // Verify OTP function
   const verifyOtp = () => {
     const otp = document.getElementById("otpInput").value;
-  
+
     if (otp) {
       axios
         .post("http://localhost:3000/verifyotp", { email, otp })
         .then((response) => {
           if (response.data.statusCode === 200) {
             toast.success("Login or Registration successful!"); // Success toast
-  
+
             let tokenkey = response.data.data.tokenid;
             let token = response.data.data.token;
-  
+
             // Store token in localStorage
             localStorage.setItem(tokenkey, token);
             localStorage.setItem(tokenkey + "_userType", response.data.data.userType);
-  
+
             if (response.data.data.userType === "Buyer") {
               navigate(`/index/${tokenkey}/${response.data.data.userType}`);
             } else if (response.data.data.userType === "Seller") {
               navigate(`/seller/${tokenkey}/${response.data.data.userType}`);
             }
-  
+
             closePopup(); // Close the popup
           } else {
             // Extract the error message from the response data
@@ -122,7 +127,7 @@ function InnerPagesNav() {
         })
         .catch((error) => {
           console.error("Error:", error);
-          
+
           // Extract the error message from the error response (if available)
           const errorMessage = error.response?.data?.message || "Error verifying OTP";
           toast.error(errorMessage); // Error toast
@@ -131,12 +136,12 @@ function InnerPagesNav() {
       toast.error("Please enter the OTP"); // Error toast for empty OTP input
     }
   };
-  
-  
+
+
   // Admin login logic
   const adminLogin = () => {
     const password = document.getElementById("passwordInput").value;
-    
+
     if (password) {
       axios
         .post("http://localhost:3000/sendotp", { email, password, userType: "Admin" })
@@ -144,11 +149,11 @@ function InnerPagesNav() {
           if (response.data.statusCode === 200) {
             let token = response.data.data.token;
             let tokenkey = response.data.data.id;
-  
+
             // Store token in localStorage
             localStorage.setItem(tokenkey, token);
             localStorage.setItem(tokenkey + "_userType", response.data.data.userType);
-  
+
             toast.success("Admin login successful!");  // Success toast
             navigate(`/admin/${tokenkey}/${response.data.data.userType}`);
             closePopup();
@@ -217,7 +222,7 @@ function InnerPagesNav() {
 
   return (
     <>
-    
+
       <div className="border-b border-gray-300 pt-1 pb-2 ">
 
         <div className="grid xl:hidden grid-cols-2 gap-4 pb-2 border-b border-gray-300 pt-2 pb-2">
@@ -290,7 +295,7 @@ function InnerPagesNav() {
                     icon={faGift}
                     className="text-gray-500 text-lg"
                   />
-                  <span className="dropdowntext ms-2" onClick={(event) =>  {event.preventDefault();navigate(`/order/${id}/${usertype}`)} }>Orders</span>
+                  <span className="dropdowntext ms-2" onClick={(event) => { event.preventDefault(); navigate(`/order/${id}/${usertype}`) }}>Orders</span>
                 </a>
                 <a
                   href="#"
@@ -369,197 +374,201 @@ function InnerPagesNav() {
         </div>
 
         <div className="mt-3 grid grid-cols-12 items-center ms-10">
-    {/* First Div: Logo Section */}
-    <div className="col-span-3 flex items-center justify-center hidden xl:flex" onClick={() => navigate(`/index/${id}/${usertype}`)}>
-        <button className="flex items-center gap-2 border-0">
-            <img
+          {/* First Div: Logo Section */}
+          <div className="col-span-3 flex items-center justify-center hidden xl:flex" onClick={() => navigate(`/index/${id}/${usertype}`)}>
+            <button className="flex items-center gap-2 border-0">
+              <img
                 src={purpleLogo}
                 alt="purplelogo"
                 className="h-8 object-contain"
-            />
-            <img
+              />
+              <img
                 src={purplejoinElite}
                 alt="purpleElite"
                 className="h-8 object-contain"
-            />
-        </button>
-    </div>
+              />
+            </button>
+          </div>
 
-    {/* Middle Div: Navigation Section */}
-    <div className="col-span-12 xl:col-span-7 sm:col-span-12 NavigationBar flex flex-wrap items-center justify-around lg:space-x-4">
-        <div
-            className="relative group flex-shrink-0"
-            onMouseEnter={() => setShowCategories(true)}
-            onMouseLeave={() => setShowCategories(false)}
-        >
-            <span className="secondnavtext text-gray-800 cursor-pointer hover:text-blue-500 transition-colors">
+          {/* Middle Div: Navigation Section */}
+          <div className="col-span-12 xl:col-span-7 sm:col-span-12 NavigationBar flex flex-wrap items-center justify-around lg:space-x-4">
+            <div
+              className="relative group flex-shrink-0"
+              onMouseEnter={() => setShowCategories(true)}
+              onMouseLeave={() => setShowCategories(false)}
+            >
+              <span className="secondnavtext text-gray-800 cursor-pointer hover:text-blue-500 transition-colors">
                 SHOP CATEGORIES
-            </span>
-            {showCategories && (
+              </span>
+              {showCategories && (
                 <div className="itemsdiv absolute top-full left-0 w-[800px] bg-white border border-gray-200 shadow-lg z-10 p-4">
-                    <div className="flex flex-col">
-                        <div className="flex flex-wrap sm:space-x-4 mb-4">
-                            {categoriesData.map((category) => (
-                                <div
-                                    key={category._id}
-                                    className={`category px-2 cursor-pointer text-gray-700 hover:bg-gray-100 transition-colors duration-300 ${hoveredCategory && hoveredCategory._id === category._id ? "bg-gray-100" : ""
-                                        }`}
-                                    onMouseEnter={() => setHoveredCategory(category)}
-                                >
-                                    {category.name}
-                                </div>
-                            ))}
+                  <div className="flex flex-col">
+                    <div className="flex flex-wrap sm:space-x-4 mb-4">
+                      {categoriesData.map((category) => (
+                        <div
+                          key={category._id}
+                          className={`category px-2 cursor-pointer text-gray-700 hover:bg-gray-100 transition-colors duration-300 ${hoveredCategory && hoveredCategory._id === category._id ? "bg-gray-100" : ""
+                            }`}
+                          onMouseEnter={() => setHoveredCategory(category)}
+                        >
+                          {category.name}
                         </div>
-                        <div className="w-full">
-                            {hoveredCategory && (
-                                <div className="bg-white p-4">
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {hoveredCategory.subcategories.map((subcategory) => (
-                                            <div
-                                                key={subcategory._id}
-                                                className="hover:bg-gray-100 transition-colors duration-300"
-                                            >
-                                                <h4 className="font-semibold text-lg text-gray-800 mb-3">
-                                                    {subcategory.name}
-                                                </h4>
-                                                <ul className="space-y-2">
-                                                    {subcategory.items.map((item) => (
-                                                        <li
-                                                            key={item._id}
-                                                            className="text-sm text-gray-600 hover:text-blue-500 cursor-pointer transition-colors duration-300"
-                                                            onClick={() => handleItemClick(item)}
-                                                        >
-                                                            {item.name}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
+                      ))}
                     </div>
+                    <div className="w-full">
+                      {hoveredCategory && (
+                        <div className="bg-white p-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {hoveredCategory.subcategories.map((subcategory) => (
+                              <div
+                                key={subcategory._id}
+                                className="hover:bg-gray-100 transition-colors duration-300"
+                              >
+                                <h4 className="font-semibold text-lg text-gray-800 mb-3">
+                                  {subcategory.name}
+                                </h4>
+                                <ul className="space-y-2">
+                                  {subcategory.items.map((item) => (
+                                    <li
+                                      key={item._id}
+                                      className="text-sm text-gray-600 hover:text-blue-500 cursor-pointer transition-colors duration-300"
+                                      onClick={() => handleItemClick(item)}
+                                    >
+                                      {item.name}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-            )}
-        </div>
+              )}
+            </div>
 
-        <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors" onClick={() => { console.log({ id, usertype, state: "OFFERS" }); navigate(`/section/${id}/${usertype}/OFFERS`) }}>
-            OFFERS
-        </span>
-        <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors" onClick={() => { console.log({ id, usertype, state: "NEW" }); navigate(`/section/${id}/${usertype}/NEW`) }}>
-            NEW
-        </span>
-        <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors" onClick={() => { console.log({ id, usertype, state: "SPLURGE" }); navigate(`/section/${id}/${usertype}/SPLURGE`) }}>
-            SPLURGE
-        </span>
-        <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors" onClick={() => { console.log({ id, usertype, state: "MAGAZINE" }); navigate(`/section/${id}/${usertype}/MAGAZINE`) }}>
-            MAGAZINE
-        </span>
-        <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors" onClick={() => { console.log({ id, usertype, state: "ELITE OFFERS" }); navigate(`/section/${id}/${usertype}/ELITE OFFERS`) }}>
-            ELITE OFFERS
-        </span>
-    </div>
+            <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors" onClick={() => { console.log({ id, usertype, state: "OFFERS" }); navigate(`/section/${id}/${usertype}/OFFERS`) }}>
+              OFFERS
+            </span>
+            <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors" onClick={() => { console.log({ id, usertype, state: "NEW" }); navigate(`/section/${id}/${usertype}/NEW`) }}>
+              NEW
+            </span>
+            <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors" onClick={() => { console.log({ id, usertype, state: "SPLURGE" }); navigate(`/section/${id}/${usertype}/SPLURGE`) }}>
+              SPLURGE
+            </span>
+            <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors" onClick={() => { console.log({ id, usertype, state: "MAGAZINE" }); navigate(`/section/${id}/${usertype}/MAGAZINE`) }}>
+              MAGAZINE
+            </span>
+            <span className="secondnavtext cursor-pointer lg:py-3 lg:px-4 text-gray-800 hover:text-blue-500 transition-colors" onClick={() => { console.log({ id, usertype, state: "ELITE OFFERS" }); navigate(`/section/${id}/${usertype}/ELITE OFFERS`) }}>
+              ELITE OFFERS
+            </span>
+          </div>
 
-    {/* Third Div: User Section */}
-    <div className="col-span-1 lg:col-span-2 flex items-center justify-center gap-5 hidden xl:flex">
-        <span onClick={(e) => {
-            e.preventDefault();
-            if (id !== 'undefined' && id !== null) {
+          {/* Third Div: User Section */}
+          <div className="col-span-1 lg:col-span-2 flex items-center justify-center gap-5 hidden xl:flex">
+            <span onClick={(e) => {
+              e.preventDefault();
+              if (id !== 'undefined' && id !== null) {
                 navigate(`/wishlist/${id}/${usertype}`);
-            } else {
+              } else {
                 console.error("ID is undefined or null, navigation aborted.");
-            }
-        }}>
-            <i className="fa-regular fa-heart text-2xl"></i>
-        </span>
-        <span className="relative" onClick={(e) => {
-            e.preventDefault();
-            if (id !== 'undefined' && id !== null) {
+              }
+            }}>
+              <i className="fa-regular fa-heart text-2xl"></i>
+            </span>
+            <span className="relative" onClick={(e) => {
+              e.preventDefault();
+              if (id !== 'undefined' && id !== null) {
                 navigate(`/cart/${id}/${usertype}`);
-            } else {
+              } else {
                 console.error("ID is undefined or null, navigation aborted.");
-            }
-        }}>
-            <FontAwesomeIcon
+              }
+            }}>
+              <FontAwesomeIcon
                 icon={faCartShopping}
                 className="icon-smile mt-1"
-            />
-            {count > 0 && (
+              />
+              {count > 0 && (
                 <span
-                    className="absolute top-0 right-0 bg-indigo-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center text-[10px] transform translate-x-1/2 -translate-y-1/2"
-                    id="cartcount"
+                  className="absolute top-0 right-0 bg-indigo-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center text-[10px] transform translate-x-1/2 -translate-y-1/2"
+                  id="cartcount"
                 >
-                    {count}
+                  {count}
                 </span>
-            )}
-        </span>
-        <div className="dropdown relative inline-block">
-            <span className="dropbtn d-flex gap-3 p-3 text-gray-700 text-sm">
-                <i className="fa-regular fa-face-smile icon-smile" />
+              )}
             </span>
-            <div className="dropdown-content hidden">
+            <div className="dropdown relative inline-block">
+              <span className="dropbtn d-flex gap-3 p-3 text-gray-700 text-sm">
+                <i className="fa-regular fa-face-smile icon-smile" />
+              </span>
+              <div className="dropdown-content hidden">
                 <a href="#" className="flex gap-3 p-3 text-gray-700 text-sm items-center">
-                    <FontAwesomeIcon icon={faUser} className="text-gray-500 text-lg" />
-                    <button className="dropdowntext ms-2">My Account</button>
+                  <FontAwesomeIcon icon={faUser} className="text-gray-500 text-lg" />
+                  <button className="dropdowntext ms-2">My Account</button>
                 </a>
                 <a href="#" className="flex gap-3 p-3 text-gray-700 text-sm items-center">
-                    <FontAwesomeIcon icon={faGift} className="text-gray-500 text-lg" />
-                    <span className="dropdowntext ms-2" onClick={(event) => { event.preventDefault(); navigate(`/order/${id}/${usertype}`) }}>Orders</span>
+                  <FontAwesomeIcon icon={faGift} className="text-gray-500 text-lg" />
+                  <span className="dropdowntext ms-2" onClick={(event) => { event.preventDefault(); navigate(`/order/${id}/${usertype}`) }}>Orders</span>
                 </a>
-                <a href="#" className="flex gap-3 p-3 text-gray-700 text-sm items-center">
-                    <FontAwesomeIcon icon={faHeart} className="text-gray-500 text-lg" />
-                    <span className="dropdowntext ms-2" onClick={(e) => {
-                        e.preventDefault();
-                        if (id !== 'undefined' && id !== null) {
-                            navigate(`/wishlist/${id}/${usertype}`);
-                        } else {
-                            console.error("ID is undefined or null, navigation aborted.");
-                        }
-                    }}>Wishlist</span>
+                <a
+                  href="#"
+                  className="flex gap-3 p-3 text-gray-700 text-sm items-center"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (id && usertype) {
+                      navigate(`/wishlist/${id}/${usertype}`);
+                    } else {
+                      console.error("Invalid id or usertype");
+                    }
+                  }}
+                >
+                  <FontAwesomeIcon icon={faHeart} className="text-gray-500 text-lg" />
+                  <span className="dropdowntext ms-2">Wishlist</span>
                 </a>
                 {usertype === 'Seller' && (
-                    <a
-                        href="#"
-                        className="flex gap-3 p-3 text-gray-700 text-sm items-center"
-                    >
-                        <FontAwesomeIcon
-                            icon={faCog}
-                            className="text-gray-500 text-lg"
-                        />
-                        <span className="dropdowntext ms-2">Settings</span>
-                    </a>
+                  <a
+                    href="#"
+                    className="flex gap-3 p-3 text-gray-700 text-sm items-center"
+                  >
+                    <FontAwesomeIcon
+                      icon={faCog}
+                      className="text-gray-500 text-lg"
+                    />
+                    <span className="dropdowntext ms-2">Settings</span>
+                  </a>
                 )}
 
                 {isLoggedIn ? (
-                    <div className="logout flex gap-3 p-3 text-gray-700 text-sm items-center" id="logout">
-                        <span>
-                            <FontAwesomeIcon icon={faRightToBracket} className="text-gray-500 text-lg ms-1" />
-                        </span>
-                        <button
-                            className="loginbtn border-0 w-full text-left text-gray-500"
-                            onClick={handleLogout}
-                        >
-                            <span className="text-xs text-gray-700">Log Out</span>
-                        </button>
-                    </div>
+                  <div className="logout flex gap-3 p-3 text-gray-700 text-sm items-center" id="logout">
+                    <span>
+                      <FontAwesomeIcon icon={faRightToBracket} className="text-gray-500 text-lg ms-1" />
+                    </span>
+                    <button
+                      className="loginbtn border-0 w-full text-left text-gray-500"
+                      onClick={handleLogout}
+                    >
+                      <span className="text-xs text-gray-700">Log Out</span>
+                    </button>
+                  </div>
                 ) : (
-                    <div className="login flex gap-3 p-3 text-gray-700 text-sm items-center" id="login">
-                        <span>
-                            <FontAwesomeIcon icon={faRightToBracket} className="text-gray-500 text-lg ms-1" />
-                        </span>
-                        <button
-                            className="loginbtn border-0 text-gray-500"
-                            onClick={openPopup}
-                        >
-                            <span className="logintext text-gray-700">Login or Register</span>
-                        </button>
-                    </div>
+                  <div className="login flex gap-3 p-3 text-gray-700 text-sm items-center" id="login">
+                    <span>
+                      <FontAwesomeIcon icon={faRightToBracket} className="text-gray-500 text-lg ms-1" />
+                    </span>
+                    <button
+                      className="loginbtn border-0 text-gray-500"
+                      onClick={openPopup}
+                    >
+                      <span className="logintext text-gray-700">Login or Register</span>
+                    </button>
+                  </div>
                 )}
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-</div>
 
 
         {isPopupOpen && (

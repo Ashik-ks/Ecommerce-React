@@ -1336,8 +1336,8 @@ exports.placeOrder = async function (req, res) {
                 // Send an email to the seller if the product is out of stock
                 const seller = await Users.findOne({ _id: product.sellerId });
                 if (seller) {
-                    // const emailTemplate = await set_stock_template(seller.email, product.stockQuantity, product.name);
-                    // await sendEmail(seller.email, "Out of Stock Notification", emailTemplate);  // Send email to seller
+                    const emailTemplate = await set_stock_template(seller.email, product.stockQuantity, product.name);
+                    await sendEmail(seller.email, "Out of Stock Notification", emailTemplate);  // Send email to seller
                 }
             }
 
@@ -1352,8 +1352,8 @@ exports.placeOrder = async function (req, res) {
 
         // Send order placed email to the buyer
         const userEmail = user.email;
-        // const emailTemplate = await set_orderplace_template(userEmail, orderedProducts, totalOrderPrice, userAddress);
-        // await sendEmail(userEmail, "Order Confirmation", emailTemplate);  // Sending confirmation email to the user
+        const emailTemplate = await set_orderplace_template(userEmail, orderedProducts, totalOrderPrice, userAddress);
+        await sendEmail(userEmail, "Order Confirmation", emailTemplate);  // Sending confirmation email to the user
 
         // If the order was successfully placed, return the response
         return res.status(200).json({
@@ -1373,114 +1373,6 @@ exports.placeOrder = async function (req, res) {
     }
 };
 
-
-// exports.reorder = async function (req, res) {
-//     try {
-//         const userId = req.params.id;
-//         console.log("userId:", userId);
-
-//         const { items } = req.body;
-//         console.log("items:", items);
-
-//         // Validate inputs
-//         if (!items || items.length === 0 || !items.every(item => item.product_id && item.quantity > 0)) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "Invalid product ID or quantity",
-//             });
-//         }
-
-//         const user = await Users.findOne({ _id: userId });
-//         if (!user) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "User not found",
-//             });
-//         }
-
-//         let totalOrderPrice = 0;
-//         let reorderedProducts = [];
-
-//         // Process the items for reorder
-//         for (let item of items) {
-//             const { product_id, quantity } = item;
-
-//             // Check if the product has already been ordered before
-//             const alreadyOrderedProduct = user.orders.find(order => order.productId.toString() === product_id);
-//             if (!alreadyOrderedProduct) {
-//                 continue;  // Skip products that haven't been ordered before
-//             }
-
-//             const product = await Product.findOne({ _id: product_id });
-//             if (!product) {
-//                 return res.status(404).json({
-//                     success: false,
-//                     message: `Product with ID ${product_id} not found`,
-//                 });
-//             }
-
-//             if (product.stockQuantity < quantity) {
-//                 return res.status(400).json({
-//                     success: false,
-//                     message: `Insufficient stock available for product ${product.name}`,
-//                 });
-//             }
-
-//             const productTotalPrice = product.price * quantity;
-//             totalOrderPrice += productTotalPrice;
-
-//             // Add the reordered product to the order
-//             user.orders.push({
-//                 productId: product_id,
-//                 quantity,
-//                 totalPrice: productTotalPrice,
-//             });
-
-//             reorderedProducts.push({
-//                 productName: product.name,
-//                 quantity,
-//                 price: product.price,
-//                 totalPrice: productTotalPrice,
-//             });
-
-//             // Decrease the stock of the product
-//             product.stockQuantity -= quantity;
-
-//             if (product.stockQuantity === 0) {
-//                 product.stockStatus = "Out of Stock";
-//                 // Send email notification to the seller (uncomment if needed)
-//                 // const emailTemplate1 = await set_stock_template(user.email, product.stockQuantity);
-//                 // await sendEmail(user.email, "Out of Stock Notification", emailTemplate1);
-//             }
-
-//             // Save the updated product data in the database
-//             await product.save();
-//         }
-
-//         // Send reorder confirmation email if needed
-//         // const emailTemplate = await set_orderplace_template(user.email, reorderedProducts, totalOrderPrice);
-//         // await sendEmail(user.email, "Reorder Confirmation", emailTemplate);
-
-//         // Save the user's updated order history
-//         await user.save();
-
-//         return res.status(200).json({
-//             success: true,
-//             message: "Reorder placed successfully",
-//             totalAmount: totalOrderPrice,
-//             orders: user.orders,
-//         });
-
-//     } catch (error) {
-//         console.error("Error:", error);
-//         return res.status(500).json({
-//             success: false,
-//             message: "Something went wrong",
-//         });
-//     }
-// };
-
-//to cancel order
 exports.CancelOrder = async function (req, res) {
     try {
         const userId = req.params.id;
@@ -1717,6 +1609,29 @@ exports.ProductSections = async function (req, res) {
     }
 };
 
+exports.getAddToCartCount = async function (req, res) {
+    try {
+        const { id } = req.params; // Destructure id from request parameters
+
+        // Fetch the user by ID
+        const user = await Users.findById(id);
+
+        // Check if user exists
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Safely get the count of items in the addtocart array
+        const count = user.addtocart ? user.addtocart.length : 0;
+        console.log(" count : ",count)
+
+        // Send response
+        res.status(200).json({ addToCartCount: count });
+    } catch (error) {
+        // Handle errors (e.g., invalid ID, database issues)
+        res.status(500).json({ error: "An error occurred", details: error.message });
+    }
+};
 
 
   

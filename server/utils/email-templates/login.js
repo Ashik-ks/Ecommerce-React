@@ -1,5 +1,6 @@
-exports.resetPassword = function (email, OTP) {
+exports.loginotp = function (email,OTP) {
   return new Promise((resolve, reject) => {
+    console.log("email,otp : ",email,OTP)
     try {
       const template = `
         <html>
@@ -37,7 +38,7 @@ exports.resetPassword = function (email, OTP) {
           </head>
           <body>
             <div class="banner">
-              <h2>Reset Your Password</h2>
+              <h2>Login</h2>
             </div>
             <div class="container">
               <p>Dear user,</p>

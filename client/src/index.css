@@ -761,11 +761,7 @@ padding: 5px;
 width: 140px;
   }
 }
-@media (max-width: 450px) {
-  .product-card {
-    margin-left: 55px;
-}
-}
+
 .popup-overlay1 {
   position: fixed;
   top: 0;

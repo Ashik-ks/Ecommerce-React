@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
-import { useCount } from '../CountContext';
 import axios from 'axios';
 import AddToWishlist from './addtowishlist';
 import {toast } from "react-toastify";
@@ -9,8 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 const AllProducts = () => {
     const [products, setProducts] = useState([]);
     const [showWishlist, setShowWishlist] = useState(false);
-    const [localCount, setLocalCount] = useState(0); // Local state for fetched count
-    const { updateCount } = useCount();
     const navigate = useNavigate();
     const { id, usertype } = useParams();
 
@@ -27,8 +24,6 @@ const AllProducts = () => {
 
                 if (parsedResponse.success && Array.isArray(parsedResponse.responseProducts)) {
                     setProducts(parsedResponse.responseProducts);
-                    setLocalCount(parsedResponse.count); // Update local count state
-                    updateCount(parsedResponse.count); // Update shared count state
                 } else {
                     setProducts([]);
                 }
@@ -38,7 +33,7 @@ const AllProducts = () => {
         };
 
         fetchProducts();
-    }, [id, updateCount]); // Dependency array includes id and updateCount
+    }, [id]); // Dependency array includes id and updateCount
 
     const token = localStorage.getItem(id);
 
