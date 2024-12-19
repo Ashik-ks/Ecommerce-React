@@ -747,31 +747,36 @@ exports.getSingleproduct = async function (req, res) {
                 // Fetch all products in the same category
                 let categoryProduct = await Product.find({ category: Category._id });
 
-                // If `id` is undefined or user is not found, skip the wishlist and cart logic
+                // If `id` is undefined or user is not found, skip the wishlist, cart, and order logic
                 if (id === 'undefined' || !await Users.findOne({ _id: id })) {
                     return res.status(200).send({
                         success: true,
                         statuscode: 200,
-                        product: product, // Send product with no wishlist or cart flags
+                        product: product, // Send product with no flags
                         productcategory: Category.name,
-                        categoryProduct: categoryProduct, // No `isWishlist` or `isInCart` flag
+                        categoryProduct: categoryProduct, // No flags
                         sellername: sellername?.email || "Unknown",
                         message: "Products fetched successfully (no user ID or user not found)",
                     });
                 }
 
-                // Fetch the user's wishlist and cart if `id` is defined
-                let user = await Users.findOne({ _id: id }, { wishlist: 1, addtocart: 1 });
+                // Fetch the user's wishlist, cart, and orders
+                let user = await Users.findOne({ _id: id }, { wishlist: 1, addtocart: 1, orders: 1 });
                 let userWishlist = user?.wishlist || [];
-                let userCart = user?.addtocart || []; // Assuming the cart field is named `addtocart`
+                let userCart = user?.addtocart || [];
+                let userOrders = user?.orders || [];
 
-                // Log the userWishlist and userCart for debugging
+                // Log the user's data for debugging
                 console.log("User Wishlist: ", userWishlist);
                 console.log("User Cart: ", userCart);
+                console.log("User Orders: ", userOrders);
 
-                // Add `isWishlist` and `isInCart` flags for the single product
-                product.isWishlist = userWishlist.includes(product._id.toString()); // Check if product is in wishlist
-                product.isInCart = userCart.includes(product._id.toString()); // Check if product is in cart
+                // Add `isWishlist`, `isInCart`, and `isOrdered` flags for the single product
+                product.isWishlist = userWishlist.includes(product._id.toString());
+                product.isInCart = userCart.includes(product._id.toString());
+                product.isOrdered = Array.isArray(userOrders) && userOrders.some(order => order.productId === pid);
+
+                
 
                 // Log the updated product with flags for debugging
                 console.log("Updated Product with flags: ", product);
@@ -780,8 +785,8 @@ exports.getSingleproduct = async function (req, res) {
                 categoryProduct = categoryProduct.map((item) => {
                     return {
                         ...item._doc, // Spread product fields
-                        isWishlist: userWishlist.includes(item._id.toString()), // Check if product is in wishlist
-                        isInCart: userCart.includes(item._id.toString()), // Check if product is in cart
+                        isWishlist: userWishlist.includes(item._id.toString()),
+                        isInCart: userCart.includes(item._id.toString()),
                     };
                 });
 
@@ -794,11 +799,12 @@ exports.getSingleproduct = async function (req, res) {
                     statuscode: 200,
                     product: {
                         ...product._doc, // Spread original product data
-                        isWishlist: product.isWishlist, // Ensure isWishlist flag is included
-                        isInCart: product.isInCart, // Ensure isInCart flag is included
+                        isWishlist: product.isWishlist,
+                        isInCart: product.isInCart,
+                        isOrdered: product.isOrdered, // Include `isOrdered` flag
                     },
                     productcategory: Category.name,
-                    categoryProduct: categoryProduct, // Send category products with `isWishlist` and `isInCart` flags
+                    categoryProduct: categoryProduct,
                     sellername: sellername?.email || "Unknown",
                     message: "Products fetched successfully",
                 });
@@ -825,6 +831,7 @@ exports.getSingleproduct = async function (req, res) {
         });
     }
 };
+
 
 //to add products in addtocart
 exports.addToCart = async function (req, res) {
@@ -1336,8 +1343,8 @@ exports.placeOrder = async function (req, res) {
                 // Send an email to the seller if the product is out of stock
                 const seller = await Users.findOne({ _id: product.sellerId });
                 if (seller) {
-                    const emailTemplate = await set_stock_template(seller.email, product.stockQuantity, product.name);
-                    await sendEmail(seller.email, "Out of Stock Notification", emailTemplate);  // Send email to seller
+                    // const emailTemplate = await set_stock_template(seller.email, product.stockQuantity, product.name);
+                    // await sendEmail(seller.email, "Out of Stock Notification", emailTemplate);  // Send email to seller
                 }
             }
 
@@ -1352,8 +1359,8 @@ exports.placeOrder = async function (req, res) {
 
         // Send order placed email to the buyer
         const userEmail = user.email;
-        const emailTemplate = await set_orderplace_template(userEmail, orderedProducts, totalOrderPrice, userAddress);
-        await sendEmail(userEmail, "Order Confirmation", emailTemplate);  // Sending confirmation email to the user
+        // const emailTemplate = await set_orderplace_template(userEmail, orderedProducts, totalOrderPrice, userAddress);
+        // await sendEmail(userEmail, "Order Confirmation", emailTemplate);  // Sending confirmation email to the user
 
         // If the order was successfully placed, return the response
         return res.status(200).json({
@@ -1630,6 +1637,58 @@ exports.getAddToCartCount = async function (req, res) {
     } catch (error) {
         // Handle errors (e.g., invalid ID, database issues)
         res.status(500).json({ error: "An error occurred", details: error.message });
+    }
+};
+
+exports.addProductReview = async (req, res) => {
+    const { id, pid } = req.params; // Extract product ID and user ID from params
+    const { rating, comment } = req.body;
+    console.log("All data:", id, pid, rating, comment);
+
+    try {
+        const product = await Product.findById(pid); // Find product by ID
+        console.log("Product found:", product);
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        let user = await Users.findById(id)
+
+
+        // Check if the user has already reviewed the product
+        const alreadyReviewed = product.reviews.find(
+            (review) => review.user.toString() === id
+        );
+
+        if (alreadyReviewed) {
+            return res.status(400).json({ message: 'Product already reviewed' });
+        }
+
+        // Create the new review
+        const review = {
+            user: id,
+            email: user.email, // Assuming `req.user` contains authenticated user data
+            rating: Number(rating),
+            comment,
+        };
+        console.log("Review to be added:", review);
+
+        product.reviews.push(review);
+        product.numReviews = product.reviews.length;
+
+        // Recalculate the average rating
+        product.rating =
+            product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+            product.reviews.length;
+
+        console.log("Updated product ratings:", product.rating, product.numReviews);
+
+        await product.save();
+        return res.status(201).json({ message: 'Review added successfully', product });
+    } catch (error) {
+        console.error("Error adding review:", error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 

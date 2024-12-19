@@ -32,7 +32,7 @@ router.post('/order/:id',setAccessControl("2,3"),buyerController.placeOrder);
 router.post('/cancelorder/:id',setAccessControl("2,3"),buyerController.CancelOrder);
 router.get('/gatAllorders/:id',setAccessControl("2,3"),buyerController.getOrderedProducts);
 router.get('/getallproducttoorder/:id/:items',setAccessControl("1,2,3"),buyerController.getallproducttoorder);
-
+router.post('/addProductReview/:id/:pid',setAccessControl("2,3"),buyerController.addProductReview)
 
 
 module.exports = router; // Make sure to export the router
